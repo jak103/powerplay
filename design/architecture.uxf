@@ -1,21 +1,48 @@
-<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLNote</id><coordinates><x>870</x><y>300</y><w>730</w><h>650</h></coordinates><panel_attributes>Server
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>140</x><y>80</y><w>510</w><h>320</h></coordinates><panel_attributes>Web app
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLNote</id><coordinates><x>870</x><y>300</y><w>920</w><h>780</h></coordinates><panel_attributes>Server
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>140</x><y>120</y><w>700</w><h>420</h></coordinates><panel_attributes>Web app
 
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>140</x><y>570</y><w>510</w><h>280</h></coordinates><panel_attributes>Mobile apps
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>1870</x><y>280</y><w>360</w><h>320</h></coordinates><panel_attributes>Database
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>1880</x><y>300</y><w>470</w><h>780</h></coordinates><panel_attributes>Database
 --</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>890</x><y>370</y><w>270</w><h>110</h></coordinates><panel_attributes>Router
 --
 Responsible for creating, handling,
 and dispatching incoming HTTP requests
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>1310</x><y>810</y><w>270</w><h>110</h></coordinates><panel_attributes>Database
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>1500</x><y>370</y><w>270</w><h>110</h></coordinates><panel_attributes>Database
 --
 Responsible for connecting, CRUD
 operations, and monitoring database health
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>930</x><y>760</y><w>270</w><h>110</h></coordinates><panel_attributes>Chat
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>920</x><y>600</y><w>270</w><h>110</h></coordinates><panel_attributes>Chat
 --
-Responsible for connecting, CRUD
-operations, and monitoring database health
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>1260</x><y>770</y><w>270</w><h>110</h></coordinates><panel_attributes>Scheduler
+--
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>920</x><y>760</y><w>270</w><h>110</h></coordinates><panel_attributes>Game Runner
+--
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>1190</x><y>370</y><w>270</w><h>110</h></coordinates><panel_attributes>Models
+--
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>520</x><y>180</y><w>270</w><h>110</h></coordinates><panel_attributes>Store
+--
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>170</x><y>170</y><w>270</w><h>110</h></coordinates><panel_attributes>Views
+--
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>520</x><y>340</y><w>270</w><h>110</h></coordinates><panel_attributes>HTTP
+--
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>170</x><y>340</y><w>270</w><h>110</h></coordinates><panel_attributes>Components
+--
+
 
 </panel_attributes><additional_attributes></additional_attributes></element></diagram>
