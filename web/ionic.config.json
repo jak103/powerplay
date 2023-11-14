@@ -1,0 +1,7 @@
+{
+  "name": "League Manager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}

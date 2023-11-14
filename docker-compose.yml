@@ -11,10 +11,10 @@ services:
       - ./web:/app/web
       - ./static:/app/static # mounted so we can refresh when the documentation updates
     ports:
-      - 6000:6000
+      - 8100:8100
     environment:
       NODE_ENV: development
-    command: npm run dev
+    command: ionic serve
 
   server:
     image: server:latest
@@ -27,9 +27,9 @@ services:
       - ./static:/app/static
       - ./config:/app/config
     ports:
-      - 6001:6001
-    depends_on:
-      - devsite-db
+      - 8101:8101
+    # depends_on:
+    #   - devsite-db
     command: air -c air/server.toml
 
 #   proxy:
