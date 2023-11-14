@@ -9,12 +9,11 @@ services:
     volumes:
       - /app/web/node_modules
       - ./web:/app/web
-      - ./static:/app/static # mounted so we can refresh when the documentation updates
     ports:
       - 8100:8100
     environment:
       NODE_ENV: development
-    command: ionic serve
+    command: ionic serve --external
 
   server:
     image: server:latest
@@ -28,81 +27,43 @@ services:
       - ./config:/app/config
     ports:
       - 8101:8101
-    # depends_on:
-    #   - devsite-db
+    depends_on:
+      - database
     command: air -c air/server.toml
 
-#   proxy:
-#     image: proxy:latest
-#     build: ./backend
-#     container_name: proxy
-#     working_dir: /api/backend
-#     volumes:
-#       - /api/tmp # Anonymous mount for air temp directory
-#       - ./backend:/api/backend
-#       - ./config:/api/config
-#       - ~/.ssh:/root/.ssh # For building plugins and get to common/logging
-#       - ~/.gitconfig:/root/.gitconfig # For building plugins and get to common/logging
-#     ports:
-#       - 6002:6002
-#     environment:
-#       - GOPRIVATE=bitbucket.org/thetalake
-#     depends_on:
-#       - api-redis
-#       - devsite-backend # Doesn't really depend, just don't want to startup logs interleaved
-#     command: air -c air/proxy.toml
-
-#   devsite-db:
-#     image: mysql:8
-#     container_name: devsite-db
-#     restart: always
-#     volumes:
-#       - ./db:/docker-entrypoint-initdb.d
-#     ports:
-#       - 4406:4406
-#     environment:
-#       - MYSQL_TCP_PORT=4406
-#       - MYSQL_DATABASE=devsite
-#       - MYSQL_USER=user
-#       - MYSQL_PASSWORD=password
-#       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-
-#   # mock-portal:
-#   #   image: mock-portal:latest
-#   #   build: ./backend
-#   #   container_name: mock-portal
-#   #   working_dir: /api/mock-portal
-#   #   volumes:
-#   #     - ./backend:/api/backend
-#   #     - ./config:/api/config
-#   #   ports:
-#   #     - 3001:3000
-#   #   command: air -c air/mock-portal.toml
+  database:
+    image: postgres:16
+    container_name: db
+    restart: always
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=league
 
 #   api-redis:
 #     image: redis:7-alpine
 #     container_name: api-redis
 #     ports:
 #       - 7379:6379 # this allows us to view the cache in a gui
-#   # cypress:
-#   #   image: cypress/included:cypress-12.5.1-node-16.18.1-chrome-109.0.5414.74-1-ff-109.0-edge-109.0.1518.52-1
-#   #   container_name: devsite-cypress
-#   #   restart: always
-#   #   working_dir: /frontend
-#   #   network_mode: host # This will resolve localhost:5173 in the container
-#   #   depends_on:
-#   #     - devsite-db
-#   #   volumes:
-#   #     - ./frontend:/frontend
-#   #     - ./e2e:/e2e
-#   #     - ./build:/build
-#   #   entrypoint: tail -f /dev/null
-#   #   # Above entrypoint keep the container running, so we can hop in the container and
-#   #   # run cypress within the container by using `npm run test:e2e:ci:BROWSER`, where
-#   #   # BROWSER options are chrome, firefox and edge. We can also replace the entrypoint
-#   #   # above with the npm command, but it all logs will make the output really noisy.
+  # cypress:
+  #   image: cypress/included:cypress-12.5.1-node-16.18.1-chrome-109.0.5414.74-1-ff-109.0-edge-109.0.1518.52-1
+  #   container_name: devsite-cypress
+  #   restart: always
+  #   working_dir: /frontend
+  #   network_mode: host # This will resolve localhost:5173 in the container
+  #   depends_on:
+  #     - devsite-db
+  #   volumes:
+  #     - ./frontend:/frontend
+  #     - ./e2e:/e2e
+  #     - ./build:/build
+  #   entrypoint: tail -f /dev/null
+  #   # Above entrypoint keep the container running, so we can hop in the container and
+  #   # run cypress within the container by using `npm run test:e2e:ci:BROWSER`, where
+  #   # BROWSER options are chrome, firefox and edge. We can also replace the entrypoint
+  #   # above with the npm command, but it all logs will make the output really noisy.
 
-# networks:
-#   default:
-#     name: tl-localdev
-#     external: true

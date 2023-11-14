@@ -1,1 +1,2 @@
 Polls - Often teams need polls for jersey design or team name kind of things. Being able to host a poll on the team would be good.
+A feature to order jersey's, maybe even other gear later
