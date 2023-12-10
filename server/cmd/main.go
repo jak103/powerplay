@@ -2,29 +2,30 @@ package main
 
 import (
 	"github.com/jak103/leaguemanager/internal/config"
-	"github.com/jak103/leaguemanager/internal/log"
 	"github.com/jak103/leaguemanager/internal/server"
+	"github.com/jak103/leaguemanager/internal/utils/log"
 )
 
 func main() {
+	err := config.Init()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to load config")
+		return
+	}
+
+	err = log.Init()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to initialize logger")
+		return
+	}
+
+	// TODO Come up with a good name
 	log.Info("--League Manager v0.0.0--") // TODO Get build info automatically
 
-	// load env config
-	cfg, err := config.Load()
-	if err != nil {
-		// log.WithErr(err).Error()
-	}
-
-	// init logger
-	err = log.Init(cfg)
-	if err != nil {
-		// log.WithErr(err).Error()
-	}
-
 	// init server
-	err = server.Init(cfg)
+	err = server.Init()
 	if err != nil {
-		// log.WithErr(err).Error()
+		log.WithErr(err).Alert("Failed to initialize server")
 	}
 
 	// run

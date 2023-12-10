@@ -2,10 +2,9 @@ package server
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/leaguemanager/internal/config"
 )
 
-func Init(config *config.Config) error {
+func Init() error {
 	return nil
 }
 
