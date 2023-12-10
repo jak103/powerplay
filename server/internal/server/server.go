@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/leaguemanager/internal/middleware"
 )
 
 func Init() error {
@@ -11,9 +12,9 @@ func Init() error {
 func Run() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	middleware.Setup(app)
+
+	setupRoutes(app)
 
 	app.Listen(":8101")
 }

@@ -2,7 +2,9 @@ package middleware
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
+	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/gofiber/fiber/v2/utils"
@@ -16,8 +18,10 @@ import (
 	"github.com/jak103/leaguemanager/internal/utils/responder"
 )
 
-func SetupMiddleware(app *fiber.App) {
+func Setup(app *fiber.App) {
 	app.Use(metrics.New())
+
+	app.Use(helmet.New())
 
 	// Request ID https://docs.gofiber.io/api/middleware/requestid
 	app.Use(requestid.New(requestid.Config{
@@ -45,11 +49,12 @@ func SetupMiddleware(app *fiber.App) {
 		}))
 	}
 
-	// // Compression https://docs.gofiber.io/api/middleware/compress
-	// app.Use(compress.New(compress.Config{
-	// 	Level: compress.LevelDefault,
-	// }))
+	// Compression https://docs.gofiber.io/api/middleware/compress
+	app.Use(compress.New(compress.Config{
+		Level: compress.LevelDefault,
+	}))
 
+	// TODO Setup CORS
 	// if config.Devsite.Env == constants.Local || config.Devsite.Env == constants.Test {
 	// 	log.Error("Settting permissive CORS")
 	// 	// CORS https://docs.gofiber.io/api/middleware/cors
@@ -61,7 +66,4 @@ func SetupMiddleware(app *fiber.App) {
 	// 		ExposeHeaders:    "Set-Cookie",
 	// 	}))
 	// }
-
-	// TODO look into fiber.Helmet middleware
-
 }

@@ -2,3 +2,5 @@ Polls - Often teams need polls for jersey design or team name kind of things. Be
 A feature to order jersey's, maybe even other gear later
 
 Chat - show where users have read with dots
+
+OpenApi and Rapidoc for the server, so we enable others to build integrations if they want
