@@ -1,19 +1,19 @@
 version: '3.8'
 
 services:
-  web:
-    image: web:latest
-    build: ./web
-    container_name: web
-    working_dir: /app/web
+  app:
+    image: app:latest
+    build: ./app
+    container_name: app
+    working_dir: /app
     volumes:
-      - /app/web/node_modules
-      - ./web:/app/web
+      - /app/node_modules
+      - ./app:/app
     ports:
-      - 8100:8100
+      - 9000:9000
     environment:
       NODE_ENV: development
-    command: ionic serve --external
+    command: npm run dev
 
   server:
     image: server:latest
