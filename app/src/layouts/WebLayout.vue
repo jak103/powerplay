@@ -9,7 +9,8 @@
 
         <q-space />
 
-        <q-select v-model="roleModel" :options="roleOptions" label="Role" style="width: 100px" label-color="red" /> <!-- TODO Only show this in dev -->
+        <q-select v-model="roleModel" :options="roleOptions" label="Role" style="width: 100px" label-color="red" />
+        <!-- TODO Only show this in dev -->
 
         <q-space />
 
@@ -27,33 +28,11 @@
     <q-page-container class="GPL__page-container">
       <router-view />
 
-      <q-page-sticky v-if="$q.screen.gt.sm" expand position="left">
+      <q-page-sticky expand position="left">
         <div class="fit q-pt-xl q-px-sm column">
-          <template v-for="button in buttons" :key="button.text">
-            <q-btn  round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn">
-              <q-icon :name="button.icon" />
-              <div class="GPL__side-btn__label">{{button.text}}</div>
-              <q-badge v-if="button.notifications > 0" color="red" text-color="white" floating style="top: 8px; right: 16px">
-                {{ button.notifications }}
-              </q-badge>
-            </q-btn>
-          </template>
+          <menu-buttons />
         </div>
       </q-page-sticky>
-
-
-      <q-footer v-if="$q.screen.lt.md" bg-color="white" class=""> <!-- TODO make this show the buttons here  -->
-        <template v-for="button in buttons" :key="button.text">
-            <q-btn  round flat color="grey-8" stack no-caps size="26px" class="GPL__side-btn">
-              <q-icon :name="button.icon" />
-              <div class="GPL__side-btn__label">{{button.text}}</div>
-              <q-badge v-if="button.notifications > 0" color="red" text-color="white" floating style="top: 8px; right: 16px">
-                {{ button.notifications }}
-              </q-badge>
-            </q-btn>
-          </template>
-    </q-footer>
-
     </q-page-container>
   </q-layout>
 </template>
@@ -62,42 +41,10 @@
 
 import { ref } from 'vue';
 
+import MenuButtons from 'src/components/MenuButtons.vue';
+
 const roleModel = ref(null);
 const roleOptions = ['Player', 'Captain', 'Staff', 'Manager']
-
-
-const buttons = [
-  {
-    text: 'Teams',
-    icon: 'sports_hockey',
-    notifications: 0,
-  },
-  {
-    text: 'Chat',
-    icon: 'chat',
-    notifications: 2,
-  },
-  {
-    text: 'Schedule',
-    icon: 'calendar_month',
-    notifications: 1,
-  },
-  {
-    text: 'Finance',
-    icon: 'paid',
-    notifications: 0,
-  },
-  {
-    text: 'Account',
-    icon: 'account_circle',
-    notifications: 0,
-  },
-  {
-    text: 'Admin',
-    icon: 'settings',
-    notifications: 0,
-  },
-];
 
 
 </script>
@@ -144,4 +91,4 @@ const buttons = [
   @media (min-width: 1024px)
     &__page-container
       padding-left: 94px
-</style>
+  </style>
