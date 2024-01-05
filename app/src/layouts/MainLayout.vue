@@ -4,16 +4,19 @@
       <q-toolbar class="GPL__toolbar" style="height: 64px">
 
         <q-toolbar-title shrink class="row items-center no-wrap">
-          <span class="q-ml-sm">League Manager</span>
+          <span class="q-ml-sm">
+            <router-link to="/">League Manager</router-link>
+          </span>
         </q-toolbar-title>
 
         <q-space />
 
+        <!-- TODO Make this a component and only show it in dev -->
         <q-select v-model="roleModel" :options="roleOptions" label="Role" style="width: 100px" label-color="red" />
 
-
         <q-space />
-        <!-- TODO Only show this in dev -->
+
+        <!-- TODO Make this a component -->
         <div class="q-gutter-sm row items-center no-wrap">
           <q-btn round flat>
             <q-avatar size="26px">
