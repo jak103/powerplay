@@ -10,10 +10,10 @@
         <q-space />
 
         <q-select v-model="roleModel" :options="roleOptions" label="Role" style="width: 100px" label-color="red" />
-        <!-- TODO Only show this in dev -->
+
 
         <q-space />
-
+        <!-- TODO Only show this in dev -->
         <div class="q-gutter-sm row items-center no-wrap">
           <q-btn round flat>
             <q-avatar size="26px">
@@ -27,10 +27,18 @@
 
     <q-page-container class="GPL__page-container">
       <router-view />
-
-      <q-footer style="background-color: white;" class=""> <!-- TODO make this show the buttons here  -->
-        <menu-buttons />
-      </q-footer>
+      <template v-if="$q.screen.lt.md">
+        <q-footer style="background-color: white;" class="">
+          <menu-buttons />
+        </q-footer>
+      </template>
+      <template v-if="$q.screen.gt.sm">
+        <q-page-sticky expand position="left">
+          <div class="fit q-pt-xl q-px-sm column">
+            <menu-buttons />
+          </div>
+        </q-page-sticky>
+      </template>
 
     </q-page-container>
   </q-layout>
@@ -42,12 +50,8 @@ import { ref } from 'vue';
 
 import MenuButtons from 'src/components/MenuButtons.vue';
 
-
 const roleModel = ref(null);
 const roleOptions = ['Player', 'Captain', 'Staff', 'Manager']
-
-
-
 
 </script>
 

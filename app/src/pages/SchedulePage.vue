@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <!-- content -->
-    <p>Team page</p>
+    <p>Schedule page</p>
   </q-page>
 </template>
 
