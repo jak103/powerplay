@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/leaguemanager/internal/auth"
-	"github.com/jak103/leaguemanager/internal/utils/log"
+	"github.com/jak103/powerplay/internal/auth"
+	"github.com/jak103/powerplay/internal/utils/log"
 )
 
 var (
@@ -11,18 +11,18 @@ var (
 )
 
 type route struct {
-	Method   string
-	Path     string
-	AuthType auth.Type
-	Handler  fiber.Handler
+	method   string
+	path     string
+	authType auth.Type
+	handlers []fiber.Handler
 }
 
-func RegisterHandler(method, path string, authType auth.Type, handler fiber.Handler) {
+func RegisterHandler(method, path string, authType auth.Type, handlers ...fiber.Handler) {
 	r := route{
-		Method:   method,
-		Path:     path,
-		AuthType: authType,
-		Handler:  handler,
+		method:   method,
+		path:     path,
+		authType: authType,
+		handlers: handlers,
 	}
 
 	routes = append(routes, r)
@@ -32,11 +32,12 @@ func setupRoutes(app *fiber.App) {
 	jwt := auth.GetMiddleware()
 
 	for _, r := range routes {
-		switch r.AuthType {
+		switch r.authType {
 		case auth.NONE:
-			app.Add(r.Method, r.Path, r.Handler)
+			app.Add(r.method, r.path, r.handlers...)
 		case auth.JWT:
-			app.Add(r.Method, r.Path, jwt, r.Handler)
+			handlers := append([]fiber.Handler{jwt}, r.handlers...)
+			app.Add(r.method, r.path, handlers...)
 		default:
 			log.Alert("Unknown auth type in route registry")
 		}

@@ -4,7 +4,7 @@ import (
 	"runtime/debug"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/leaguemanager/internal/utils/locals"
+	"github.com/jak103/powerplay/internal/utils/locals"
 )
 
 func StackTraceHandler(c *fiber.Ctx, e interface{}) {

@@ -2,10 +2,11 @@ package log
 
 import (
 	"fmt"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/jak103/leaguemanager/internal/config"
 )
 
 var blue = color.New(color.FgBlue).SprintFunc()
@@ -42,17 +43,21 @@ func (l Logger) Alert(format string, a ...any) {
 	print(red("ALERT"), fmt.Sprintf(format, a...))
 }
 
-func Init() error {
+func Init(color bool) error {
 	TheLogger = Logger{
 		tags:  make(map[string]any),
-		color: config.App.ColorLog,
+		color: color,
 	}
 
 	return nil
 }
 
 func print(level, text string) {
-	fmt.Printf("%s [%s] %s\n", time.Now().Format(time.RFC3339Nano), level, text)
+	_, file, line, _ := runtime.Caller(2)
+
+	file = strings.Replace(file, "/app/", "", 1)
+
+	fmt.Printf("%s %s:%v > [%s] %s\n", time.Now().Format(time.RFC3339Nano), file, line, level, text)
 }
 
 func Debug(format string, a ...any) {

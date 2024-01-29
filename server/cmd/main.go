@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/jak103/leaguemanager/internal/config"
-	"github.com/jak103/leaguemanager/internal/server"
-	"github.com/jak103/leaguemanager/internal/utils/log"
+	"github.com/jak103/powerplay/internal/config"
+	"github.com/jak103/powerplay/internal/db"
+	"github.com/jak103/powerplay/internal/server"
+	"github.com/jak103/powerplay/internal/utils/log"
 )
 
 func main() {
@@ -13,19 +14,32 @@ func main() {
 		return
 	}
 
-	err = log.Init()
+	err = log.Init(config.Vars.ColorLog)
 	if err != nil {
 		log.WithErr(err).Alert("Failed to initialize logger")
 		return
 	}
 
-	// TODO Come up with a good name
-	log.Info("--League Manager v0.0.0--") // TODO Get build info automatically
+	log.Info("--Power Play v0.0.0--") // TODO Get build info automatically
+
+	// Connect to DB
+	err = db.Init()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to connect to DB")
+		return
+	}
+
+	err = db.Migrate()
+	if err != nil {
+		log.WithErr(err).Alert("Migrations failed")
+		return
+	}
 
 	// init server
 	err = server.Init()
 	if err != nil {
 		log.WithErr(err).Alert("Failed to initialize server")
+		return
 	}
 
 	// run

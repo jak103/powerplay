@@ -9,13 +9,13 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/gofiber/fiber/v2/utils"
 
-	"github.com/jak103/leaguemanager/internal/config"
-	"github.com/jak103/leaguemanager/internal/middleware/logger"
-	"github.com/jak103/leaguemanager/internal/middleware/metrics"
-	appUtils "github.com/jak103/leaguemanager/internal/utils"
-	"github.com/jak103/leaguemanager/internal/utils/constants"
-	"github.com/jak103/leaguemanager/internal/utils/locals"
-	"github.com/jak103/leaguemanager/internal/utils/responder"
+	"github.com/jak103/powerplay/internal/config"
+	"github.com/jak103/powerplay/internal/middleware/logger"
+	"github.com/jak103/powerplay/internal/middleware/metrics"
+	appUtils "github.com/jak103/powerplay/internal/utils"
+	"github.com/jak103/powerplay/internal/utils/constants"
+	"github.com/jak103/powerplay/internal/utils/locals"
+	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
 func Setup(app *fiber.App) {
@@ -37,7 +37,7 @@ func Setup(app *fiber.App) {
 	}))
 
 	// CSRF https://docs.gofiber.io/api/middleware/csrf
-	if config.App.Env != constants.Local && config.App.Env != constants.Test { // Only turn on CSRF in deployed environments
+	if config.Vars.Env != constants.Local && config.Vars.Env != constants.Test { // Only turn on CSRF in deployed environments
 		app.Use(csrf.New(csrf.Config{
 			CookieHTTPOnly: true,
 			CookieSecure:   true,
@@ -66,4 +66,7 @@ func Setup(app *fiber.App) {
 	// 		ExposeHeaders:    "Set-Cookie",
 	// 	}))
 	// }
+
+	// TODO rate limiter https://github.com/gofiber/fiber/tree/v2/middleware/limiter
+	// TODO otel traces https://github.com/gofiber/contrib/tree/main/otelfiber
 }

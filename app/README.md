@@ -1,4 +1,4 @@
-# League Manager (leaguemanager)
+# League Manager (powerplay)
 
 A sports league management system
 

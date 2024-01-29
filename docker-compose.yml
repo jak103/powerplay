@@ -26,9 +26,10 @@ services:
       - ./static:/app/static
       - ./config:/app/config
     ports:
-      - 8101:8101
+      - 9001:9001
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     command: air -c air/server.toml
 
   database:
@@ -40,9 +41,15 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=user
+      - PGUSER=postgres
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=league
+      - POSTGRES_DB=powerplay
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 #   api-redis:
 #     image: redis:7-alpine

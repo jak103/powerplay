@@ -2,8 +2,8 @@ package chat
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/leaguemanager/internal/auth"
-	"github.com/jak103/leaguemanager/internal/server"
+	"github.com/jak103/powerplay/internal/auth"
+	"github.com/jak103/powerplay/internal/server"
 )
 
 func init() {

@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/leaguemanager/internal/utils/locals"
-	"github.com/jak103/leaguemanager/internal/utils/log"
+	"github.com/jak103/powerplay/internal/utils/locals"
+	"github.com/jak103/powerplay/internal/utils/log"
 )
 
 func New() fiber.Handler {

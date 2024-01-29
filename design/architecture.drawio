@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="Oioq2MlYxdWlYWQqClHu" name="Page-1">
-        <mxGraphModel dx="2321" dy="1372" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1920" pageHeight="1200" math="0" shadow="0">
+        <mxGraphModel dx="810" dy="630" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1920" pageHeight="1200" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -59,7 +59,7 @@
                 <mxCell id="53" value="Game Runner" style="swimlane;whiteSpace=wrap;html=1;" parent="43" vertex="1">
                     <mxGeometry x="260" y="410" width="200" height="200" as="geometry"/>
                 </mxCell>
-                <mxCell id="138" value="Needs to cover game stats" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="53">
+                <mxCell id="138" value="Needs to cover game stats" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" parent="53" vertex="1">
                     <mxGeometry x="10" y="30" width="120" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="63" value="Scheduler" style="swimlane;whiteSpace=wrap;html=1;" parent="43" vertex="1">

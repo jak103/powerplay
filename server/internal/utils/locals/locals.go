@@ -2,8 +2,8 @@ package locals
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/leaguemanager/internal/utils/constants"
-	"github.com/jak103/leaguemanager/internal/utils/log"
+	"github.com/jak103/powerplay/internal/utils/constants"
+	"github.com/jak103/powerplay/internal/utils/log"
 )
 
 const (

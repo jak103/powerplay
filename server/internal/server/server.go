@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/leaguemanager/internal/middleware"
+	"github.com/jak103/powerplay/internal/middleware"
 )
 
 func Init() error {
@@ -16,5 +16,8 @@ func Run() {
 
 	setupRoutes(app)
 
-	app.Listen(":8101")
+	app.Listen(":9001")
+
+	// Figure out websockets for chat and live scoring
+	// TODO https://github.com/gofiber/contrib/tree/main/websocket
 }
