@@ -6,4 +6,5 @@ type Staff struct {
 	ScoreKeeper      User `json:"score_keeper"`
 	PrimaryReferee   User `json:"primary_referee"`
 	SecondaryReferee User `json:"secondary_referee"`
+	GameId           int  `json:"-"`
 }

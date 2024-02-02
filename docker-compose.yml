@@ -15,14 +15,14 @@ services:
       NODE_ENV: development
     command: npm run dev
 
-  server:
-    image: server:latest
-    build: ./server
-    container_name: server
-    working_dir: /app/server
+  backend:
+    image: backend:latest
+    build: ./backend
+    container_name: backend
+    working_dir: /app/backend
     volumes:
       - /app/tmp # Anonymous mount for air temp directory
-      - ./server:/app/server
+      - ./backend:/app/backend
       - ./static:/app/static
       - ./config:/app/config
     ports:
@@ -30,7 +30,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    command: air -c air/server.toml
+    command: air -c air/backend.toml
 
   database:
     image: postgres:16

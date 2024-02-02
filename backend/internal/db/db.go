@@ -2,12 +2,17 @@ package db
 
 import (
 	"fmt"
+	stdLog "log"
+	"os"
+	"time"
 
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db/migrations"
+
 	"github.com/jak103/powerplay/internal/utils/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	gorm_logger "gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
@@ -30,7 +35,19 @@ func Init() error {
 
 	log.Info("DB DSN: %s", dsn_redacted)
 
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// TODO replace GORM logger with our logger
+	newLogger := gorm_logger.New(
+		stdLog.New(os.Stdout, "\r\n", stdLog.LstdFlags), // io writer
+		gorm_logger.Config{
+			SlowThreshold:             time.Second,        // Slow SQL threshold
+			LogLevel:                  gorm_logger.Silent, // Log level
+			IgnoreRecordNotFoundError: true,               // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true,               // Don't include params in the SQL log
+			Colorful:                  false,              // Disable color
+		},
+	)
+
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		log.WithErr(err).Alert("Failed to connect to DB")
 		return err

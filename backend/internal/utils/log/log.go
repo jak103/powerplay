@@ -21,63 +21,74 @@ var TheLogger Logger
 type Logger struct {
 	tags  map[string]any
 	color bool
+	skip  int
 }
 
 func (l Logger) Debug(format string, a ...any) {
-	print(blue("DEBUG"), fmt.Sprintf(format, a...))
+	print(blue("[DEBUG]"), fmt.Sprintf(format, a...), l.tags, l.skip)
 }
 
 func (l Logger) Info(format string, a ...any) {
-	print(green("INFO "), fmt.Sprintf(format, a...))
+	print(green("[INFO ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
 }
 
 func (l Logger) Warn(format string, a ...any) {
-	print(yellow("WARN "), fmt.Sprintf(format, a...))
+	print(yellow("[WARN ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
 }
 
 func (l Logger) Error(format string, a ...any) {
-	print(red("ERROR"), fmt.Sprintf(format, a...))
+	print(red("[ERROR]"), fmt.Sprintf(format, a...), l.tags, l.skip)
 }
 
 func (l Logger) Alert(format string, a ...any) {
-	print(red("ALERT"), fmt.Sprintf(format, a...))
+	print(red("[ALERT]"), fmt.Sprintf(format, a...), l.tags, l.skip)
 }
 
 func Init(color bool) error {
 	TheLogger = Logger{
 		tags:  make(map[string]any),
 		color: color,
+		skip:  2,
 	}
 
 	return nil
 }
 
-func print(level, text string) {
-	_, file, line, _ := runtime.Caller(2)
+func print(level, text string, tags map[string]any, skip int) {
+	_, file, line, _ := runtime.Caller(skip)
 
 	file = strings.Replace(file, "/app/", "", 1)
 
-	fmt.Printf("%s %s:%v > [%s] %s\n", time.Now().Format(time.RFC3339Nano), file, line, level, text)
+	tagText := ""
+	if len(tags) > 0 {
+		for k, v := range tags {
+			tagText = fmt.Sprintf("%s=%v ", k, v)
+		}
+
+		tagText = fmt.Sprintf("{ %s}", tagText)
+	}
+
+	fmt.Printf("%s %s %s:%v > %s %s\n", time.Now().Format(time.RFC3339Nano), level, file, line, text, tagText)
 }
 
 func Debug(format string, a ...any) {
-	TheLogger.Debug(format, a...)
+	TheLogger.withSkipCount(3).Debug(format, a...)
 }
 
 func Info(format string, a ...any) {
-	TheLogger.Info(format, a...)
+	TheLogger.withSkipCount(3).Info(format, a...)
 }
 
 func Warn(format string, a ...any) {
-	TheLogger.Warn(format, a...)
+	TheLogger.withSkipCount(3).Warn(format, a...)
 }
 
 func Error(format string, a ...any) {
-	TheLogger.Error(format, a...)
+	TheLogger.withSkipCount(3).Error(format, a...)
 }
 
 func Alert(format string, a ...any) {
-	TheLogger.Alert(format, a...)
+	TheLogger.withSkipCount(3).Alert(format, a...)
 }
 
 func WithRequestId(reqid string) Logger {
@@ -91,7 +102,7 @@ func WithRequestId(reqid string) Logger {
 func (l Logger) WithRequestId(reqid string) Logger {
 	newLogger := l
 
-	newLogger.tags["request_id"] = reqid
+	newLogger.tags[blue("request_id")] = reqid
 
 	return newLogger
 }
@@ -99,7 +110,7 @@ func (l Logger) WithRequestId(reqid string) Logger {
 func WithErr(err error) Logger {
 	newLogger := TheLogger
 
-	newLogger.tags["error"] = fmt.Sprintf("%v", err)
+	newLogger.tags[red("error")] = fmt.Sprintf("%v", err)
 
 	return newLogger
 }
@@ -108,6 +119,14 @@ func (l Logger) WithErr(err error) Logger {
 	newLogger := l
 
 	newLogger.tags["error"] = fmt.Sprintf("%v", err)
+
+	return newLogger
+}
+
+func (l Logger) withSkipCount(skip int) Logger {
+	newLogger := l
+
+	newLogger.skip = skip
 
 	return newLogger
 }

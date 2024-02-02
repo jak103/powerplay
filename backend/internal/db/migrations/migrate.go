@@ -25,7 +25,12 @@ func Run(db *gorm.DB) error {
 		err := tx.AutoMigrate(
 			&models.User{},
 			&models.Game{},
-			// TODO add all models here
+			&models.Team{},
+			&models.League{},
+			&models.Staff{},
+			&models.Registration{},
+			&models.Venue{},
+			&models.Season{}, //
 		)
 		if err != nil {
 			return err
