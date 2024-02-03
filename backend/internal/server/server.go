@@ -5,6 +5,7 @@ import (
 	"github.com/jak103/powerplay/internal/middleware"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/hello"
+	"github.com/jak103/powerplay/internal/utils/locals"
 )
 
 func Init() error {
@@ -30,6 +31,9 @@ func Run() {
 }
 
 func globalErrorHandler(c *fiber.Ctx, err error) error {
+	log := locals.Logger(c)
+
+	log.WithErr(err).Error("Caught by global error handler")
 
 	return c.Status(fiber.StatusNotFound).SendString("Not found")
 }

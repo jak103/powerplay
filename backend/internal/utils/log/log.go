@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"maps"
 	"runtime"
 	"strings"
 	"time"
@@ -19,9 +20,14 @@ var red = color.New(color.FgRed).SprintFunc()
 var TheLogger Logger
 
 type Logger struct {
-	tags  map[string]any
-	color bool
-	skip  int
+	tags        map[string]any
+	color       bool
+	skip        int
+	testCapture *string
+}
+
+func (l *Logger) SetTestCapture(ptr *string) {
+	l.testCapture = ptr
 }
 
 func (l Logger) Debug(format string, a ...any) {
@@ -62,13 +68,18 @@ func print(level, text string, tags map[string]any, skip int) {
 	tagText := ""
 	if len(tags) > 0 {
 		for k, v := range tags {
-			tagText = fmt.Sprintf("%s=%v ", k, v)
+			tagText += fmt.Sprintf("%s=%v ", k, v)
 		}
 
 		tagText = fmt.Sprintf("{ %s}", tagText)
 	}
 
-	fmt.Printf("%s %s %s:%v > %s %s\n", time.Now().Format(time.RFC3339Nano), level, file, line, text, tagText)
+	output := fmt.Sprintf("%s %s %s:%v > %s %s", time.Now().Format(time.RFC3339Nano), level, file, line, text, tagText)
+	fmt.Println(output)
+
+	if TheLogger.testCapture != nil {
+		*TheLogger.testCapture = fmt.Sprintf("%s%s\n", *TheLogger.testCapture, output)
+	}
 }
 
 func Debug(format string, a ...any) {
@@ -93,15 +104,14 @@ func Alert(format string, a ...any) {
 
 func WithRequestId(reqid string) Logger {
 	newLogger := TheLogger
-
-	newLogger.tags["request_id"] = reqid
+	newLogger.tags[blue("request_id")] = reqid
 
 	return newLogger
 }
 
 func (l Logger) WithRequestId(reqid string) Logger {
 	newLogger := l
-
+	maps.Copy(newLogger.tags, l.tags)
 	newLogger.tags[blue("request_id")] = reqid
 
 	return newLogger
@@ -109,7 +119,6 @@ func (l Logger) WithRequestId(reqid string) Logger {
 
 func WithErr(err error) Logger {
 	newLogger := TheLogger
-
 	newLogger.tags[red("error")] = fmt.Sprintf("%v", err)
 
 	return newLogger
@@ -117,14 +126,16 @@ func WithErr(err error) Logger {
 
 func (l Logger) WithErr(err error) Logger {
 	newLogger := l
-
-	newLogger.tags["error"] = fmt.Sprintf("%v", err)
+	maps.Copy(newLogger.tags, l.tags)
+	fmt.Println("In WithErr:", err)
+	newLogger.tags[red("error")] = fmt.Sprintf("%v", err)
 
 	return newLogger
 }
 
 func (l Logger) withSkipCount(skip int) Logger {
 	newLogger := l
+	maps.Copy(newLogger.tags, l.tags)
 
 	newLogger.skip = skip
 

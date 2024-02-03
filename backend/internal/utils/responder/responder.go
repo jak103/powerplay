@@ -20,6 +20,10 @@ func BadRequest(c *fiber.Ctx, message ...any) error {
 	return respond(c, fiber.StatusBadRequest, message...)
 }
 
+func NotYetImplemented(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusNotImplemented).SendString("Not Implemented")
+}
+
 func respond(c *fiber.Ctx, statusCode int, message ...any) error {
 	msg := "TODO - Responder is not yet complete"
 	res := response{

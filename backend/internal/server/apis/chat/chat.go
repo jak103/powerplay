@@ -3,11 +3,11 @@ package chat
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/auth"
-	"github.com/jak103/powerplay/internal/server"
+	"github.com/jak103/powerplay/internal/server/apis"
 )
 
 func init() {
-	server.RegisterHandler(fiber.MethodGet, "/hello", auth.NONE, helloWorld)
+	apis.RegisterHandler(fiber.MethodGet, "/hello", auth.NONE, helloWorld)
 }
 
 func helloWorld(c *fiber.Ctx) error {
