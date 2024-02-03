@@ -1,4 +1,4 @@
-package server
+package apis
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -28,7 +28,7 @@ func RegisterHandler(method, path string, authType auth.Type, handlers ...fiber.
 	routes = append(routes, r)
 }
 
-func setupRoutes(app *fiber.App) {
+func SetupRoutes(app *fiber.App) {
 	jwt := auth.GetMiddleware()
 
 	for _, r := range routes {

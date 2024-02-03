@@ -4,5 +4,9 @@ import "github.com/gofiber/fiber/v2"
 
 func New() fiber.Handler {
 	// TODO write metrics middleware
-	return nil
+	return middleware
+}
+
+func middleware(c *fiber.Ctx) error {
+	return c.Next()
 }
