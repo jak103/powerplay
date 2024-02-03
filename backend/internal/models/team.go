@@ -1,13 +1,13 @@
 package models
 
 type Team struct {
-	dbModel
-	Name     string `json:"name"`
-	Captains []User `json:"captains" gorm:"many2many:team_captains;"`
-	Players  []User `json:"players" gorm:"many2many:team_players;"`
-	LogoPath string `json:"logo_path"`
-	Color    string `json:"color"`
-	Active   bool   `json:"active"`
-
-	// Stats    TeamStats `json:"stats"`
+	DbModel
+	Name     string //`json:"name"`
+	LogoPath string //`json:"logo_path"`
+	Color    string //`json:"color"`
+	Active   bool   //`json:"active"`
+	LeagueID uint   //`json:"league_id"`
+	League   League `json:"league"`
+	// Captain   User   `json:"primary_captain" gorm:"foreignKey:CaptainID"`
+	// CaptainID uint   `json:"primary_captain_id"`
 }
