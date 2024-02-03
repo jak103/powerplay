@@ -1,37 +1,24 @@
-.DS_Store
-.thumbs.db
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
 node_modules
 
-# Quasar core related directories
-.quasar
-/dist
-/quasar.config.*.temporary.compiled*
+# Logs
+logs
+*.log
 
-# Cordova related directories and files
-/src-cordova/node_modules
-/src-cordova/platforms
-/src-cordova/plugins
-/src-cordova/www
-
-# Capacitor related directories and files
-/src-capacitor/www
-/src-capacitor/node_modules
-
-# BEX related directories and files
-/src-bex/www
-/src-bex/js/core
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
+# Misc
+.DS_Store
+.fleet
 .idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 
-# local .env files
-.env.local*
+# Local env files
+.env
+.env.*
+!.env.example
