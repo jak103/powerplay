@@ -1,5 +1,5 @@
 <template>
-  <DevBar />
+  <DevOnly><DevBar /></DevOnly>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
