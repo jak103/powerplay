@@ -30,7 +30,7 @@
         let sw = await navigator.serviceWorker.ready;
         let sub = await sw.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: "BMPQhGq2KuP92WTzRK7S5UgLk5v8H0ZoNXXJji0J5wO3ufLm24AgelUfpe0BvasoupYfSagpGFZvwRTSBS-KYzY" });
         // const res = await api.post('/api/v1/notifications/subscribe', sub)
-        const url = 'http://localhost:9001/api/v1/notifications/subscribe';
+        const url = 'https://powerplay-7hj32sionq-wm.a.run.app/api/v1/notifications/subscribe';
         console.log('sub', sub);
         let res = await fetch(url, {
         method: 'POST',
@@ -47,7 +47,7 @@
     async function send() {
       console.log('send');
       console.log("Send request for notification");
-      const res = await fetch("http://localhost:9001/api/v1/notifications/send");
+      const res = await fetch("https://powerplay-7hj32sionq-wm.a.run.app/api/v1/notifications/send");
       console.log('res', res);
 
     }
