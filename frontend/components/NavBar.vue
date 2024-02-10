@@ -1,13 +1,11 @@
 <template>
   <div class="bg-orange">
     <q-toolbar>
-      <ThemeSwitcher />
+      PowerPlay
       <q-space />
       <q-btn to="/">Home</q-btn>
-      <q-btn to="/app/create-account">Create Account</q-btn>
-    </q-toolbar>
-    <q-toolbar inset>
-      <q-toolbar-title>Power Play</q-toolbar-title>
+      <q-btn to="/app/sign-in">Sign In</q-btn>
+      <ThemeSwitcher />
     </q-toolbar>
   </div>
 </template>
