@@ -66,13 +66,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Google Auth
-        id: auth
-        uses: 'google-github-actions/auth@v0'
+      - uses: 'google-github-actions/auth@v2'
         with:
-          token_format: 'access_token'
-          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}' # e.g. - projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider
-          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' # e.g. - my-service-account@my-project.iam.gserviceaccount.com
+          project_id: '$PROJECT_ID'
+          workload_identity_provider: 'projects/913634538866/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
 
       # NOTE: Alternative option - authentication via credentials json
       # - name: Google Auth
@@ -111,3 +108,4 @@ jobs:
       # If required, use the Cloud Run url output in later steps
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
+  
