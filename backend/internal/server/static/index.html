@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="manifest" href="manifest.json" />
 </head>
 
 <body>
@@ -14,6 +15,13 @@
   <button onclick="send()">Send</button>
 
   <script>
+    addEventListener('load', async() => {
+      console.log("registering sw")
+      let sw = await navigator.serviceWorker.register("./sw.js")
+      console.log('sw', sw);
+    })
+
+
     async function subscribe() {
       console.log('Subscribe');
       let perm = await Notification.requestPermission();
@@ -23,8 +31,8 @@
         let sub = await sw.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: "BMPQhGq2KuP92WTzRK7S5UgLk5v8H0ZoNXXJji0J5wO3ufLm24AgelUfpe0BvasoupYfSagpGFZvwRTSBS-KYzY" });
         // const res = await api.post('/api/v1/notifications/subscribe', sub)
         const url = 'http://localhost:9001/api/v1/notifications/subscribe';
-
-        fetch(url, {
+        console.log('sub', sub);
+        let res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sub)

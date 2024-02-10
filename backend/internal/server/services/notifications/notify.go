@@ -35,7 +35,7 @@ func SendNotification(c *fiber.Ctx, topic string, message string) error {
 	for _, sub := range subs {
 		// Send Notification
 		resp, err := webpush.SendNotification([]byte("Test notification"), &sub.Subscription, &webpush.Options{
-			Subscriber:      "https://localhost:9001",
+			Subscriber:      "mailto:jacob.h.christensen@gmail.com",
 			VAPIDPublicKey:  config.Vars.VapidPublicKey,
 			VAPIDPrivateKey: config.Vars.VapidPrivateKey,
 			TTL:             30,
