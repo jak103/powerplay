@@ -11,31 +11,38 @@ import (
 )
 
 type Config struct {
-	Env       string `env:"POWERPLAY_ENV"`
-	Dir       string `env:"POWERPLAY_CONFIG_DIR" envDefault:"/app/config"`
-	DebugVars bool   `env:"POWERPLAY_DEBUG_VARS" envDefault:"false"`
-	LogLevel  string `env:"POWERPLAY_LOG_LEVEL" envDefault:"INFO"`
-	ColorLog  bool   `env:"POWERPLAY_COLOR_LOG" envDefault:"true"`
-	Db        Postgres
+	Env             string   `env:"ENV" envDefault:"local"`
+	Dir             string   `env:"CONFIG_DIR" envDefault:"/app/config"`
+	DebugVars       bool     `env:"DEBUG_VARS" envDefault:"false"`
+	LogLevel        string   `env:"LOG_LEVEL" envDefault:"DEBUG"`
+	LogColor        bool     `env:"LOG_COLOR" envDefault:"true"`
+	JwtSecret       string   `env:"JWT_SECRET"`
+	VapidPublicKey  string   `env:"VAPID_PUBLIC_KEY"  envDefault:"BMPQhGq2KuP92WTzRK7S5UgLk5v8H0ZoNXXJji0J5wO3ufLm24AgelUfpe0BvasoupYfSagpGFZvwRTSBS-KYzY"`
+	VapidPrivateKey string   `env:"VAPID_PRIVATE_KEY" envDefault:"ZcXYJyrk0kAeC0VkIcJWkwlPvC6CwrVsjTlys1Uu2P8"`
+	Db              Postgres `envPrevix:"DB_"`
 }
 
 type Postgres struct {
-	Host     string `env:"DB_HOST" envDefault:"database"`
-	Port     string `env:"DB_PORT" envDefault:"5432"`
-	Username string `env:"DB_USERNAME" envDefault:"postgres"`
-	Password string `env:"DB_PASSWORD" envDefault:"password"`
-	DbName   string `env:"DB_NAME" envDefault:"powerplay"`
+	Host     string `env:"HOST" envDefault:"database"`
+	Port     string `env:"PORT" envDefault:"5432"`
+	Username string `env:"USERNAME" envDefault:"postgres"`
+	Password string `env:"PASSWORD" envDefault:"password"`
+	DbName   string `env:"NAME" envDefault:"powerplay"`
 }
 
 var Vars Config
 
 func Init() error {
+	opts := env.Options{
+		Prefix: "POWERPLAY_",
+	}
+
 	envConfig := struct {
-		Env string `env:"POWERPLAY_ENV"`
-		Dir string `env:"POWERPLAY_CONFIG_DIR"`
+		Env string `env:"ENV"`
+		Dir string `env:"CONFIG_DIR"`
 	}{}
 
-	if err := env.Parse(&envConfig); err != nil {
+	if err := env.ParseWithOptions(&envConfig, opts); err != nil {
 		log.WithErr(err).Alert("Failed to get env")
 		return err
 	}
@@ -49,7 +56,7 @@ func Init() error {
 		}
 	}
 
-	if err := env.Parse(&Vars); err != nil {
+	if err := env.ParseWithOptions(&Vars, opts); err != nil {
 		log.WithErr(err).Alert("Failed to parse env vars")
 		return err
 	}

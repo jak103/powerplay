@@ -7,7 +7,7 @@ tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o /app/tmp/backend.air /app/backend/cmd"
+cmd = "go build -o /app/tmp/backend.air /app/backend/main.go"
 # Binary file yields from `cmd`.
 bin = "/app/tmp/backend.air"
 # Customize binary, can setup environment variables when run your app.

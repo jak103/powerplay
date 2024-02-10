@@ -1,14 +1,17 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	stdLog "log"
 	"os"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db/migrations"
 
+	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,6 +19,10 @@ import (
 )
 
 var db *gorm.DB
+
+type Session struct {
+	connection *gorm.DB
+}
 
 func Init() error {
 
@@ -58,11 +65,46 @@ func Init() error {
 }
 
 func Migrate() error {
-	s := GetSession()
-	return migrations.Run(s)
+	s := GetSession(nil)
+	return migrations.Run(s.connection)
 }
 
-func GetSession() *gorm.DB {
-	// TODO set the logger in here so that it logs DB stuff correctly
-	return db.Session(&gorm.Session{})
+func GetSession(c *fiber.Ctx) Session {
+	logger := log.TheLogger
+	if c != nil {
+		logger = locals.Logger(c)
+	}
+
+	s := Session{
+		connection: db.Session(&gorm.Session{
+			Logger: &dbLogger{
+				theLogger: &logger,
+			},
+		}),
+	}
+	return s
+}
+
+func resultOrError[T any](t *T, result *gorm.DB) (*T, error) {
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		return nil, result.Error
+	}
+
+	return t, nil
+}
+
+func resultsOrError[S ~[]E, E any](s S, result *gorm.DB) (S, error) {
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		return nil, result.Error
+	}
+
+	return s, nil
 }

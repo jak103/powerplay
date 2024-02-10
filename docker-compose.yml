@@ -10,7 +10,7 @@ services:
       - /app/node_modules
       - ./app:/app
     ports:
-      - 9000:9000
+      - 9200:9200
     environment:
       NODE_ENV: development
     command: npm run dev

@@ -10,11 +10,19 @@ import (
 	"github.com/fatih/color"
 )
 
+const (
+	DEBUG int = 0
+	INFO  int = 1
+	WARN  int = 2
+	ERROR int = 3
+	ALERT int = 4
+)
+
 var blue = color.New(color.FgBlue).SprintFunc()
 var green = color.New(color.FgGreen).SprintFunc()
 var yellow = color.New(color.FgYellow).SprintFunc()
 
-// var orange = color.New(color.Fgor).SprintFunc()
+var magenta = color.New(color.FgMagenta).SprintFunc()
 var red = color.New(color.FgRed).SprintFunc()
 
 var TheLogger Logger
@@ -24,6 +32,22 @@ type Logger struct {
 	color       bool
 	skip        int
 	testCapture *string
+	level       int
+}
+
+func (l *Logger) SetLevel(level string) {
+	switch level {
+	case "DEBUG":
+		l.level = DEBUG
+	case "INFO":
+		l.level = INFO
+	case "WARN":
+		l.level = WARN
+	case "ERROR":
+		l.level = ERROR
+	case "ALERT":
+		l.level = ALERT
+	}
 }
 
 func (l *Logger) SetTestCapture(ptr *string) {
@@ -31,31 +55,43 @@ func (l *Logger) SetTestCapture(ptr *string) {
 }
 
 func (l Logger) Debug(format string, a ...any) {
-	print(blue("[DEBUG]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level == DEBUG {
+		print(magenta("[DEBUG]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	}
 }
 
 func (l Logger) Info(format string, a ...any) {
-	print(green("[INFO ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= INFO {
+		print(green("[INFO ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	}
 }
 
 func (l Logger) Warn(format string, a ...any) {
-	print(yellow("[WARN ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= WARN {
+		print(yellow("[WARN ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	}
 }
 
 func (l Logger) Error(format string, a ...any) {
-	print(red("[ERROR]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= ERROR {
+		print(red("[ERROR]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	}
 }
 
 func (l Logger) Alert(format string, a ...any) {
-	print(red("[ALERT]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= ALERT {
+		print(red("[ALERT]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	}
 }
 
-func Init(color bool) error {
+func Init(level string, color bool) error {
 	TheLogger = Logger{
 		tags:  make(map[string]any),
 		color: color,
 		skip:  2,
 	}
+
+	TheLogger.SetLevel(level)
 
 	return nil
 }
@@ -127,7 +163,6 @@ func WithErr(err error) Logger {
 func (l Logger) WithErr(err error) Logger {
 	newLogger := l
 	maps.Copy(newLogger.tags, l.tags)
-	fmt.Println("In WithErr:", err)
 	newLogger.tags[red("error")] = fmt.Sprintf("%v", err)
 
 	return newLogger

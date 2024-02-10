@@ -4,7 +4,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -15,12 +14,11 @@ import (
 	"github.com/jak103/powerplay/internal/middleware/metrics"
 	appUtils "github.com/jak103/powerplay/internal/utils"
 	"github.com/jak103/powerplay/internal/utils/constants"
-	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
-	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
 func Setup(app *fiber.App) {
+	log.Info("Setting up middleware")
 	app.Use(metrics.New())
 
 	app.Use(helmet.New())
@@ -38,18 +36,19 @@ func Setup(app *fiber.App) {
 		StackTraceHandler: appUtils.StackTraceHandler,
 	}))
 
+	// TODO reenable this after PWA notification test
 	// CSRF https://docs.gofiber.io/api/middleware/csrf
-	if config.Vars.Env != constants.Local && config.Vars.Env != constants.Test { // Only turn on CSRF in deployed environments
-		app.Use(csrf.New(csrf.Config{
-			CookieHTTPOnly: true,
-			CookieSecure:   true,
-			KeyLookup:      "cookie:csrf_",
-			ErrorHandler: func(c *fiber.Ctx, err error) error {
-				locals.Logger(c).WithErr(err).Info("CRSF middlware failed with error")
-				return responder.BadRequest(c, "Could not find CRSF token, refresh page")
-			},
-		}))
-	}
+	// if config.Vars.Env != constants.Local && config.Vars.Env != constants.Test { // Only turn on CSRF in deployed environments
+	// 	app.Use(csrf.New(csrf.Config{
+	// 		CookieHTTPOnly: true,
+	// 		CookieSecure:   true,
+	// 		KeyLookup:      "cookie:csrf_",
+	// 		ErrorHandler: func(c *fiber.Ctx, err error) error {
+	// 			locals.Logger(c).WithErr(err).Info("CRSF middlware failed with error")
+	// 			return responder.BadRequest(c, "Could not find CRSF token, refresh page")
+	// 		},
+	// 	}))
+	// }
 
 	// Compression https://docs.gofiber.io/api/middleware/compress
 	app.Use(compress.New(compress.Config{
@@ -57,10 +56,10 @@ func Setup(app *fiber.App) {
 	}))
 
 	if config.Vars.Env == constants.Local || config.Vars.Env == constants.Test {
-		log.Error("Settting permissive CORS")
-		// CORS https://docs.gofiber.io/api/middleware/cors
+		log.Error("Setting permissive CORS")
+		// CORS https://docs.gofiber.io/api/middleware/cors /
 		app.Use(cors.New(cors.Config{
-			AllowOrigins:     "http://localhost:5173",
+			AllowOrigins:     "http://localhost:9200",
 			AllowCredentials: true,
 			AllowMethods:     "POST, GET, OPTIONS, PUT, DELETE",
 			AllowHeaders:     "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Cookie",

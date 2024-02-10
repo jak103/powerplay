@@ -4,14 +4,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/middleware"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/hello"
 	"github.com/jak103/powerplay/internal/utils/locals"
-)
+	"github.com/jak103/powerplay/internal/utils/log"
 
-func Init() error {
-	hello.Init()
-	return nil
-}
+	// Blank imports for apis to cause init functions to run
+	_ "github.com/jak103/powerplay/internal/server/apis/auth"
+	_ "github.com/jak103/powerplay/internal/server/apis/chat"
+	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
+	_ "github.com/jak103/powerplay/internal/server/apis/user"
+)
 
 func Run() {
 	app := fiber.New(fiber.Config{
@@ -22,12 +23,26 @@ func Run() {
 
 	apis.SetupRoutes(app)
 
-	app.Get("/test", func(c *fiber.Ctx) error { return c.SendString("test") })
+	setupStaticServe(app)
+
+	app.Get("/files", showFiles) // TODO remove this after the files are all embedding correctly
 
 	app.Listen(":9001")
+}
 
-	// Figure out websockets for chat and live scoring
-	// TODO https://github.com/gofiber/contrib/tree/main/websocket
+// TODO remove this after the files are all embedding correctly
+func showFiles(c *fiber.Ctx) error {
+	dir, err := content.ReadDir("./static")
+	if err != nil {
+		log.WithErr(err).Error("Failed to read content dir")
+	}
+
+	files := make([]string, 0)
+	for _, f := range dir {
+		files = append(files, f.Name())
+	}
+
+	return c.JSON(files)
 }
 
 func globalErrorHandler(c *fiber.Ctx, err error) error {

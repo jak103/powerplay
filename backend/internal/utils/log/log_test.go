@@ -8,7 +8,7 @@ import (
 )
 
 func TestInit(t *testing.T) {
-	Init(false)
+	Init("DEBUG", false)
 
 	assert.Equal(t, false, TheLogger.color)
 	assert.Equal(t, 2, TheLogger.skip)
@@ -61,7 +61,7 @@ func TestAlert(t *testing.T) {
 }
 
 func TestWithErr(t *testing.T) {
-	Init(false)
+	Init("DEBUG", false)
 	output := ""
 	TheLogger.SetTestCapture(&output)
 	WithErr(errors.New("test error")).Error("Testing withErr")
@@ -72,7 +72,7 @@ func TestWithErr(t *testing.T) {
 }
 
 func TestRequestId(t *testing.T) {
-	Init(false)
+	Init("DEBUG", false)
 	output := ""
 	TheLogger.SetTestCapture(&output)
 	WithRequestId("test id").Info("Testing withRequestId")
@@ -83,7 +83,7 @@ func TestRequestId(t *testing.T) {
 }
 
 func TestChainedWiths(t *testing.T) {
-	Init(false)
+	Init("DEBUG", false)
 	output := ""
 	TheLogger.SetTestCapture(&output)
 	TheLogger.WithRequestId("test id").WithErr(errors.New("new error")).Alert("Testing")
