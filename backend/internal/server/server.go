@@ -5,7 +5,6 @@ import (
 	"github.com/jak103/powerplay/internal/middleware"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/utils/locals"
-	"github.com/jak103/powerplay/internal/utils/log"
 
 	// Blank imports for apis to cause init functions to run
 	_ "github.com/jak103/powerplay/internal/server/apis/auth"
@@ -23,26 +22,9 @@ func Run() {
 
 	apis.SetupRoutes(app)
 
-	setupStaticServe(app)
-
-	app.Get("/files", showFiles) // TODO remove this after the files are all embedding correctly
+	app.Static("/", "/app/static") // TODO make this an env var?
 
 	app.Listen(":9001")
-}
-
-// TODO remove this after the files are all embedding correctly
-func showFiles(c *fiber.Ctx) error {
-	dir, err := content.ReadDir("./static")
-	if err != nil {
-		log.WithErr(err).Error("Failed to read content dir")
-	}
-
-	files := make([]string, 0)
-	for _, f := range dir {
-		files = append(files, f.Name())
-	}
-
-	return c.JSON(files)
 }
 
 func globalErrorHandler(c *fiber.Ctx, err error) error {

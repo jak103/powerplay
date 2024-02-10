@@ -19,5 +19,6 @@ self.addEventListener('push', (e) => {
       }
     ]
   };
-  e.waitUntil(self.registration.showNotification('Hello World', options));
+  e.waitUntil(self.registration.showNotification('Hello World'));
+  console.log("Done showing notification");
 })
