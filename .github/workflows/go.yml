@@ -5,6 +5,8 @@ name: Go
 
 on:
   push:
+    paths:
+      - backend/**/*.go
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
