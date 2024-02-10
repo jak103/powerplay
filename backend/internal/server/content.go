@@ -17,5 +17,3 @@ func setupStaticServe(app *fiber.App) {
 		PathPrefix: "static",
 	}))
 }
-
-//

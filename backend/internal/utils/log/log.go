@@ -125,7 +125,6 @@ func Debug(format string, a ...any) {
 func Info(format string, a ...any) {
 	TheLogger.withSkipCount(3).Info(format, a...)
 }
-
 func Warn(format string, a ...any) {
 	TheLogger.withSkipCount(3).Warn(format, a...)
 }

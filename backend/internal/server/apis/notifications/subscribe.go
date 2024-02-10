@@ -13,7 +13,7 @@ import (
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/notifications/subscribe", auth.Public, subscriptionHandler)
 	apis.RegisterHandler(fiber.MethodGet, "/notifications/send", auth.Public, pushNotification)
-}
+} //
 
 func subscriptionHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
