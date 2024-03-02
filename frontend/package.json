@@ -11,13 +11,8 @@
   },
   "devDependencies": {
     "nuxt": "^3.10.0",
-    "nuxt-quasar-ui": "^2.0.7",
     "sass": "^1.70.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
   },
-  "dependencies": {
-    "@quasar/extras": "^1.16.9",
-    "quasar": "^2.14.3"
-  }
 }
