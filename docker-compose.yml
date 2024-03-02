@@ -1,16 +1,16 @@
 version: '3.8'
 
 services:
-  app:
-    image: app:latest
-    build: ./app
-    container_name: app
-    working_dir: /app
+  frontend:
+    image: frontend:latest
+    build: ./frontend
+    container_name: frontend
+    working_dir: /frontend
     volumes:
-      - /app/node_modules
-      - ./app:/app
+      - /frontend/node_modules
+      - ./frontend:/frontend
     ports:
-      - 9200:9200
+      - 3000:3000
     environment:
       NODE_ENV: development
     command: npm run dev
