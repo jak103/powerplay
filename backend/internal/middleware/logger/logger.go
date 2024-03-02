@@ -23,6 +23,6 @@ func middleware(c *fiber.Ctx) error {
 	err := c.Next()
 	total := time.Since(start)
 
-	log.Info("Finished %s %s -- [%v] %v", c.Method(), c.Path(), c.Response().StatusCode(), total)
+	logger.Info("Finished %s %s -- [%v] %v", c.Method(), c.Path(), c.Response().StatusCode(), total)
 	return err
 }

@@ -4,9 +4,9 @@ import (
 	"time"
 )
 
-type dbModel struct {
-	ID        int        `json:"id"`
+type DbModel struct {
+	ID        uint       `json:"id" gorm:"primarykey"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty" gorm:"index"`
 }

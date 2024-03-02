@@ -7,7 +7,7 @@ tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o /app/tmp/backend.air /app/backend/cmd"
+cmd = "go build -o /app/tmp/backend.air /app/backend/main.go"
 # Binary file yields from `cmd`.
 bin = "/app/tmp/backend.air"
 # Customize binary, can setup environment variables when run your app.
@@ -17,7 +17,7 @@ include_ext = ["go", "yml", "mod", "env"]
 # Ignore these filename extensions or directories.
 exclude_dir = ["vendor"]
 # Watch these directories if you specified.
-include_dir = ["backend/cmd", "backend/internal", "config"]
+include_dir = ["backend/cmd", "backend/internal", "backend"]
 # Watch these files.
 include_file = []
 # Exclude files.

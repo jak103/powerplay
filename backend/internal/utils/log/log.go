@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"maps"
 	"runtime"
 	"strings"
 	"time"
@@ -9,66 +10,127 @@ import (
 	"github.com/fatih/color"
 )
 
+const (
+	DEBUG int = 0
+	INFO  int = 1
+	WARN  int = 2
+	ERROR int = 3
+	ALERT int = 4
+)
+
 var blue = color.New(color.FgBlue).SprintFunc()
 var green = color.New(color.FgGreen).SprintFunc()
 var yellow = color.New(color.FgYellow).SprintFunc()
 
-// var orange = color.New(color.Fgor).SprintFunc()
+var magenta = color.New(color.FgMagenta).SprintFunc()
 var red = color.New(color.FgRed).SprintFunc()
 
 var TheLogger Logger
 
 type Logger struct {
-	tags  map[string]any
-	color bool
-	skip  int
+	tags        map[string]any
+	color       bool
+	skip        int
+	testCapture *string
+	level       int
+	requestId   string
+}
+
+func (l *Logger) SetLevel(level string) {
+	switch level {
+	case "DEBUG":
+		l.level = DEBUG
+	case "INFO":
+		l.level = INFO
+	case "WARN":
+		l.level = WARN
+	case "ERROR":
+		l.level = ERROR
+	case "ALERT":
+		l.level = ALERT
+	}
+}
+
+func (l *Logger) SetTestCapture(ptr *string) {
+	l.testCapture = ptr
 }
 
 func (l Logger) Debug(format string, a ...any) {
-	print(blue("[DEBUG]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level == DEBUG {
+		print(magenta("[DEBUG]"), fmt.Sprintf(format, a...), l.requestId, l.tags, l.skip)
+	}
 }
 
 func (l Logger) Info(format string, a ...any) {
-	print(green("[INFO ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= INFO {
+		print(green("[INFO ]"), fmt.Sprintf(format, a...), l.requestId, l.tags, l.skip)
+	}
 }
 
 func (l Logger) Warn(format string, a ...any) {
-	print(yellow("[WARN ]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= WARN {
+		print(yellow("[WARN ]"), fmt.Sprintf(format, a...), l.requestId, l.tags, l.skip)
+	}
 }
 
 func (l Logger) Error(format string, a ...any) {
-	print(red("[ERROR]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= ERROR {
+		print(red("[ERROR]"), fmt.Sprintf(format, a...), l.requestId, l.tags, l.skip)
+	}
 }
 
 func (l Logger) Alert(format string, a ...any) {
-	print(red("[ALERT]"), fmt.Sprintf(format, a...), l.tags, l.skip)
+	if l.level <= ALERT {
+		print(red("[ALERT]"), fmt.Sprintf(format, a...), l.requestId, l.tags, l.skip)
+	}
 }
 
-func Init(color bool) error {
+func Init(level string, color bool) error {
 	TheLogger = Logger{
 		tags:  make(map[string]any),
 		color: color,
 		skip:  2,
 	}
 
+	TheLogger.SetLevel(level)
+
 	return nil
 }
 
-func print(level, text string, tags map[string]any, skip int) {
+func newLogger(oldLogger Logger) Logger {
+	newLogger := Logger{
+		tags:      make(map[string]any),
+		color:     oldLogger.color,
+		skip:      oldLogger.skip,
+		level:     oldLogger.level,
+		requestId: oldLogger.requestId,
+	}
+
+	maps.Copy(newLogger.tags, oldLogger.tags)
+
+	return newLogger
+}
+
+func print(level, text, requestId string, tags map[string]any, skip int) {
 	_, file, line, _ := runtime.Caller(skip)
 
-	file = strings.Replace(file, "/app/", "", 1)
+	file = strings.TrimPrefix(file, "/app/")
 
 	tagText := ""
 	if len(tags) > 0 {
 		for k, v := range tags {
-			tagText = fmt.Sprintf("%s=%v ", k, v)
+			tagText += fmt.Sprintf("%s=%v ", k, v)
 		}
 
 		tagText = fmt.Sprintf("{ %s}", tagText)
 	}
 
-	fmt.Printf("%s %s %s:%v > %s %s\n", time.Now().Format(time.RFC3339Nano), level, file, line, text, tagText)
+	output := fmt.Sprintf("%s %s [%s] %s %s < %s:%v", time.Now().Format("2006-01-02T15:04:05.0000000Z07:00"), level, requestId, text, tagText, file, line)
+	fmt.Println(output)
+
+	if TheLogger.testCapture != nil {
+		*TheLogger.testCapture = fmt.Sprintf("%s%s\n", *TheLogger.testCapture, output)
+	}
 }
 
 func Debug(format string, a ...any) {
@@ -78,7 +140,6 @@ func Debug(format string, a ...any) {
 func Info(format string, a ...any) {
 	TheLogger.withSkipCount(3).Info(format, a...)
 }
-
 func Warn(format string, a ...any) {
 	TheLogger.withSkipCount(3).Warn(format, a...)
 }
@@ -92,40 +153,35 @@ func Alert(format string, a ...any) {
 }
 
 func WithRequestId(reqid string) Logger {
-	newLogger := TheLogger
-
-	newLogger.tags["request_id"] = reqid
+	newLogger := newLogger(TheLogger)
+	newLogger.requestId = reqid
 
 	return newLogger
 }
 
 func (l Logger) WithRequestId(reqid string) Logger {
-	newLogger := l
-
-	newLogger.tags[blue("request_id")] = reqid
+	newLogger := newLogger(l)
+	newLogger.requestId = reqid
 
 	return newLogger
 }
 
 func WithErr(err error) Logger {
-	newLogger := TheLogger
-
+	newLogger := newLogger(TheLogger)
 	newLogger.tags[red("error")] = fmt.Sprintf("%v", err)
 
 	return newLogger
 }
 
 func (l Logger) WithErr(err error) Logger {
-	newLogger := l
-
-	newLogger.tags["error"] = fmt.Sprintf("%v", err)
+	newLogger := newLogger(l)
+	newLogger.tags[red("error")] = fmt.Sprintf("%v", err)
 
 	return newLogger
 }
 
 func (l Logger) withSkipCount(skip int) Logger {
-	newLogger := l
-
+	newLogger := newLogger(l)
 	newLogger.skip = skip
 
 	return newLogger

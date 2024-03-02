@@ -3,21 +3,34 @@ package server
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/middleware"
+	"github.com/jak103/powerplay/internal/server/apis"
+	"github.com/jak103/powerplay/internal/utils/locals"
+
+	// Blank imports for apis to cause init functions to run
+	_ "github.com/jak103/powerplay/internal/server/apis/auth"
+	_ "github.com/jak103/powerplay/internal/server/apis/chat"
+	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
+	_ "github.com/jak103/powerplay/internal/server/apis/user"
 )
 
-func Init() error {
-	return nil
-}
-
 func Run() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: globalErrorHandler,
+	})
 
 	middleware.Setup(app)
 
-	setupRoutes(app)
+	apis.SetupRoutes(app)
+
+	app.Static("/", "/app/static") // TODO make this an env var?
 
 	app.Listen(":9001")
+}
 
-	// Figure out websockets for chat and live scoring
-	// TODO https://github.com/gofiber/contrib/tree/main/websocket
+func globalErrorHandler(c *fiber.Ctx, err error) error {
+	log := locals.Logger(c)
+
+	log.WithErr(err).Error("Caught by global error handler")
+
+	return c.Status(fiber.StatusNotFound).SendString("Not found")
 }

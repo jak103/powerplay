@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="manifest" href="manifest.json" />
+</head>
+
+<body>
+
+  <h1>Test</h1>
+  <button onclick="subscribe()">Subscribe</button>
+  <button onclick="send()">Send</button>
+
+  <script>
+    addEventListener('load', async() => {
+      console.log("registering sw")
+      let sw = await navigator.serviceWorker.register("./sw.js")
+      console.log('sw', sw);
+    })
+
+
+    async function subscribe() {
+      console.log('Subscribe');
+      let perm = await Notification.requestPermission();
+      console.log('perm', perm);
+      if (perm == "granted") {
+        let sw = await navigator.serviceWorker.ready;
+        let sub = await sw.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: "BMPQhGq2KuP92WTzRK7S5UgLk5v8H0ZoNXXJji0J5wO3ufLm24AgelUfpe0BvasoupYfSagpGFZvwRTSBS-KYzY" });
+        // const res = await api.post('/api/v1/notifications/subscribe', sub)
+        const url = 'https://powerplay-7hj32sionq-wm.a.run.app/api/v1/notifications/subscribe';
+        console.log('sub', sub);
+        let res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sub)
+        })
+        .then(response => response.json())
+        .then(data => console.log('POST request successful:', data))
+        .catch(error => console.error('There was a problem with the POST request:', error));
+        console.log('res', res);
+      }
+    }
+
+    async function send() {
+      console.log('send');
+      console.log("Send request for notification");
+      const res = await fetch("https://powerplay-7hj32sionq-wm.a.run.app/api/v1/notifications/send");
+      console.log('res', res);
+
+    }
+  </script>
+
+</body>
+
+</html>
