@@ -2,11 +2,8 @@
 
 <template>
   <div>
-    <div class="bg-red text-white q-px-sm row">
-      DevBar
-      <div>
-        <NuxtLink to="/uikit">UI Kit</NuxtLink>
-      </div>
+    <div>
+      DevBar (this only shows up in development mode)
     </div>
   </div>
 </template>
