@@ -1,5 +1,10 @@
+<script lang="ts" setup>
+
+</script>
+
+
 <template>
-  <div>
+  <div class="container">
     <h1>This will be the public facing homepage</h1>
     <ul>
       <li>Game Schedules</li>
