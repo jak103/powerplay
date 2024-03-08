@@ -32,14 +32,16 @@
               Information
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#">*How To Join</a></li>
               <li>
-                <NuxtLink class="dropdown-item" to="/information/managers"
+                <NuxtLink class="dropdown-item" to="/information">*How To Join</NuxtLink>
+              </li>
+              <li>
+                <NuxtLink class="dropdown-item" to="/information"
                   >*How To Join</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink class="dropdown-item" to="/information/managers"
+                <NuxtLink class="dropdown-item" to="/information"
                   >*For Players</NuxtLink
                 >
               </li>
@@ -49,22 +51,22 @@
                 >
               </li>
               <li>
-                <NuxtLink class="dropdown-item" to="/information/managers"
+                <NuxtLink class="dropdown-item" to="/information"
                   >*Our Staff</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink class="dropdown-item" to="/information/managers"
+                <NuxtLink class="dropdown-item" to="/information"
                   >*Our Rink</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink class="dropdown-item" to="/information/managers"
+                <NuxtLink class="dropdown-item" to="/information"
                   >*Substitutions</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink class="dropdown-item" to="/information/managers"
+                <NuxtLink class="dropdown-item" to="/information"
                   >*Suspensions</NuxtLink
                 >
               </li>

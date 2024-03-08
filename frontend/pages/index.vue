@@ -1,10 +1,5 @@
-<script lang="ts" setup>
-
-</script>
-
-
 <template>
-  <div class="container">
+  <div class="container py-4">
     <h1>This will be the public facing homepage</h1>
     <ul>
       <li>Game Schedules</li>
