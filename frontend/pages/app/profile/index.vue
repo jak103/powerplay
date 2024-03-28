@@ -1,6 +1,13 @@
 <template>
   <div>
     <h1>My Profile</h1>
-    <NuxtLink to="/app/sign-in" class="btn btn-primary">Sign Out</NuxtLink>
+    <div class="vstack d-inline-flex gap-2">
+      <NuxtLink class="btn btn-link mt-auto" to="/"
+          >Website Home</NuxtLink
+        >
+        <NuxtLink class="btn btn-primary" to="/app/sign-in"
+          >Sign Out</NuxtLink
+        >
+    </div>
   </div>
 </template>
