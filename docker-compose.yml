@@ -7,8 +7,8 @@ services:
     container_name: frontend
     working_dir: /frontend
     volumes:
-      - /frontend/node_modules
-      - ./frontend:/frontend
+      - /app/frontend/node_modules
+      - ./frontend:/app/frontend
     ports:
       - 3000:3000
     environment:
