@@ -8,20 +8,8 @@ info:
     url: https://opensource.org/license/mit
 
 paths:
-  /test:
-    get:
-      tags:
-        - Test
-      summary: Test 
-      description: |
-        **REQUIRED PERMISSIONS:** test:read
-      responses:
-        200:
-          description: Returns a test 200
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TestResponse'
+  /auth:
+    $ref: "./auth/auth.yml#/paths/auth"
 
 components:
   securitySchemes:
@@ -29,14 +17,3 @@ components:
       type: http
       scheme: bearer
       bearerFormat: jwt
-  
-  schemas:
-    TestResponse:
-      type: object
-      properties:
-        hello:
-          type: string  
-          example: World
-      
-
-

@@ -8,7 +8,12 @@
     <rapi-doc 
         spec-url = "/oas/v1/openapi.yml"
         show-header	="false"
-    > 
+        server-url = "http://localhost:9001/api/v1" 
+        show-method-in-nav-bar="as-colored-text"
+        sort-tags="true"
+        sort-endpoints-by="path"
+        default-schema-tab="schema"
+    > <!-- TODO Need to have the server-url user ${windows.location.origin} so when it is deployed it doesn't try to access localhost -->
     </rapi-doc>
   </body>
 </html>

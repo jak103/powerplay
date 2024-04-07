@@ -15,7 +15,8 @@ import (
 
 func Run() {
 	app := fiber.New(fiber.Config{
-		ErrorHandler: globalErrorHandler,
+		ErrorHandler:          globalErrorHandler,
+		DisableStartupMessage: true,
 	})
 
 	middleware.Setup(app)

@@ -1,0 +1,22 @@
+responses:
+  BadRequest:
+    description: Bad Request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status_code:
+              type: integer
+              description: The HTTP status code
+              example: 400
+            status_string:
+              type: string
+              description: The HTTP status string
+              example: Bad Request
+            request_id:
+              $ref: "./schemas.yml#/schemas/RequestId"
+            message:
+              type: string
+              description: A human readable error message
+              example: The request is incorrectly formatted
