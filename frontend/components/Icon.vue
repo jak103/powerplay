@@ -16,6 +16,8 @@ import {
   mdiMedalOutline,
   mdiMessageOutline,
   mdiPencilCircle,
+  mdiWeatherNight,
+  mdiWhiteBalanceSunny,
 } from "@mdi/js";
 const MDI: Record<string, string> = {
   mdiAbacus,
@@ -34,6 +36,8 @@ const MDI: Record<string, string> = {
   mdiMedalOutline,
   mdiMessageOutline,
   mdiPencilCircle,
+  mdiWeatherNight,
+  mdiWhiteBalanceSunny,
 };
 
 interface Props {

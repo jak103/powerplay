@@ -1,43 +1,52 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+onBeforeMount(() => {
+  useTheme().value = localStorage.getItem("theme") || "light";
+});
+</script>
 
 <template>
-  <div class="app-wrapper">
-    <div class="app-menu text-bg-light shadow">
-      <h2 class="d-none d-lg-block">Power Play</h2>
-      <div class="nav-icon-btn-group">
-        <NuxtLink
-          active-class=""
-          exact-active-class="active"
-          to="/app"
-          class="btn btn-light btn-lg nav-icon-btn"
+  <Html :data-bs-theme="useTheme().value">
+    <div v-show="useTheme().value" class="app-wrapper">
+      <div class="app-menu text-bg-light shadow">
+        <h2 class="d-none d-lg-block">Power Play</h2>
+        <div class="nav-icon-btn-group">
+          <NuxtLink
+            active-class=""
+            exact-active-class="active"
+            to="/app"
+            class="btn btn-light btn-lg nav-icon-btn"
+          >
+            <Icon name="home" />
+            <div class="nav-text">Home</div>
+          </NuxtLink>
+          <NuxtLink
+            to="/app/schedule"
+            class="btn btn-light btn-lg nav-icon-btn"
+          >
+            <Icon name="calendar-month" />
+            <div class="nav-text">Schedule</div>
+          </NuxtLink>
+          <NuxtLink to="/app/chat" class="btn btn-light btn-lg nav-icon-btn">
+            <Icon name="message-outline" />
+            <div class="nav-text">Chat</div>
+          </NuxtLink>
+          <NuxtLink to="/app/profile" class="btn btn-light btn-lg nav-icon-btn">
+            <Icon name="account-circle" />
+            <div class="nav-text">Profile</div>
+          </NuxtLink>
+        </div>
+        <NuxtLink class="btn btn-link mt-auto d-none d-lg-inline" to="/"
+          >Website Home</NuxtLink
         >
-          <Icon name="home" />
-          <div class="nav-text">Home</div>
-        </NuxtLink>
-        <NuxtLink to="/app/schedule" class="btn btn-light btn-lg nav-icon-btn">
-          <Icon name="calendar-month" />
-          <div class="nav-text">Schedule</div>
-        </NuxtLink>
-        <NuxtLink to="/app/chat" class="btn btn-light btn-lg nav-icon-btn">
-          <Icon name="message-outline" />
-          <div class="nav-text">Chat</div>
-        </NuxtLink>
-        <NuxtLink to="/app/profile" class="btn btn-light btn-lg nav-icon-btn">
-          <Icon name="account-circle" />
-          <div class="nav-text">Profile</div>
-        </NuxtLink>
+        <NuxtLink class="btn btn-primary d-none d-lg-inline" to="/app/sign-in"
+          >Sign Out</NuxtLink
+        >
       </div>
-      <NuxtLink class="btn btn-link mt-auto d-none d-lg-inline" to="/"
-        >Website Home</NuxtLink
-      >
-      <NuxtLink class="btn btn-primary d-none d-lg-inline" to="/app/sign-in"
-        >Sign Out</NuxtLink
-      >
+      <div class="app-container container pt-4">
+        <slot />
+      </div>
     </div>
-    <div class="app-container container pt-4">
-      <slot />
-    </div>
-  </div>
+  </Html>
 </template>
 
 <style lang="scss" scoped>
@@ -48,7 +57,7 @@
     flex-direction: row;
     flex: 1 1 0;
     height: 100%;
-    .app-container{
+    .app-container {
       margin-left: 300px;
     }
     .app-menu {
@@ -66,7 +75,7 @@
       display: flex;
       flex-direction: column;
     }
-    .nav-icon-btn{
+    .nav-icon-btn {
       display: flex;
       align-items: center;
       gap: 12px;
