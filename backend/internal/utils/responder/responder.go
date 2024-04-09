@@ -6,13 +6,15 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/utils"
+	"github.com/jak103/powerplay/internal/utils/locals"
 )
 
 type response struct {
 	StatusCode   int              `json:"status_code"`
 	StatusString string           `json:"status_string"`
+	RequestId    string           `json:"request_id"`
 	Message      *string          `json:"message,omitempty"`
-	Data         *json.RawMessage `json:"data,omitempty"`
+	ResponseData *json.RawMessage `json:"response_data,omitempty"`
 }
 
 // 200
@@ -55,17 +57,18 @@ func NotYetImplemented(c *fiber.Ctx) error {
 }
 
 func respond(c *fiber.Ctx, statusCode int, data *json.RawMessage, message ...any) error {
-	msg := utils.StatusMessage(statusCode)
+	var msg *string
 	if len(message) > 0 {
 		format, args := message[0].(string), message[1:]
-		msg = fmt.Sprintf(format, args...)
+		*msg = fmt.Sprintf(format, args...)
 	}
 
 	res := response{
 		StatusCode:   statusCode,
 		StatusString: utils.StatusMessage(statusCode),
-		Message:      &msg,
-		Data:         data,
+		Message:      msg,
+		RequestId:    locals.RequestId(c),
+		ResponseData: data,
 	}
 
 	return c.Status(statusCode).JSON(res)

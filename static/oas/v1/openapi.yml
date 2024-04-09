@@ -1,0 +1,19 @@
+openapi: 3.1.0
+info:
+  version: 0.0.0
+  title: Power Play API
+  description: Developer documentation for the PowerPlay app
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+
+paths:
+  /auth:
+    $ref: "./auth/auth.yml#/paths/auth"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: jwt

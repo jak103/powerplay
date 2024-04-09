@@ -1,0 +1,59 @@
+paths:
+  auth:
+    post:
+      tags:
+        - Authentication
+      summary: Request authentication token 
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      requestBody:
+        description:  The request body should contain the username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/AuthenticationRequest"
+      responses:
+        200:
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/AuthenticationResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+  
+schemas:
+  AuthenticationRequest:
+    type: object
+    properties:
+      username:
+        type: string
+        description: The user's username
+        example: awesome_skater
+      password:
+        type: string
+        description: The user's password
+        example: midnight9
+
+  AuthenticationResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: object
+        properties:
+          jwt:
+            type: string
+            description: The Javascript Web Token for user authentication
+            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI1MzU1NTEsImlhdCI6MTcxMjQ0OTE1MSwianRpIjoiMSJ9.YCEqpVHC92akPbl4p8AgkO-7o6ebqMioOuOdWfocMGA
+          expiration:
+            type: string
+            format: date-time
+            example: 2024-04-08T00:20:46.503702735Z
