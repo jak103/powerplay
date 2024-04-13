@@ -151,3 +151,5 @@ dist
 
 # Go workspace file
 go.work
+
+.vscode

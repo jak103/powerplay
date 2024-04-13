@@ -20,7 +20,7 @@ import (
 
 var db *gorm.DB
 
-type Session struct {
+type session struct {
 	connection *gorm.DB
 }
 
@@ -69,13 +69,13 @@ func Migrate() error {
 	return migrations.Run(s.connection)
 }
 
-func GetSession(c *fiber.Ctx) Session {
+func GetSession(c *fiber.Ctx) session {
 	logger := log.TheLogger
 	if c != nil {
 		logger = locals.Logger(c)
 	}
 
-	s := Session{
+	s := session{
 		connection: db.Session(&gorm.Session{
 			Logger: &dbLogger{
 				theLogger: &logger,
