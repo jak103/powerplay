@@ -10,6 +10,13 @@ info:
 paths:
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
+  /users:
+    $ref: "./users/users.yml#/paths/users"
+  /users/{id}:
+    $ref: "./users/users.yml#/paths/users~1{id}"
+  /dev/db:
+    $ref: "./dev/dev.yml#/paths/dev~1db"
+
 
 components:
   securitySchemes:

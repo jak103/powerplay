@@ -1,3 +1,158 @@
 paths:
-  user:
-    
+  users:
+    post:
+      tags:
+        - Users
+      summary: Create user account 
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      requestBody:
+        description:  The request body should contain the email and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/CreateUserRequest"
+      responses:
+        200:
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/CreateUserResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+
+  users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          require: true
+          description: The ID of the user to get
+          example: 1
+      responses:
+        200:
+          description: The user profile has been successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/UpdateUserProfileResponse"
+    put:
+      tags:
+        - Users
+      summary: Update user profile
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          require: true
+          description: The ID of the user to update
+          example: 1
+      requestBody:
+        description: Contains the user profile updates
+        require: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/UpdateUserProfileRequest"
+      responses:
+        200:
+          description: The user profile has been successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/UpdateUserProfileResponse"
+
+schemas:
+  CreateUserRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        description: The user's email address
+        example: awesome_skater@email.com
+      password:
+        type: string
+        description: The user's password
+        example: midnight9
+  
+  CreateUserResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+
+  UpdateUserProfileRequest:
+    type: object
+    properties:
+      first_name:
+        type: string
+        description: The user's first name
+        example: Bob
+      last_name:
+        type: string
+        description: The user's last name
+        example: Jones
+      phone:
+        type: string
+        description: The user's phone number
+        example: 435-555-9991
+      birth_date:
+        type: string
+        format: date-time
+        description: The user's birth date in [RFC 3339 date-time](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format.
+        example: 1982-12-09T07:00:00.000Z
+
+
+  UpdateUserProfileResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: object
+        properties:
+          id: 
+            type: integer
+            description: The user's id
+            example: 1
+          created_at:
+            $ref: "../common/schemas.yml#/schemas/created_at"
+ "id": 5,
+    "created_at": "2024-04-14T04:51:05.178923Z",
+    "updated_at": "2024-04-14T05:00:52.368126Z",
+    "first_name": "Silly",
+    "last_name": "Jones",
+    "email": "test@email.com",
+    "phone": "435-555-9991",
+    "birth_date": "1982-12-09T07:00:00Z",
+    "roles": null,
+    "experience": {
+      "skill_level": 0,
+      "coached_time": 0,
+      "time_in_league": 0
+    },
+    "verified": true
+

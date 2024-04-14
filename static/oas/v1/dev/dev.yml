@@ -1,0 +1,18 @@
+paths:
+  dev/db:
+    delete:
+      tags:
+        - Developer
+      summary: Reset the database
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      responses:
+        200:
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/CreateUserResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"

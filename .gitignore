@@ -153,3 +153,5 @@ dist
 go.work
 
 .vscode
+
+*_mock_*

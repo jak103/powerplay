@@ -29,6 +29,7 @@ func OkWithData(c *fiber.Ctx, data any, message ...any) error {
 	return respond(c, fiber.StatusOK, &raw, message...)
 }
 
+// 200
 func Ok(c *fiber.Ctx, message ...any) error {
 	return respond(c, fiber.StatusOK, nil, message...)
 }
@@ -48,6 +49,11 @@ func Forbidden(c *fiber.Ctx, message ...any) error {
 	return respond(c, fiber.StatusForbidden, nil, message...)
 }
 
+// 404
+func NotFound(c *fiber.Ctx, message ...any) error {
+	return respond(c, fiber.StatusNotFound, nil, message...)
+}
+
 func InternalServerError(c *fiber.Ctx, message ...any) error {
 	return respond(c, fiber.StatusInternalServerError, nil, message...)
 }
@@ -60,7 +66,8 @@ func respond(c *fiber.Ctx, statusCode int, data *json.RawMessage, message ...any
 	var msg *string
 	if len(message) > 0 {
 		format, args := message[0].(string), message[1:]
-		*msg = fmt.Sprintf(format, args...)
+		tmp := fmt.Sprintf(format, args...)
+		msg = &tmp
 	}
 
 	res := response{

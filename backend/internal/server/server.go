@@ -9,8 +9,9 @@ import (
 	// Blank imports for apis to cause init functions to run
 	_ "github.com/jak103/powerplay/internal/server/apis/auth"
 	_ "github.com/jak103/powerplay/internal/server/apis/chat"
+	_ "github.com/jak103/powerplay/internal/server/apis/dev"
 	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
-	_ "github.com/jak103/powerplay/internal/server/apis/user"
+	_ "github.com/jak103/powerplay/internal/server/apis/users"
 )
 
 func Run() {
@@ -30,8 +31,9 @@ func Run() {
 
 func globalErrorHandler(c *fiber.Ctx, err error) error {
 	log := locals.Logger(c)
+	request_id := locals.RequestId(c)
 
-	log.WithErr(err).Error("Caught by global error handler")
+	log.WithRequestId(request_id).WithErr(err).Error("Caught by global error handler")
 
 	return c.Status(fiber.StatusNotFound).SendString("Not found")
 }

@@ -8,7 +8,7 @@ paths:
         **REQUIRED PERMISSIONS:** none:none  
         **RATE LIMIT:** TBD
       requestBody:
-        description:  The request body should contain the username and password
+        description:  The request body should contain the email and password
         required: true
         content:
           application/json:
@@ -28,10 +28,10 @@ schemas:
   AuthenticationRequest:
     type: object
     properties:
-      username:
+      email:
         type: string
-        description: The user's username
-        example: awesome_skater
+        description: The user's email address
+        example: awesome_skater@email.com
       password:
         type: string
         description: The user's password

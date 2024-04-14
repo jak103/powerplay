@@ -79,7 +79,7 @@ func TestRequestId(t *testing.T) {
 
 	assert.Contains(t, output, "[INFO ]")
 	assert.Contains(t, output, "Testing withRequestId")
-	assert.Contains(t, output, "request_id=test id")
+	assert.Contains(t, output, "[test id]")
 }
 
 func TestChainedWiths(t *testing.T) {
@@ -89,6 +89,6 @@ func TestChainedWiths(t *testing.T) {
 	TheLogger.WithRequestId("test id").WithErr(errors.New("new error")).Alert("Testing")
 
 	assert.Contains(t, output, "[ALERT]")
-	assert.Contains(t, output, "request_id=test id")
+	assert.Contains(t, output, "[test id]")
 	assert.Contains(t, output, "error=new error")
 }

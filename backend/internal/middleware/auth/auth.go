@@ -16,19 +16,19 @@ import (
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
-func NewKeyRecord() fiber.Handler {
-	return fetchKeyRecord
+func NewRequestingUser() fiber.Handler {
+	return fetchUser
 }
 
 func NewAuthorizer() fiber.Handler {
 	return authorizeRequest
 }
 
-func fetchKeyRecord(c *fiber.Ctx) error {
+func fetchUser(c *fiber.Ctx) error {
 	// Get the JWT
 	key := c.Cookies("Authorization")
 	if len(key) == 0 {
-		return c.Next() // No key record here, moving on
+		return c.Next() // No user here, moving on
 	}
 
 	claims := jwt.RegisteredClaims{}
@@ -38,24 +38,24 @@ func fetchKeyRecord(c *fiber.Ctx) error {
 		return []byte(config.Vars.JwtSecret), nil
 	})
 
-	// If the JWT is present, fetch the keyrecord
+	// If the JWT is present, fetch the user
 	if token.Valid {
 		db := db.GetSession(c)
 		id, _ := strconv.Atoi(claims.ID)
-		record, err := db.GetKeyRecordById(uint(id))
+		user, err := db.GetUserById(id)
 		if err != nil {
-			log.WithErr(err).Alert("Someone has had a valid JWT, but failed to get the keyrecord (ID: %v) from the DB", claims.ID)
+			log.WithErr(err).Alert("Someone has had a valid JWT, but failed to get the user (ID: %v) from the DB", claims.ID)
 			return responder.InternalServerError(c)
 		}
 
-		if record == nil {
+		if user == nil {
 			return responder.BadRequest(c, "JWT is no longer valid")
 		}
 
-		// store keyrecord in locals
-		locals.SetKeyRecord(c, *record)
+		// store user in locals
+		locals.SetRequestingUser(c, *user)
 
-		return c.Next() // Got the keyrecord, proceeding with call
+		return c.Next() // Got the user, proceeding with call
 	}
 
 	switch {
@@ -67,23 +67,23 @@ func fetchKeyRecord(c *fiber.Ctx) error {
 	case errors.Is(err, jwt.ErrTokenExpired) || errors.Is(err, jwt.ErrTokenNotValidYet):
 		return responder.BadRequest(c, "Expired JWT")
 	default:
-		log.WithErr(err).Alert("Unhandled error while fetching keyrecord")
+		log.WithErr(err).Alert("Unhandled error while fetching user")
 		return responder.InternalServerError(c)
 	}
 }
 
 func authorizeRequest(c *fiber.Ctx) error {
-	record := locals.KeyRecord(c)
+	user := locals.RequestingUser(c)
 	// two tiers of checks
 
 	// 1) Is there a key, aka are you logged in
-	if record == nil {
+	if user == nil {
 		return responder.Unauthorized(c, "Not logged in")
 	}
 
 	// 2) Do you have the right role?
 	authorizedRoles := apis.GetRole(c.Route().Method, c.Route().Path)
-	if auth.HasCorrectRole(record.Roles, authorizedRoles) {
+	if auth.HasCorrectRole(user.Roles, authorizedRoles) {
 		return c.Next() // User has correct role, let them through
 	}
 

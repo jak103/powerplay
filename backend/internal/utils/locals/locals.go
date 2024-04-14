@@ -7,12 +7,8 @@ import (
 	"github.com/jak103/powerplay/internal/utils/log"
 )
 
-const (
-	LOGGER = "logger"
-)
-
 func SetLogger(c *fiber.Ctx, l log.Logger) {
-	c.Locals(LOGGER, l)
+	c.Locals("logger", l)
 }
 
 func Logger(c *fiber.Ctx) log.Logger {
@@ -38,17 +34,17 @@ func RequestId(c *fiber.Ctx) string {
 	return reqid
 }
 
-func SetKeyRecord(c *fiber.Ctx, record models.KeyRecord) {
-	c.Locals(constants.KeyRecordLocal, record)
+func SetRequestingUser(c *fiber.Ctx, user models.User) {
+	c.Locals(constants.RequestingUserLocal, user)
 }
 
-func KeyRecord(c *fiber.Ctx) *models.KeyRecord {
-	var record *models.KeyRecord
+func RequestingUser(c *fiber.Ctx) *models.User {
+	var user *models.User
 	if c != nil {
-		if r := c.Locals(constants.KeyRecordLocal); r != nil {
-			temp := r.(models.KeyRecord)
-			record = &temp
+		if r := c.Locals(constants.RequestingUserLocal); r != nil {
+			temp := r.(models.User)
+			user = &temp
 		}
 	}
-	return record
+	return user
 }

@@ -13,11 +13,13 @@ func TestResultOrErrorNominal(t *testing.T) {
 		Error: nil,
 	}
 
-	var record *models.KeyRecord = &models.KeyRecord{
-		UserId: 99,
+	var user *models.User = &models.User{
+		DbModel: models.DbModel{
+			ID: 99,
+		},
 	}
 
-	r, err := resultOrError(record, result)
+	r, err := resultOrError(user, result)
 
 	assert.NotNil(t, r)
 	assert.Nil(t, err)
@@ -28,11 +30,13 @@ func TestResultOrErrorNoResult(t *testing.T) {
 		Error: gorm.ErrRecordNotFound,
 	}
 
-	var record *models.KeyRecord = &models.KeyRecord{
-		UserId: 99,
+	var user *models.User = &models.User{
+		DbModel: models.DbModel{
+			ID: 99,
+		},
 	}
 
-	r, err := resultOrError(record, result)
+	r, err := resultOrError(user, result)
 
 	assert.Nil(t, r)
 	assert.Nil(t, err)
@@ -43,11 +47,13 @@ func TestResultOrErrorError(t *testing.T) {
 		Error: gorm.ErrDuplicatedKey,
 	}
 
-	var record *models.KeyRecord = &models.KeyRecord{
-		UserId: 99,
+	var user *models.User = &models.User{
+		DbModel: models.DbModel{
+			ID: 99,
+		},
 	}
 
-	r, err := resultOrError(record, result)
+	r, err := resultOrError(user, result)
 
 	assert.Nil(t, r)
 	assert.NotNil(t, err)

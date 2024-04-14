@@ -7,17 +7,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jak103/powerplay/internal/config"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
-
-type request struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
 
 type response struct {
 	Jwt        string    `json:"jwt"`
@@ -30,16 +26,28 @@ func init() {
 
 func postAuthHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
-	creds := request{}
+	db := newSession(c)
+
+	creds := models.Credentials{}
 	err := c.BodyParser(&creds)
 	if err != nil {
 		log.WithErr(err).Error("Failed to parse authentication credentials")
 		return responder.BadRequest(c, "Failed to parse authentication credentials")
 	}
+	log.Debug("Creds: %v", creds)
+	user, err := db.GetUserByEmail(creds.Email)
+	if err != nil {
+		log.WithErr(err).Error("Failed to get user by email")
+		return responder.InternalServerError(c)
+	}
 
-	// TODO look up user in database
+	if user == nil {
+		log.Info("User with email %s doesn't exist", creds.Email)
+		return responder.Unauthorized(c, "Invalid credentials")
+	}
 
-	jwt, err := generateJwt(1)
+	log.Debug("Got user %s", user.Email)
+	jwt, err := generateJwt(user.ID)
 	if err != nil {
 		log.WithErr(err).Alert("Failed to generate JWT")
 	}
@@ -52,10 +60,11 @@ func postAuthHandler(c *fiber.Ctx) error {
 	return responder.OkWithData(c, token)
 }
 
-func generateJwt(keyId int) (string, error) {
+func generateJwt(keyId uint) (string, error) {
 	mySigningKey := []byte(config.Vars.JwtSecret)
 	now := time.Now()
-	expiration := now.AddDate(0, 0, 1)
+	expiration := now.AddDate(0, 0, 7) // Token is good for 1 week
+
 	// Create the Claims
 	claims := &jwt.RegisteredClaims{
 		ID:        fmt.Sprintf("%v", keyId),

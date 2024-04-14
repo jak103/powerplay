@@ -10,29 +10,27 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestKeyRecord(t *testing.T) {
+func TestRequestingUser(t *testing.T) {
 	c := unittesting.FiberCtx()
-	record := models.KeyRecord{
+	user := models.User{
 		DbModel: models.DbModel{
 			ID: 27,
 		},
-		UserId: 1,
-		Roles:  auth.Authenticated,
+		Roles: auth.Authenticated,
 	}
 
-	SetKeyRecord(c, record)
+	SetRequestingUser(c, user)
 
-	r := KeyRecord(c)
+	r := RequestingUser(c)
 
 	require.NotNil(t, r)
-	assert.Equal(t, record.ID, r.ID)
-	assert.Equal(t, record.UserId, r.UserId)
-	assert.Equal(t, record.Roles, r.Roles)
+	assert.Equal(t, user.ID, r.ID)
+	assert.Equal(t, user.Roles, r.Roles)
 }
 
-func TestNilKeyRecord(t *testing.T) {
+func TestNilRequestingUser(t *testing.T) {
 	c := unittesting.FiberCtx()
-	r := KeyRecord(c)
+	r := RequestingUser(c)
 
 	assert.Nil(t, r)
 }

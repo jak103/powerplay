@@ -2,8 +2,8 @@ package constants
 
 const (
 	// Locals keys
-	RequestIdLocal = "requestid"
-	KeyRecordLocal = "keyrecord"
+	RequestIdLocal      = "requestid"
+	RequestingUserLocal = "requestinguser"
 
 	// envs
 	Local = "local"
