@@ -6,7 +6,7 @@ useHead({
 
 
 <template>
-  <div class="d-flex align-items-center justify-content-center text-bg-light py-5" style="min-height: 100vh;">
+  <div class="d-flex align-items-center justify-content-center py-5" style="min-height: 100vh;">
     <div class="container pb-5" style="width: 400px;">
       <slot />
     </div>

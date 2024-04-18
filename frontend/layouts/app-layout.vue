@@ -1,55 +1,56 @@
-<script lang="ts" setup>
-onBeforeMount(() => {
-  useTheme().value = localStorage.getItem("theme") || "light";
-});
-</script>
-
 <template>
-  <Html :data-bs-theme="useTheme().value">
-    <div v-show="useTheme().value" class="app-wrapper">
-      <div class="app-menu text-bg-light shadow">
+    <div class="app-wrapper">
+      <div class="app-menu">
         <h2 class="d-none d-lg-block">Power Play</h2>
         <div class="nav-icon-btn-group">
           <NuxtLink
             active-class=""
             exact-active-class="active"
             to="/app"
-            class="btn btn-light btn-lg nav-icon-btn"
+            class="btn btn-lg nav-icon-btn"
           >
             <Icon name="home" />
             <div class="nav-text">Home</div>
           </NuxtLink>
           <NuxtLink
             to="/app/schedule"
-            class="btn btn-light btn-lg nav-icon-btn"
+            class="btn btn-lg nav-icon-btn"
           >
             <Icon name="calendar-month" />
             <div class="nav-text">Schedule</div>
           </NuxtLink>
-          <NuxtLink to="/app/chat" class="btn btn-light btn-lg nav-icon-btn">
+          <NuxtLink to="/app/chat" class="btn btn-lg nav-icon-btn">
             <Icon name="message-outline" />
             <div class="nav-text">Chat</div>
           </NuxtLink>
-          <NuxtLink to="/app/profile" class="btn btn-light btn-lg nav-icon-btn">
+          <NuxtLink to="/app/profile" class="btn btn-lg nav-icon-btn">
             <Icon name="account-circle" />
             <div class="nav-text">Profile</div>
           </NuxtLink>
         </div>
         <NuxtLink class="btn btn-link mt-auto d-none d-lg-inline" to="/"
-          >Website Home</NuxtLink
+        >Website Home</NuxtLink
         >
         <NuxtLink class="btn btn-primary d-none d-lg-inline" to="/app/sign-in"
-          >Sign Out</NuxtLink
+        >Sign Out</NuxtLink
         >
       </div>
       <div class="app-container container pt-4">
         <slot />
       </div>
     </div>
-  </Html>
 </template>
 
 <style lang="scss" scoped>
+.app-menu{
+  background: var(--bs-tertiary-bg);
+}
+.nav-icon-btn.active{
+  background: var(--bs-secondary-color) !important;
+  color: var(--bs-body-bg) !important;
+  // color: white !important;
+  border: 1px solid transparent;
+}
 @media (min-width: 992px) {
   // lg and bigger
   .app-wrapper {
