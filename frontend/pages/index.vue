@@ -4,6 +4,7 @@
     <ul>
       <li>Game Schedules</li>
       <li>About the league</li>
+      <li>Something Else</li>
     </ul>
   </div>
 </template>
