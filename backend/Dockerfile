@@ -1,3 +1,3 @@
-FROM golang:1.21.6
+FROM golang:1.22.3
 
 RUN go install github.com/cosmtrek/air@latest
