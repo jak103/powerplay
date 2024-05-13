@@ -1,7 +1,7 @@
 package schedule
 
 import (
-	"database/sql"
+	"gorm.io/gorm"
 )
 
 type IceTime struct {
@@ -31,52 +31,20 @@ type SeasonSchedule struct {
 	LeagueSchedules []LeagueSchedule `json:"league_schedules"`
 }
 
-func getIceTimes(db *sql.DB) ([]IceTime, error) {
-	query := `SELECT * FROM ice_time`
-	rows, err := db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-			panic(err)
-			return
-		}
-	}(rows)
-
+// GetIceTimes retrieves all ice times from the database
+func GetIceTimes(db *gorm.DB) ([]IceTime, error) {
 	var iceTimes []IceTime
-	for rows.Next() {
-		var iceTime IceTime
-		err := rows.Scan(&iceTime.ID, &iceTime.StartTime, &iceTime.EndTime)
-		if err != nil {
-			return nil, err
-		}
-		iceTimes = append(iceTimes, iceTime)
-	}
-	return iceTimes, nil
+	result := db.Find(&iceTimes)
+	return iceTimes, result.Error
 }
 
-func createSeasonScheduleTable(db *sql.DB) error {
-	query := `CREATE TABLE IF NOT EXISTS season_schedule (
-    		id SERIAL PRIMARY KEY,
-    		season_id INT NOT NULL,
-    		season_name TEXT NOT NULL,
-    		league_schedules JSONB NOT NULL
-    )`
-	_, err := db.Exec(query)
-	if err != nil {
-		return err
-	}
-	return nil
+// CreateSeasonScheduleTable is not needed with GORM, as AutoMigrate handles it
+func CreateSeasonScheduleTable(db *gorm.DB) error {
+	return db.AutoMigrate(&SeasonSchedule{})
 }
 
-func insertSeasonSchedule(db *sql.DB, seasonSchedule SeasonSchedule) (int, error) {
-	query := `INSERT INTO season_schedule (season_id, season_name, league_schedules) VALUES ($1, $2, $3) RETURNING id`
-	var pk int
-	err := db.QueryRow(query, seasonSchedule.SeasonID, seasonSchedule.SeasonName, seasonSchedule.LeagueSchedules).Scan(&pk)
-	if err != nil {
-		return 0, err
-	}
-	return pk, nil
+// InsertSeasonSchedule inserts a new season schedule into the database
+func InsertSeasonSchedule(db *gorm.DB, seasonSchedule SeasonSchedule) (int, error) {
+	result := db.Create(&seasonSchedule)
+	return seasonSchedule.ID, result.Error
 }
