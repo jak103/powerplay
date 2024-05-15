@@ -1,4 +1,4 @@
-package schedule
+package db
 
 import (
 	_ "github.com/jak103/powerplay/internal/models"
