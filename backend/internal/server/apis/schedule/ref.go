@@ -1,9 +1,13 @@
-package main
+package schedule
 
 import (
 	"fmt"
-	"hockey/pkg/csv"
-	"hockey/pkg/parser"
+	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/server/apis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
 type RefScheduleRow struct {
@@ -16,7 +20,11 @@ type RefScheduleRow struct {
 	Away            string `csv:"Away Team"`
 }
 
-func main() {
+func init() {
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/ref", auth.Authenticated, handleRef)
+}
+
+func handleRef(c *fiber.Ctx) error {
 	games, seasonConfig := parser.ReadGames("spring_2024")
 
 	refSchedule := make([]RefScheduleRow, 0)
@@ -45,4 +53,5 @@ func main() {
 	}
 
 	csv.GenerateCsv(refSchedule, "ref_schedule.csv")
+	return responder.NotYetImplemented(c)
 }

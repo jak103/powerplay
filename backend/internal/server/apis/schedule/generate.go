@@ -1,18 +1,26 @@
-package main
+package schedule
 
 import (
 	"bufio"
 	"fmt"
-	"hockey/pkg/analysis"
-	"hockey/pkg/csv"
-	"hockey/pkg/models"
-	"hockey/pkg/optimize"
-	"hockey/pkg/parser"
+	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/server/apis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/responder"
 	"os"
 	"time"
 )
 
-func main() {
+func init() {
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/generate", auth.Authenticated, handleGenerate)
+}
+
+func handleGenerate(c *fiber.Ctx) error {
 	fmt.Println("Hockey scheduler v0.1")
 
 	fmt.Println("Reading config file summer_2024_config.yml")
@@ -36,6 +44,7 @@ func main() {
 	// printSchedule(games)
 
 	csv.GenerateCsv(games, "schedule.csv")
+	return responder.NotYetImplemented(c)
 }
 
 func optimizeSchedule(games []models.Game) {

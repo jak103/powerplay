@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+// TODO need to move these into the models package in the internal directory
+// TODO need to update the models I created based off of these
+
 type Season struct {
 	LeagueRounds map[string][]Round
 }
