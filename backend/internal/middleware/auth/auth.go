@@ -9,8 +9,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db"
-	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
@@ -82,10 +80,12 @@ func authorizeRequest(c *fiber.Ctx) error {
 	}
 
 	// 2) Do you have the right role?
-	authorizedRoles := apis.GetRole(c.Route().Method, c.Route().Path)
-	if auth.HasCorrectRole(record.Roles, authorizedRoles) {
-		return c.Next() // User has correct role, let them through
-	}
+	// todo: add this back when roles are re-implemented on KeyRecord
+	//authorizedRoles := apis.GetRole(c.Route().Method, c.Route().Path)
+	//if auth.HasCorrectRole(record.Roles, authorizedRoles)
+	return c.Next() // User has correct role, let them through
 
-	return responder.Forbidden(c) // They do not have the right role
+	// else statement to if they don't have the right rule
+	// todo: enable this when roles are re-implemented on KeyRecord
+	//return responder.Forbidden(c) // They do not have the right role
 }
