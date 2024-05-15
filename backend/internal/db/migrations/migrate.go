@@ -76,10 +76,14 @@ func Run(db *gorm.DB) error {
 		// all other constraints, indexes, etc...
 		return nil
 	})
-	initialMigrator.Migrate()
+	err := initialMigrator.Migrate()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to run migrations")
+		return err
+	}
 
 	additionalMigrator := createMigrator(db, migrations)
-	err := additionalMigrator.Migrate()
+	err = additionalMigrator.Migrate()
 	if err != nil {
 		log.WithErr(err).Alert("Failed to run migrations")
 		return err
