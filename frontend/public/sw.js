@@ -23,33 +23,50 @@ self.addEventListener('push', (e) => {
   console.log("Done showing notification");
 })
 
-//console.log("Service worker registered"); // TEST
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('v1').then((cache) => {
       return cache.addAll([
-        '/app/',
+        'api/docs.vue',
+        '/app/chat/index.vue',
+        '/app/profile/index.vue',
+        '/app/schedule/index.vue',
+        '/app/index.vue',
+        '/app/create-account.vue',
+        '/app/sign-in.vue',
+        'app.vue',
+        'calendar.vue',
+        'index.vue',
+        'information/index.vue',
+        'information/managers.vue',
+        'sw.js',
         // Add other assets as needed
       ]);
     })
   );
 });
 
+
+// Load resources from cache if possible, otherwise fetch them from the network (faster to load from cache)
 self.addEventListener('fetch', (event) => {
-  console.log("Fetch event", event.request.url) // TEST
-  console.log("Fetch event2 ", event.request) // TEST
   event.respondWith(
-    // Try to fetch the resource from the network
-    fetch(event.request).then((networkResponse) => {
-      // If successful, open the cache, store the response, and return it
-      return caches.open('v1').then((cache) => {
-        cache.put(event.request, networkResponse.clone());
-        return networkResponse;
+    caches.match(event.request).then((cacheResponse) => {
+      // If the resource is in the cache, return it
+      if (cacheResponse) {
+        return cacheResponse;
+      }
+
+      // If the resource is not in the cache, fetch it from the network, cache it, and return it
+      return fetch(event.request).then((networkResponse) => {
+        return caches.open('v1').then((cache) => {
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
+        });
+      }).catch(() => {
+        // If the network is unavailable and the resource is not in the cache, return a fallback response
+        return new Response('Offline', { status: 503 });
       });
-    }).catch(() => {
-      // If the network is unavailable, try to get the resource from the cache
-      return caches.match(event.request);
     })
   );
 });
