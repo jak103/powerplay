@@ -9,19 +9,50 @@ import (
 
 var migrations []*gormigrate.Migration
 
+func init() {
+	migrations = append(migrations,
+		&gormigrate.Migration{
+			ID: "create_penalty_type_table",
+			Migrate: func(tx *gorm.DB) error {
+				return tx.AutoMigrate(&models.PenaltyType{})
+			},
+			Rollback: func(tx *gorm.DB) error {
+				return tx.Migrator().DropTable("penalty_types")
+			},
+		},
+		// Add more migrations here
+	)
+}
+
+func createMigrator(db *gorm.DB, migrations []*gormigrate.Migration) *gormigrate.Gormigrate {
+	var migrator *gormigrate.Gormigrate
+	if migrations != nil {
+		migrator = gormigrate.New(db, &gormigrate.Options{
+			TableName:                 "migrations",
+			IDColumnName:              "id",
+			IDColumnSize:              255,
+			UseTransaction:            true,
+			ValidateUnknownMigrations: false,
+		}, migrations)
+	} else {
+		empty_migration := []*gormigrate.Migration{}
+		migrator = gormigrate.New(db, &gormigrate.Options{
+			TableName:                 "migrations",
+			IDColumnName:              "id",
+			IDColumnSize:              255,
+			UseTransaction:            true,
+			ValidateUnknownMigrations: false,
+		}, empty_migration)
+	}
+	return migrator
+}
+
 func Run(db *gorm.DB) error {
 	log.Info("Running migrations")
 
-	migrator := gormigrate.New(db, &gormigrate.Options{
-		TableName:                 "migrations",
-		IDColumnName:              "id",
-		IDColumnSize:              255,
-		UseTransaction:            true,
-		ValidateUnknownMigrations: false,
-	}, migrations)
-
+	initialMigrator := createMigrator(db, nil)
 	// auatomigrate all objects
-	migrator.InitSchema(func(tx *gorm.DB) error {
+	initialMigrator.InitSchema(func(tx *gorm.DB) error {
 		log.Info("Initializing powerplay schema")
 		err := tx.AutoMigrate(
 			&models.User{},
@@ -45,8 +76,14 @@ func Run(db *gorm.DB) error {
 		// all other constraints, indexes, etc...
 		return nil
 	})
+	err := initialMigrator.Migrate()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to run migrations")
+		return err
+	}
 
-	err := migrator.Migrate()
+	additionalMigrator := createMigrator(db, migrations)
+	err = additionalMigrator.Migrate()
 	if err != nil {
 		log.WithErr(err).Alert("Failed to run migrations")
 		return err
