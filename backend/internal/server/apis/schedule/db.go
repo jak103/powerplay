@@ -1,8 +1,11 @@
 package schedule
 
 import (
+	_ "github.com/jak103/powerplay/internal/models"
 	"gorm.io/gorm"
 )
+
+// TODO - fix the models package import
 
 // GetIceTimes retrieves all ice times from the database
 func GetIceTimes(db *gorm.DB) ([]IceTime, error) {
