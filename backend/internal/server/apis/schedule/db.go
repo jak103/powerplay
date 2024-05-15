@@ -17,7 +17,7 @@ func CreateSeasonScheduleTable(db *gorm.DB) error {
 }
 
 // InsertSeasonSchedule inserts a new season schedule into the database
-func InsertSeasonSchedule(db *gorm.DB, seasonSchedule SeasonSchedule) (int, error) {
+func InsertSeasonSchedule(db *gorm.DB, seasonSchedule SeasonSchedule) (uint, error) {
 	result := db.Create(&seasonSchedule)
 	return seasonSchedule.ID, result.Error
 }
