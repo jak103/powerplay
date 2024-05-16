@@ -20,6 +20,15 @@ func init() {
 				return tx.Migrator().DropTable("penalty_types")
 			},
 		},
+		&gormigrate.Migration{
+			ID: "create_goals_table",
+			Migrate: func(tx *gorm.DB) error {
+				return tx.AutoMigrate(&models.Goal{})
+			},
+			Rollback: func(tx *gorm.DB) error {
+				return tx.Migrator().DropTable("goals")
+			},
+		},
 		// Add more migrations here
 	)
 }
