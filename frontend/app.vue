@@ -9,6 +9,12 @@ useHead({
       tagPosition: 'bodyOpen'
     }
   ],
+  link: [
+    {
+      rel: "manifest",
+      href: "../manifest.json"
+    }
+  ],
   titleTemplate: (title) =>
     title ? `${title} | Eccles Ice Hockey` : "Eccles Ice Hockey",
 });
