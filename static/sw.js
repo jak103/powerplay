@@ -29,7 +29,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('v1').then((cache) => {
       return cache.addAll([
-        '/frontend/app.vue',
+        '/app/frontend/app.vue',
         // Add other assets as needed
       ]);
     })
