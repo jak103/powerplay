@@ -1,6 +1,6 @@
 module github.com/jak103/powerplay
 
-go 1.21.3
+go 1.22.3
 
 require (
 	github.com/SherClockHolmes/webpush-go v1.3.0
