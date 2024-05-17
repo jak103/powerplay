@@ -35,7 +35,6 @@ func SetupRoutes(app *fiber.App) {
 
 	for _, r := range routes {
 		group.Add(r.method, r.path, r.handlers...)
-		log.Error("Tried to register duplicate route: %s %s", r.method, r.path)
 	}
 }
 
