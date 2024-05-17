@@ -7,9 +7,9 @@ type Goal struct {
 	DbModel
 	UserId   uint          `json:"user_id"`
 	GameId   uint          `json:"game_id"` 
-	Game     Game          `gorm:"foreignKey:GameId"` 
+//	Game     Game          `gorm:"foreignKey:GameId"` 
 	TeamId   uint          `json:"team_id"` 
-	Team     Team          `gorm:"foreignKey:TeamId"` 
+	//Team     Team          `gorm:"foreignKey:TeamId"` 
 	Duration time.Duration `json:"duration"`
 	Assist1Id	uint   `json:"user_id"`
 	Assist2Id	uint   `json:"user_id"`
