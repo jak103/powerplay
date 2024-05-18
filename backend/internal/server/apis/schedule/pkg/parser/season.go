@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"hockey/pkg/models"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"os"
 
 	"gopkg.in/yaml.v3"
