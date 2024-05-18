@@ -17,7 +17,7 @@ func ReadGames(season string) ([]models.Game, models.SeasonConfig) {
 		fmt.Println("Error reading file", err)
 	}
 
-	games := []models.Game{}
+	var games []models.Game
 
 	scheduleFile, err := os.OpenFile(fmt.Sprintf("schedule_%s.csv", season), os.O_RDONLY, os.ModePerm)
 	if err != nil {

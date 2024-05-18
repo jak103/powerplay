@@ -2,7 +2,8 @@ package analysis
 
 import (
 	"fmt"
-	"hockey/pkg/models"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+
 	"sort"
 	"time"
 )
