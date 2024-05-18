@@ -3,7 +3,7 @@ services:
     image: frontend:latest
     build: ./frontend
     container_name: frontend
-    working_dir: /frontend
+    working_dir: /app/frontend
     volumes:
       - /app/frontend/node_modules
       - ./frontend:/app/frontend
