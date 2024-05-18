@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/utils/log"
 	"os"
-    "github.com/jak103/powerplay/internal/utils/log"
 
 	"gopkg.in/yaml.v3"
 )
@@ -12,7 +12,7 @@ import (
 func SeasonConfig(season string) (*models.SeasonConfig, error) {
 	configBytes, err := os.ReadFile(fmt.Sprintf("input/%s_config.yml", season))
 	if err != nil {
-        log.Error("Error reading file: %v\n", err)
+		log.Error("Error reading file: %v\n", err)
 		return nil, err
 	}
 
@@ -21,7 +21,7 @@ func SeasonConfig(season string) (*models.SeasonConfig, error) {
 	seasonConfig := &models.SeasonConfig{}
 	err = yaml.Unmarshal(configBytes, &seasonConfig)
 	if err != nil {
-        log.Error("Error parsing yaml: %v\n", err)
+		log.Error("Error parsing yaml: %v\n", err)
 		return nil, err
 	}
 

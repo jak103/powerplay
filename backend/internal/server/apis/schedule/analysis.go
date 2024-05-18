@@ -7,8 +7,8 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
 	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
-    "github.com/jak103/powerplay/internal/utils/log"
 )
 
 func init() {

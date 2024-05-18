@@ -3,8 +3,8 @@ package csv
 import (
 	"os"
 
-    "github.com/jak103/powerplay/internal/utils/log"
 	"github.com/gocarina/gocsv"
+	"github.com/jak103/powerplay/internal/utils/log"
 )
 
 func GenerateCsv[T any](games []T, filename string) {

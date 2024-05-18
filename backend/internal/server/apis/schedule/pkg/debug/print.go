@@ -1,8 +1,8 @@
 package debug
 
 import (
+	"github.com/jak103/powerplay/internal/utils/log"
 	"gopkg.in/yaml.v3"
-    "github.com/jak103/powerplay/internal/utils/log"
 )
 
 func Print(in any) {

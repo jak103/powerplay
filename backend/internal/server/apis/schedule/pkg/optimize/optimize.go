@@ -2,7 +2,7 @@ package optimize
 
 import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
-    "github.com/jak103/powerplay/internal/utils/log"
+	"github.com/jak103/powerplay/internal/utils/log"
 	"sort"
 )
 

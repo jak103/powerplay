@@ -3,9 +3,9 @@ package parser
 import (
 	"fmt"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/utils/log"
 	"os"
 	"time"
-    "github.com/jak103/powerplay/internal/utils/log"
 
 	"github.com/gocarina/gocsv"
 )
@@ -15,19 +15,19 @@ func ReadGames(season string) ([]models.Game, models.SeasonConfig) {
 
 	seasonConfig, err := SeasonConfig(season)
 	if err != nil {
-        log.Error("Error reading file: %v\n", err)
+		log.Error("Error reading file: %v\n", err)
 	}
 
 	var games []models.Game
 
 	scheduleFile, err := os.OpenFile(fmt.Sprintf("schedule_%s.csv", season), os.O_RDONLY, os.ModePerm)
 	if err != nil {
-        log.Error("Failed to open schedule file: %v\n", err)
+		log.Error("Failed to open schedule file: %v\n", err)
 	}
 
 	err = gocsv.UnmarshalFile(scheduleFile, &games)
 	if err != nil {
-        log.Error("Failed to unmarshal schedule file: %v\n", err)
+		log.Error("Failed to unmarshal schedule file: %v\n", err)
 	}
 
 	log.Info("Read %v games\n", len(games))
@@ -35,7 +35,7 @@ func ReadGames(season string) ([]models.Game, models.SeasonConfig) {
 	for i := range games {
 		games[i].Start, err = time.Parse("01/02/2006 15:04", fmt.Sprintf("%v %v", games[i].StartDate, games[i].StartTime))
 		if err != nil {
-            log.Error("Time parse error: %v\n", err)
+			log.Error("Time parse error: %v\n", err)
 		}
 
 		switch games[i].Start.Hour() {

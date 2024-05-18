@@ -10,8 +10,8 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
 	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
-    "github.com/jak103/powerplay/internal/utils/log"
 	"os"
 	"time"
 )
@@ -21,12 +21,12 @@ func init() {
 }
 
 func handleGenerate(c *fiber.Ctx) error {
-    log.Info("Hockey scheduler v0.1")
+	log.Info("Hockey scheduler v0.1")
 
-    log.Info("Reading config file summer_2024_config.yml")
+	log.Info("Reading config file summer_2024_config.yml")
 	seasonConfig, err := parser.SeasonConfig("summer_2024")
 	if err != nil {
-        log.Error("Error reading file %v\n", err)
+		log.Error("Error reading file %v\n", err)
 	}
 
 	// TODO instead of commenting out the debugOutput, use a flag to enable it from the config file?
@@ -48,7 +48,7 @@ func handleGenerate(c *fiber.Ctx) error {
 }
 
 func optimizeSchedule(games []models.Game) {
-    log.Info("Pre-optimization analysis")
+	log.Info("Pre-optimization analysis")
 	seasonStats, teamStats := analysis.RunTimeAnalysis(games)
 
 	// Need to make sure games are balanced in
@@ -59,7 +59,7 @@ func optimizeSchedule(games []models.Game) {
 	for !done {
 		optimize.Schedule(games, seasonStats, teamStats)
 
-        log.Info("Post-optimization analysis")
+		log.Info("Post-optimization analysis")
 		seasonStats, teamStats = analysis.RunTimeAnalysis(games)
 
 		balanceCount := getBalanceCount(&teamStats)
@@ -85,7 +85,7 @@ func getBalanceCount(teamStats *map[string]models.TeamStats) int {
 }
 
 func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Season {
-    log.Info("Generating games")
+	log.Info("Generating games")
 	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 
 	for _, league := range leagues {
@@ -94,7 +94,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Sea
 		// Figure out how many rounds we need to run to get each team the number of games per season
 		numberOfGamesPerTeam += ((numTeams * numberOfGamesPerTeam) - (numTeams/2)*(2*numberOfGamesPerTeam)) / 2
 
-        log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
+		log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
 
 		if numTeams%2 == 1 {
 			league.Teams = append(league.Teams, models.Team{Name: "Bye", Id: "-1"})
@@ -145,7 +145,7 @@ func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
 }
 
 func assignTimes(times []string, season models.Season) []models.Game {
-    log.Info("Assigning ice times")
+	log.Info("Assigning ice times")
 
 	games := newGames(&season)
 
