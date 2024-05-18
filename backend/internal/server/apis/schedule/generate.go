@@ -2,7 +2,6 @@ package schedule
 
 import (
 	"bufio"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
@@ -12,6 +11,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/responder"
+    "github.com/jak103/powerplay/internal/utils/log"
 	"os"
 	"time"
 )
@@ -21,12 +21,12 @@ func init() {
 }
 
 func handleGenerate(c *fiber.Ctx) error {
-	fmt.Println("Hockey scheduler v0.1")
+    log.Info("Hockey scheduler v0.1")
 
-	fmt.Println("Reading config file summer_2024_config.yml")
+    log.Info("Reading config file summer_2024_config.yml")
 	seasonConfig, err := parser.SeasonConfig("summer_2024")
 	if err != nil {
-		fmt.Println("Error reading file", err)
+        log.Error("Error reading file %v\n", err)
 	}
 
 	// TODO instead of commenting out the debugOutput, use a flag to enable it from the config file?
@@ -48,7 +48,7 @@ func handleGenerate(c *fiber.Ctx) error {
 }
 
 func optimizeSchedule(games []models.Game) {
-	fmt.Println("Pre-optimization analysis")
+    log.Info("Pre-optimization analysis")
 	seasonStats, teamStats := analysis.RunTimeAnalysis(games)
 
 	// Need to make sure games are balanced in
@@ -59,14 +59,14 @@ func optimizeSchedule(games []models.Game) {
 	for !done {
 		optimize.Schedule(games, seasonStats, teamStats)
 
-		fmt.Println("Post-optimization analysis")
+        log.Info("Post-optimization analysis")
 		seasonStats, teamStats = analysis.RunTimeAnalysis(games)
 
 		balanceCount := getBalanceCount(&teamStats)
 
-		fmt.Printf("Balanced count: %v\n", balanceCount)
+		log.Info("Balanced count: %v\n", balanceCount)
 
-		fmt.Println("Run optimization again?")
+		log.Info("Run optimization again?")
 		finput.Scan()
 		if finput.Text() != "y" {
 			done = true
@@ -85,7 +85,7 @@ func getBalanceCount(teamStats *map[string]models.TeamStats) int {
 }
 
 func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Season {
-	fmt.Println("Generating games")
+    log.Info("Generating games")
 	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 
 	for _, league := range leagues {
@@ -94,7 +94,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Sea
 		// Figure out how many rounds we need to run to get each team the number of games per season
 		numberOfGamesPerTeam += ((numTeams * numberOfGamesPerTeam) - (numTeams/2)*(2*numberOfGamesPerTeam)) / 2
 
-		fmt.Printf("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
+        log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
 
 		if numTeams%2 == 1 {
 			league.Teams = append(league.Teams, models.Team{Name: "Bye", Id: "-1"})
@@ -145,21 +145,21 @@ func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
 }
 
 func assignTimes(times []string, season models.Season) []models.Game {
-	fmt.Println("Assigning ice times")
+    log.Info("Assigning ice times")
 
 	games := newGames(&season)
 
-	fmt.Printf("Have times for %v games\n", len(times))
-	fmt.Printf("Have %v games\n", len(games))
+	log.Info("Have times for %v games\n", len(times))
+	log.Info("Have %v games\n", len(games))
 	for i := range games {
-		// fmt.Printf("    %s -- %s v %s\n", iceTime, games[i].Team1Id, games[i].Team2Id)
+		// log.Info("    %s -- %s v %s\n", iceTime, games[i].Team1Id, games[i].Team2Id)
 		startTime, err := time.Parse("1/2/06 15:04", times[i])
 		if err != nil {
-			fmt.Println("Failed to parse start time:", err)
+			log.Error("Failed to parse start time: %v\n", err)
 		}
 		endTime := startTime.Add(75 * time.Minute)
 
-		// fmt.Printf("Start time: %v\n", startTime)
+		// log.Info("Start time: %v\n", startTime)
 		games[i].Start = startTime
 		games[i].StartDate = startTime.Format("01/02/2006")
 		games[i].StartTime = startTime.Format("15:04")

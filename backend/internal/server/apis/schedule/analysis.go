@@ -1,7 +1,6 @@
 package schedule
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
@@ -9,6 +8,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/responder"
+    "github.com/jak103/powerplay/internal/utils/log"
 )
 
 func init() {
@@ -27,10 +27,10 @@ func handleAnalysis(c *fiber.Ctx) error {
 func printTeamSchedules(games []models.Game, seasonConfig models.SeasonConfig) {
 	for _, league := range seasonConfig.Leagues {
 		for _, team := range league.Teams {
-			fmt.Printf("-----------\n%v\n", team.Name)
+			log.Info("-----------\n%v\n", team.Name)
 			for _, game := range games {
 				if team.Name == game.Team1Name || team.Name == game.Team2Name {
-					fmt.Printf("%s\n", game)
+					log.Info("%s\n", game)
 				}
 			}
 		}

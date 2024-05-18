@@ -1,25 +1,25 @@
 package csv
 
 import (
-	"fmt"
 	"os"
 
+    "github.com/jak103/powerplay/internal/utils/log"
 	"github.com/gocarina/gocsv"
 )
 
 func GenerateCsv[T any](games []T, filename string) {
-	fmt.Println("Writing CSV:", filename)
+	log.Info("Writing CSV: %s", filename)
 
 	csvGames, err := gocsv.MarshalBytes(games)
 	if err != nil {
-		fmt.Printf("Failed to marshal games %v", err)
+		log.Error("Failed to marshal games %v", err)
 	}
 
-	fmt.Println("Data marshaled, now writing")
+	log.Info("Data marshaled, now writing")
 
 	err = os.WriteFile(filename, csvGames, 0644)
 	if err != nil {
-		fmt.Printf("Failed to write games %v", err)
+		log.Error("Failed to write games %v", err)
 	}
-	fmt.Println("Done writing")
+	log.Info("Done writing")
 }

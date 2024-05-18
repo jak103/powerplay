@@ -3,6 +3,7 @@ package analysis
 import (
 	"fmt"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+    "github.com/jak103/powerplay/internal/utils/log"
 
 	"sort"
 	"time"
@@ -100,11 +101,11 @@ func timeBetweenGames(teamStats map[string]models.TeamStats) {
 }
 
 func printStats(seasonStats models.SeasonStats, teamStats map[string]models.TeamStats) {
-	fmt.Printf("Early games: %v/%v (%v%%)\n", seasonStats.EarlyGames, seasonStats.TotalGames, (float32(seasonStats.EarlyGames)/float32(seasonStats.TotalGames))*100)
-	fmt.Printf("Late  games: %v/%v (%v%%)\n", seasonStats.LateGames, seasonStats.TotalGames, (float32(seasonStats.LateGames)/float32(seasonStats.TotalGames))*100)
+	log.Info("Early games: %v/%v (%v%%)\n", seasonStats.EarlyGames, seasonStats.TotalGames, (float32(seasonStats.EarlyGames)/float32(seasonStats.TotalGames))*100)
+	log.Info("Late  games: %v/%v (%v%%)\n", seasonStats.LateGames, seasonStats.TotalGames, (float32(seasonStats.LateGames)/float32(seasonStats.TotalGames))*100)
 
 	for _, league := range []string{"A", "B", "C", "D"} {
-		fmt.Printf("%v league:\n", league)
+		log.Info("%v league:\n", league)
 
 		teams := make([]string, 0)
 		for key := range teamStats {
@@ -115,26 +116,26 @@ func printStats(seasonStats models.SeasonStats, teamStats map[string]models.Team
 		for _, team := range teams {
 			stats := teamStats[team]
 			if stats.League == league {
-				fmt.Printf("%v: (%v-%v)\n", team, stats.EarlyGames, stats.LateGames)
+				log.Info("%v: (%v-%v)\n", team, stats.EarlyGames, stats.LateGames)
 
-				fmt.Printf("Days of the week: ")
+				log.Info("Days of the week: ")
 				for _, dotw := range []time.Weekday{1, 2, 3, 4, 5, 6} {
 					day := fmt.Sprintf("%v", dotw)
-					fmt.Printf("%c:%v ", day[0], stats.DaysOfTheWeek[dotw])
+					log.Info("%c:%v ", day[0], stats.DaysOfTheWeek[dotw])
 				}
-				fmt.Printf("\n")
+				log.Info("\n")
 
-				fmt.Printf("Days between games: ")
+				log.Info("Days between games: ")
 				for i, daysBetween := range stats.DaysBetweenGames {
 					if i < len(stats.DaysBetweenGames)-1 {
-						fmt.Printf("%v-", daysBetween)
+						log.Info("%v-", daysBetween)
 					} else {
-						fmt.Printf("%v", daysBetween)
+						log.Info("%v", daysBetween)
 					}
 				}
-				fmt.Printf("\n")
+				log.Info("\n")
 
-				fmt.Printf("Average days between games: %0.1f\n", stats.AverageDaysBetweenGames)
+				log.Info("Average days between games: %0.1f\n", stats.AverageDaysBetweenGames)
 			}
 		}
 	}
