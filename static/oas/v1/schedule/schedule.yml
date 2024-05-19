@@ -59,8 +59,9 @@ components:
         averageDaysBetweenGames:
           type: float
         games:
-          type: object
-          $ref: '#components/schemas/Game'
+          type: array
+          items:
+            $ref: '#components/schemas/Game'
         balanced:
           type: boolean
     Game:
