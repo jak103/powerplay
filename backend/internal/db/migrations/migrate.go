@@ -65,6 +65,7 @@ func Run(db *gorm.DB) error {
 			&models.Registration{},
 			&models.Venue{},
 			&models.KeyRecord{},
+			&models.Penalty{}, // Will change if we want to do this the way penalty types was done
 		)
 		if err != nil {
 			return err
