@@ -3,21 +3,15 @@ package schedule
 import (
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
-	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 	"time"
 )
-
-func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/generate", auth.Authenticated, handleGenerate)
-}
 
 func handleGenerate(c *fiber.Ctx) error {
 	log.Info("Scheduler v0.1\n")
@@ -89,16 +83,6 @@ func optimizeSchedule(games []models.Game) {
 	}
 }
 
-func getBalanceCount(teamStats *map[string]models.TeamStats) int {
-	balanceCount := 0
-	for _, team := range *teamStats {
-		if team.Balanced {
-			balanceCount++
-		}
-	}
-	return balanceCount
-}
-
 func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Season {
 	log.Info("Generating games")
 	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
@@ -139,26 +123,6 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Sea
 	return season
 }
 
-func rotateTeams(league *models.League) {
-	// Rotate teams except the first one
-	lastTeam := league.Teams[len(league.Teams)-1]
-	copy(league.Teams[2:], league.Teams[1:len(league.Teams)-1])
-	league.Teams[1] = lastTeam
-}
-
-func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
-	return models.Game{
-		Team1Id:     team1,
-		Team1Name:   team1Name,
-		Team2Id:     team2,
-		Team2Name:   team2Name,
-		League:      league,
-		Location:    "George S. Eccles Ice Center --- Surface 1",
-		LocationUrl: "https://www.google.com/maps?cid=12548177465055817450",
-		EventType:   "Game",
-	}
-}
-
 func assignTimes(times []string, season models.Season) []models.Game {
 	log.Info("Assigning ice times")
 
@@ -195,6 +159,36 @@ func assignTimes(times []string, season models.Season) []models.Game {
 	}
 
 	return games
+}
+
+func getBalanceCount(teamStats *map[string]models.TeamStats) int {
+	balanceCount := 0
+	for _, team := range *teamStats {
+		if team.Balanced {
+			balanceCount++
+		}
+	}
+	return balanceCount
+}
+
+func rotateTeams(league *models.League) {
+	// Rotate teams except the first one
+	lastTeam := league.Teams[len(league.Teams)-1]
+	copy(league.Teams[2:], league.Teams[1:len(league.Teams)-1])
+	league.Teams[1] = lastTeam
+}
+
+func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
+	return models.Game{
+		Team1Id:     team1,
+		Team1Name:   team1Name,
+		Team2Id:     team2,
+		Team2Name:   team2Name,
+		League:      league,
+		Location:    "George S. Eccles Ice Center --- Surface 1",
+		LocationUrl: "https://www.google.com/maps?cid=12548177465055817450",
+		EventType:   "Game",
+	}
 }
 
 func newGames(season *models.Season) []models.Game {

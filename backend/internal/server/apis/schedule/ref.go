@@ -3,10 +3,8 @@ package schedule
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
-	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
@@ -18,10 +16,6 @@ type RefScheduleRow struct {
 	Level           string `csv:"Game Level"`
 	Home            string `csv:"Home Team"`
 	Away            string `csv:"Away Team"`
-}
-
-func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/ref", auth.Authenticated, handleRef)
 }
 
 func handleRef(c *fiber.Ctx) error {
