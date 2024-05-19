@@ -2,6 +2,7 @@ package schedule
 
 import (
 	"bufio"
+	"encoding/json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
@@ -21,30 +22,44 @@ func init() {
 }
 
 func handleGenerate(c *fiber.Ctx) error {
-	log.Info("Hockey scheduler v0.1")
+	log.Info("Scheduler v0.1\n")
 
-	log.Info("Reading config file summer_2024_config.yml")
-	seasonConfig, err := parser.SeasonConfig("summer_2024")
+	seasonFileName, numberOfGamesPerTeam, err := readBody(c)
 	if err != nil {
-		log.Error("Error reading file %v\n", err)
+		log.Error("Error reading body: %v\n", err)
+		return err
 	}
 
-	// TODO instead of commenting out the debugOutput, use a flag to enable it from the config file?
-	// debugOutput(seasonConfig)
+	log.Info("Reading config file for season\n")
+	seasonConfig, err := parser.SeasonConfig(seasonFileName)
+	if err != nil {
+		log.Error("Error reading file: %v\n", err)
+		return responder.BadRequest(c, "Error reading file")
+	}
 
-	// TODO this story doesnt make since.
-	// 	The names of the functions should help tell the overall story of the program as this is the main function.
-	// 	generateGames should be renamed.
-	season := generateGames(seasonConfig.Leagues, 10) // TODO why isn't 10 a config value?
+	season := generateGames(seasonConfig.Leagues, numberOfGamesPerTeam)
 
 	games := assignTimes(seasonConfig.IceTimes, season)
 
 	optimizeSchedule(games)
 
-	// printSchedule(games)
-
 	csv.GenerateCsv(games, "schedule.csv")
 	return responder.NotYetImplemented(c)
+}
+
+func readBody(c *fiber.Ctx) (string, int, error) {
+	type BodyDto struct {
+		SeasonFileName       string `json:"seasonFileName"`
+		NumberOfGamesPerTeam int    `json:"numberOfGamesPerTeam"`
+	}
+	body := c.Body()
+	var bodyDto BodyDto
+	err := json.Unmarshal(body, &bodyDto)
+	if err != nil {
+		return "", 0, responder.BadRequest(c, "Error reading body")
+	}
+
+	return bodyDto.SeasonFileName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
 func optimizeSchedule(games []models.Game) {
