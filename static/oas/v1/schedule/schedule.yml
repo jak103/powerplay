@@ -27,8 +27,10 @@ schemas:
       response_data:
         type: object
         properties:
-          Team:
-            $ref: '#/components/schemas/Team'
+          teamStats:
+            type: array
+            items:
+              $ref: '#/components/schemas/Team'
 
 components:
   schemas:

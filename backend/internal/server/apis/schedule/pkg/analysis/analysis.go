@@ -53,6 +53,8 @@ func RunTimeAnalysis(games []models.Game) (models.SeasonStats, map[string]models
 	return seasonStats, teamStats
 }
 
+func Serialize(ts map[string]models.TeamStats)
+
 func newStats(league, team string) models.TeamStats {
 	return models.TeamStats{
 		League:        league,
@@ -140,3 +142,5 @@ func printStats(seasonStats models.SeasonStats, teamStats map[string]models.Team
 		}
 	}
 }
+
+
