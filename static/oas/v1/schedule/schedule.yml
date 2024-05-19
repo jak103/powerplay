@@ -2,13 +2,6 @@ paths:
   analysis:
     get:
       summary: Request analysis of schedule with scheduleId
-      # parameters:
-      # in: path
-      # name: scheduleId
-      # description: ID of the schedule to analyze
-      # required: true
-      # schema:
-      #   $ref: "#/components/schemas/Team"
       description: |
         **REQUIRED PERMISSIONS:** admin
       responses:
