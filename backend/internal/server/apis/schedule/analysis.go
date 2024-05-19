@@ -12,12 +12,27 @@ import (
 )
 
 func init() {
+<<<<<<< Updated upstream
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/analysis", auth.Authenticated, handleAnalysis)
+=======
+	apis.RegisterHandler(fiber.MethodGet, "/schedule/analysis", auth.Authenticated, handleAnalysis)
+>>>>>>> Stashed changes
 }
 
 func handleAnalysis(c *fiber.Ctx) error {
 	games, seasonConfig := parser.ReadGames("summer_2024")
 
+    // TODO: get team stats and serialize all of the teams stats
+    // Research if we are storing these in a database, if not, we can store them
+    // The map contains the team name, an example json object might look like this:
+    // {
+    //     teamName1: {
+    //         team1Data
+    //     }
+    //     teamName2: {
+    //         team2Data
+    //     }
+    // }
 	analysis.RunTimeAnalysis(games)
 
 	printTeamSchedules(games, seasonConfig)
