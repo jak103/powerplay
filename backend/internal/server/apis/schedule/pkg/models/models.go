@@ -85,3 +85,33 @@ type SeasonStats struct {
 func (ss SeasonStats) EarlyPercentage() float32 {
 	return (float32(ss.EarlyGames) / float32(ss.TotalGames))
 }
+
+type TeamData struct {
+    Name                    string                  `json:"name"`
+	League                  string                  `json:"league"`
+	EarlyGames              int                     `json:"earlyGame"`
+	LateGames               int                     `json:"lateGame"`
+	DaysOfTheWeek           map[time.Weekday]int    `json:"daysOfTheWeek"`
+	DaysBetweenGames        []int                   `json:"daysBetweenGames"`
+	AverageDaysBetweenGames float32                 `json:"averageDaysBetweenGames"`
+	Games                   []GameData              `json:"games"`
+	Balanced                bool                    `json:"balanced"`
+}
+
+type GameData struct {
+    Start       string    `json:"start"`
+	StartDate   string    `json:"startDate"`
+	StartTime   string    `json:"startTime"`
+	EndDate     string    `json:"endDate"`
+	EndTime     string    `json:"endTime"`
+	Location    string    `json:"location"`
+	LocationUrl string    `json:"locationUrl"`
+	EventType   string    `json:"eventType"`
+	League      string    `json:"league"`
+	Team1Id     string    `json:"team1Id"`
+	Team2Id     string    `json:"team2Id"`
+	Team1Name   string    `json:"team1Name"`
+	Team2Name   string    `json:"team2Name"`
+	IsEarly     bool      `json:"isEarly"`
+	Optimized   bool      `json:"optimized"`
+}

@@ -1,7 +1,7 @@
 paths:
   analysis:
     get:
-      summary: Request analysis of schedule with scheduleId
+      summary: Request analysis of schedule
       description: |
         **REQUIRED PERMISSIONS:** admin
       responses:
