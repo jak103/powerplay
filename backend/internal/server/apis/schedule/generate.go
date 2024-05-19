@@ -1,7 +1,6 @@
 package schedule
 
 import (
-	"bufio"
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
@@ -13,7 +12,6 @@ import (
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
-	"os"
 	"time"
 )
 
@@ -43,8 +41,14 @@ func handleGenerate(c *fiber.Ctx) error {
 
 	optimizeSchedule(games)
 
-	csv.GenerateCsv(games, "schedule.csv")
-	return responder.NotYetImplemented(c)
+	err = csv.GenerateCsv(games, "schedule.csv")
+	if err != nil {
+		log.Error("Error writing csv: %v\n", err)
+		return responder.InternalServerError(c)
+
+	}
+
+	return responder.Ok(c, "Schedule generated at schedule.csv")
 }
 
 func readBody(c *fiber.Ctx) (string, int, error) {
@@ -69,23 +73,19 @@ func optimizeSchedule(games []models.Game) {
 	// Need to make sure games are balanced in
 	// - Early / late
 	// - Days between games
-	finput := bufio.NewScanner(os.Stdin)
-	done := false
-	for !done {
+	balanceCount := getBalanceCount(&teamStats)
+	lastBalanceCount := -1
+
+	for count := 0; balanceCount != lastBalanceCount && count < 25; count++ {
 		optimize.Schedule(games, seasonStats, teamStats)
 
 		log.Info("Post-optimization analysis")
 		seasonStats, teamStats = analysis.RunTimeAnalysis(games)
 
+		lastBalanceCount = balanceCount
 		balanceCount := getBalanceCount(&teamStats)
 
 		log.Info("Balanced count: %v\n", balanceCount)
-
-		log.Info("Run optimization again?")
-		finput.Scan()
-		if finput.Text() != "y" {
-			done = true
-		}
 	}
 }
 
@@ -167,14 +167,12 @@ func assignTimes(times []string, season models.Season) []models.Game {
 	log.Info("Have times for %v games\n", len(times))
 	log.Info("Have %v games\n", len(games))
 	for i := range games {
-		// log.Info("    %s -- %s v %s\n", iceTime, games[i].Team1Id, games[i].Team2Id)
 		startTime, err := time.Parse("1/2/06 15:04", times[i])
 		if err != nil {
 			log.Error("Failed to parse start time: %v\n", err)
 		}
 		endTime := startTime.Add(75 * time.Minute)
 
-		// log.Info("Start time: %v\n", startTime)
 		games[i].Start = startTime
 		games[i].StartDate = startTime.Format("01/02/2006")
 		games[i].StartTime = startTime.Format("15:04")
@@ -191,7 +189,6 @@ func assignTimes(times []string, season models.Season) []models.Game {
 			} else {
 				games[i].IsEarly = false
 			}
-
 		case 22, 23:
 			games[i].IsEarly = false
 		}
@@ -218,17 +215,10 @@ func isEarlyGame(hour, minute int) bool {
 	switch hour {
 	case 20:
 		return true
-
 	case 21:
-		if minute <= 15 {
-			return true
-		} else {
-			return false
-		}
-
+		return minute <= 15
 	case 22, 23:
 		return false
 	}
-
 	return false
 }
