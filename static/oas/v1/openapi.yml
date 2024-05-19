@@ -10,6 +10,8 @@ info:
 paths:
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
+  /schedule/analysis/{scheduleId}:
+    $ref: "./schedule/schedule.yml#/paths/analysis"
 
 components:
   securitySchemes:
