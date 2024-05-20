@@ -10,12 +10,14 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"gorm.io/gorm"
 	"time"
 )
 
 func HandleGenerate(c *fiber.Ctx) error {
 	log.Info("Scheduler v0.1\n")
 
+	log.Info("Reading body\n")
 	seasonFileName, numberOfGamesPerTeam, err := ReadBody(c)
 	if err != nil {
 		log.Error("Error reading body: %v\n", err)
@@ -29,20 +31,34 @@ func HandleGenerate(c *fiber.Ctx) error {
 		return responder.BadRequest(c, "Error reading file")
 	}
 
+	log.Info("Generating games\n")
 	season := GenerateGames(seasonConfig.Leagues, numberOfGamesPerTeam)
 
+	log.Info("Assigning ice times\n")
 	games := AssignTimes(seasonConfig.IceTimes, season)
 
+	log.Info("Optimizing schedule\n")
 	OptimizeSchedule(games)
 
+	log.Info("Writing csv\n")
 	err = csv.GenerateCsv(games, "schedule.csv")
 	if err != nil {
 		log.Error("Error writing csv: %v\n", err)
 		return responder.InternalServerError(c)
-
 	}
 
-	return responder.Ok(c, "Schedule generated at schedule.csv")
+	// TODO should be moved to pkg
+	log.Info("Saving to database\n")
+	db := c.Locals("db").(*gorm.DB)
+	for _, game := range games {
+		err = db.Create(&game).Error
+		if err != nil {
+			log.Error("Error saving game to database: %v\n", err)
+			return responder.InternalServerError(c)
+		}
+	}
+
+	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
 }
 
 func ReadBody(c *fiber.Ctx) (string, int, error) {
@@ -84,7 +100,6 @@ func OptimizeSchedule(games []models.Game) {
 }
 
 func GenerateGames(leagues []models.League, numberOfGamesPerTeam int) models.Season {
-	log.Info("Generating games")
 	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 
 	for _, league := range leagues {
@@ -124,7 +139,6 @@ func GenerateGames(leagues []models.League, numberOfGamesPerTeam int) models.Sea
 }
 
 func AssignTimes(times []string, season models.Season) []models.Game {
-	log.Info("Assigning ice times")
 
 	games := NewGames(&season)
 
