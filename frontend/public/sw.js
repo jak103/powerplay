@@ -1,17 +1,18 @@
 self.addEventListener('push', (e) => {
   console.log("Received push", e)
+  const data = e.data.json();
   console.log("Showing notitification");
   var options = {
-    body: 'This notification was generate from a push.',
+    body: data.message,
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: '2'
+      primaryKey: data.primaryKey
     },
     actions: [
       {
         action: 'explore',
-        title: 'Explore this new world',
+        title: 'Explore',
       },
       {
         action: 'close',
@@ -19,7 +20,7 @@ self.addEventListener('push', (e) => {
       }
     ]
   };
-  e.waitUntil(self.registration.showNotification('Hello World'));
+  e.waitUntil(self.registration.showNotification(data.title, options));
   console.log("Done showing notification");
 })
 
@@ -34,15 +35,16 @@ self.addEventListener('install', (event) => {
         '/app/schedule',
         '/app/create-account',
         '/app/sign-in',
-        '/_nuxt/layouts/app-layout.vue?vue&type=style&index=0&scoped=031fc290&lang.scss',
-        '/_nuxt/node_modules/nuxt/dist/app/plugins/check-if-layout-used.js?v=f43cdfe7',
-        '/_nuxt/@id/virtual:nuxt:C:/Users/micha/Homework/5890/Powerplay/frontend/.nuxt/layouts.mjs',
-        '/_nuxt/node_modules/nuxt/dist/app/components/nuxt-layout.js?v=f43cdfe7',
+        '/app/offline-page',
+        //'/_nuxt/layouts/app-layout.vue?vue&type=style&index=0&scoped=031fc290&lang.scss',
+        //'/_nuxt/node_modules/nuxt/dist/app/plugins/check-if-layout-used.js?v=f43cdfe7',
+        //'/_nuxt/node_modules/nuxt/dist/app/components/nuxt-layout.js?v=f43cdfe7',
         // Add other assets as needed
       ]);
     })
   );
 });
+
 
 
 self.addEventListener('fetch', (event) => {
@@ -59,9 +61,29 @@ self.addEventListener('fetch', (event) => {
         if (cacheResponse) {
           return cacheResponse;
         }
-        // If the resource is not in the cache, return a fallback response
-        return new Response('Offline', { status: 503 });
+        // If the resource is not in the cache, return the offline page
+        return caches.match('/app/offline-page').then((offlineResponse) => {
+          return offlineResponse || new Response('Offline', { status: 503 });
+        });
       });
     })
   );
+});
+
+
+self.addEventListener("load", () => { // TESTING
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+  }
+});
+
+
+// For saving the user's notification preferences, incomplete, as the DynamoDB is not accessible from the service worker
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'update-preferences') {
+    // Handle the preferences
+    // For simplicity, we're just logging them here
+    console.log('Received preferences:', event.data.preferences);
+    // You can store these preferences in DynamoDB (somehow) or use them directly
+  }
 });
