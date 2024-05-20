@@ -1,5 +1,5 @@
 paths:
-  shots-on-goal:
+  shotsongoal:
     post:
       tags:
         - ShotsOnGoal
@@ -51,25 +51,24 @@ schemas:
       - scorekeeper
       - shot_time
 
-
-ShotOnGoalResponse:
-    type: object
-    properties:
-      status_code:
-        $ref: "../common/schemas.yml#/schemas/StatusCode200"
-      status_string:
-        $ref: "../common/schemas.yml#/schemas/StatusString200"
-      request_id:
-        $ref: "../common/schemas.yml#/schemas/RequestId"
-      response_data:
-        type: object
-        properties:
-          shot_on_goal_id:
-            type: integer
-            description: The ID of the newly created shot on goal record
-            example: 789
-          created_at:
-            type: string
-            format: date-time
-            description: The timestamp when the shot on goal was created
-            example: 2024-04-08T00:20:46.503702735Z
+  ShotOnGoalResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: object
+          properties:
+            shot_on_goal_id:
+              type: integer
+              description: The ID of the newly created shot on goal record
+              example: 789
+            created_at:
+              type: string
+              format: date-time
+              description: The timestamp when the shot on goal was created
+              example: 2024-04-08T00:20:46.503702735Z

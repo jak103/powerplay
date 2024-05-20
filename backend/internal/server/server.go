@@ -11,6 +11,7 @@ import (
 	_ "github.com/jak103/powerplay/internal/server/apis/chat"
 	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
 	_ "github.com/jak103/powerplay/internal/server/apis/user"
+	_ "github.com/jak103/powerplay/internal/server/apis/stats"
 )
 
 func Run() {

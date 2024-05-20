@@ -10,6 +10,8 @@ info:
 paths:
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
+  /shotsongoal:
+    $ref: "./stats/shotsongoal.yml#/paths/shotsongoal"   
 
 components:
   securitySchemes:
