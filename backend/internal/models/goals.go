@@ -1,16 +1,15 @@
 package models
 
-import "time"
 
 
 type Goal struct {
 	DbModel
 	UserId   	uint          	`json:"user_id"`
 	GameId   	uint          	`json:"game_id"` 
-	//Game     	Game          	`gorm:"game"` 
+	//Game     	Game          	`gorm:"game"` TODO: When seeding is finished we can officially test this
 	TeamId   	uint          	`json:"team_id"` 
-	//Team     	Team			`gorm:"team"` 
-	Duration 	time.Duration	`json:"duration"`
+	//Team     	Team			`gorm:"team"` TODO: When seeding is finished we can officially test this
+	Duration 	uint			`json:"duration"` // Do we potentially want to change this to time.Duration
 	Period	    uint			`json:"period"`
 	Assist1Id	uint   	   		`json:"assist1_id"`
 	Assist2Id	uint   	   		`json:"assist2_id"`

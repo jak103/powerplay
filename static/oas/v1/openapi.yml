@@ -10,6 +10,8 @@ info:
 paths:
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
+  /goals:
+    $ref: "./stats/goal.yml#/paths/goals"
 
 components:
   securitySchemes:
