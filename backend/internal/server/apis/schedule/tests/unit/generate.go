@@ -29,7 +29,7 @@ func TestGenerate(t *testing.T) {
 
 	t.Run("Test ReadBody", func(t *testing.T) {
 		c := &fiber.Ctx{}
-		body := `{"seasonFileName":"season.json", "numberOfGamesPerTeam": 10}`
+		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
 		c.Request().SetBody([]byte(body))
 
 		seasonFileName, numberOfGamesPerTeam, err := schedule.ReadBody(c)
