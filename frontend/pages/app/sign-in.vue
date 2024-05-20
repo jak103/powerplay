@@ -1,9 +1,34 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
+
+const email = ref('');
+const password = ref('');
 definePageMeta({
   layout: "auth-layout",
 });
-const signIn = () => {
-  useRouter().push('/app')
+const signIn = async () => {
+  
+  const response = await fetch('http://localhost:9001/api/v1/auth', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  });
+  if(response.ok){
+    const data = await response.json();
+    localStorage.setItem('jwt', data.response_data.jwt);
+    useRouter().push('/app')
+  }
+  else{
+    let errorMessage = document.createElement("p");
+    console.error('Login failed');
+    document.body.appendChild(errorMessage);
+  }
 }
 </script>
 
@@ -17,11 +42,12 @@ const signIn = () => {
         type="email"
         class="form-control"
         id="email"
+        v-model="email"
       />
     </div>
     <div>
       <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" />
+      <input type="password" class="form-control" id="password" v-model="password" />
     </div>
     <div class="hstack gap-3">
       <button class="btn btn-primary" @click="signIn">Sign In</button>
