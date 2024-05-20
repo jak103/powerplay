@@ -2,42 +2,35 @@ package stats
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/locals"
+	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodGet, "/penaltyTypes", auth.Public, getPenaltyTypes)
-	apis.RegisterHandler(fiber.MethodGet, "/penalties", auth.Public, getPenalties)
-	//apis.RegisterHandler(fiber.MethodPost, "/penalty", auth.Public, createPenalty)
+	//apis.RegisterHandler(fiber.MethodGet, "/penaltyTypes", auth.Public, getPenaltyTypes)
+	apis.RegisterHandler(fiber.MethodGet, "/penalties", auth.Public, getPenaltiesHandler)
+	apis.RegisterHandler(fiber.MethodPost, "/penalties", auth.Public, postPenaltyHandler)
 }
 
-func getPenaltyTypes(c *fiber.Ctx) error {
-
-	penaltyTypes := stubPenaltyTypes()
-	jsonData, err := json.Marshal(penaltyTypes)
+func getPenaltiesHandler(c *fiber.Ctx) error {
+	log := locals.Logger(c)
+	log.Info("Handling getting all penalties")
+	db := db.GetSession(c)
+	penalties, err := db.GetPenalties()
 	if err != nil {
+		log.WithErr(err).Alert("Failed to get all penalties from the database")
 		return err
 	}
 
-	c.Type("json")
-
-	// Send JSON response
-	return c.Send(jsonData)
-}
-
-func stubPenaltyTypes() map[string][]string {
-	return map[string][]string{"penaltyTypes": {"Boarding", "Charging", "Slashing"}}
-}
-
-func getPenalties(c *fiber.Ctx) error {
-	penalties := stubPenalties()
 	jsonData, err := json.Marshal(penalties)
 	if err != nil {
+		log.WithErr(err).Alert("Failed to serialize penalties response payload")
 		return err
 	}
 
@@ -47,19 +40,25 @@ func getPenalties(c *fiber.Ctx) error {
 	return c.Send(jsonData)
 }
 
-func stubPenalties() []models.Penalty {
-	var penalties []models.Penalty
-	jsonString := `[{"id":1,"created_at":"2009-11-10T23:00:00Z","updated_at":"2009-11-10T23:00:00Z","player_id":55,"team_id":1,"game_id":42,"period":2,"duration":123,"created_by":5,"penalty_type_id":1},{"id":2,"created_at":"2009-11-10T23:00:00Z","updated_at":"2009-11-10T23:00:00Z","player_id":55,"team_id":1,"game_id":42,"period":3,"duration":456,"created_by":5,"penalty_type_id":1}]`
+func postPenaltyHandler(c *fiber.Ctx) error {
+	log := locals.Logger(c)
+	log.Info("Handling creating new penalty")
+	log.Debug("body: %q", c.Request().Body())
 
-	err := json.Unmarshal([]byte(jsonString), &penalties)
+	// Parse penalty
+	penaltyRequest := &models.Penalty{}
+	err := c.BodyParser(penaltyRequest)
 	if err != nil {
-
-		// if error is not nil
-		// print error
-		fmt.Println(err)
+		log.WithErr(err).Alert("Failed to parse penalty request payload")
+		return responder.InternalServerError(c)
 	}
-	return penalties
-}
 
-// func createPenalty(c *fiber.Ctx) error {
-// }
+	db := db.GetSession(c)
+	err = db.CreatePenalty(penaltyRequest)
+	if err != nil {
+		log.WithErr(err).Alert("Failed to save penalty request")
+		return responder.InternalServerError(c)
+	}
+
+	return responder.Ok(c)
+}
