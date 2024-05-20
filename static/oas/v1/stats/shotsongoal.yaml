@@ -1,0 +1,75 @@
+paths:
+  shots-on-goal:
+    post:
+      tags:
+        - ShotsOnGoal
+      summary: Shot on Goal post request
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      requestBody:
+        description: The request body should contain the details of the shot on goal.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/ShotOnGoalRequest"
+      responses:
+        200:
+          description: Successfully posted shot on goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/ShotOnGoalResponse"
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+
+
+schemas:
+  ShotOnGoalRequest:
+    type: object
+    properties:
+      game_id:
+        type: integer
+        description: The ID of the game
+        example: 123
+      team_id:
+        type: integer
+        description: The ID of the team
+        example: 45
+      shot_time:
+        type: integer
+        description: The time of the shot in seconds
+        example: 3600
+      scorekeeper:
+        type: integer
+        description: The User ID of the scorekeeper
+        example: 67
+    required:
+      - game_id
+      - team_id
+      - scorekeeper
+      - shot_time
+
+
+ShotOnGoalResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: object
+        properties:
+          shot_on_goal_id:
+            type: integer
+            description: The ID of the newly created shot on goal record
+            example: 789
+          created_at:
+            type: string
+            format: date-time
+            description: The timestamp when the shot on goal was created
+            example: 2024-04-08T00:20:46.503702735Z

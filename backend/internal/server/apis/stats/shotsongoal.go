@@ -17,7 +17,7 @@ func postShotsOnGoalHandler(c *fiber.Ctx) error {
 	shotOnGoal := new(models.ShotOnGoal)
 	err := c.BodyParser(ShotOnGoal)
 	if err != nil {
-		log.WithErr(err).Error("Failed to parse ShotsOnGoal POST request.")
+		log.WithErr(err).Alert("Failed to parse ShotsOnGoal POST request.")
 		return err
 	}
 
@@ -25,13 +25,12 @@ func postShotsOnGoalHandler(c *fiber.Ctx) error {
 	model, err := db.SaveShotOnGoal(shotOnGoal)
 
 	if err != nil {
-		log.WithErr(err).Error("")
-		return responder.internalServerError(c, )
+		log.WithErr(err).Alert("Failed to ")
+		return responder.internalServerError(c)
 	}
 
 	if record == nil {
-		log.Logger
-		return responder.internalServerError(c, "failed to POST ShotOnGoal.")
+		return responder.internalServerError(c)
 	}
 	return responder.Ok(c)	
 }
