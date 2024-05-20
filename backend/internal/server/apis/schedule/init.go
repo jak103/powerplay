@@ -7,7 +7,7 @@ import (
 )
 
 func Init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/generate", auth.Authenticated, handleGenerate)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/generate", auth.Authenticated, HandleGenerate)
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/analysis", auth.Authenticated, handleAnalysis)
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/ref", auth.Authenticated, handleRef)
 	apis.RegisterHandler(fiber.MethodPost, "/rsvp", auth.Authenticated, handleRsvp)

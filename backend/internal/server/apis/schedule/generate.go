@@ -13,10 +13,10 @@ import (
 	"time"
 )
 
-func handleGenerate(c *fiber.Ctx) error {
+func HandleGenerate(c *fiber.Ctx) error {
 	log.Info("Scheduler v0.1\n")
 
-	seasonFileName, numberOfGamesPerTeam, err := readBody(c)
+	seasonFileName, numberOfGamesPerTeam, err := ReadBody(c)
 	if err != nil {
 		log.Error("Error reading body: %v\n", err)
 		return err
@@ -29,11 +29,11 @@ func handleGenerate(c *fiber.Ctx) error {
 		return responder.BadRequest(c, "Error reading file")
 	}
 
-	season := generateGames(seasonConfig.Leagues, numberOfGamesPerTeam)
+	season := GenerateGames(seasonConfig.Leagues, numberOfGamesPerTeam)
 
-	games := assignTimes(seasonConfig.IceTimes, season)
+	games := AssignTimes(seasonConfig.IceTimes, season)
 
-	optimizeSchedule(games)
+	OptimizeSchedule(games)
 
 	err = csv.GenerateCsv(games, "schedule.csv")
 	if err != nil {
@@ -45,7 +45,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	return responder.Ok(c, "Schedule generated at schedule.csv")
 }
 
-func readBody(c *fiber.Ctx) (string, int, error) {
+func ReadBody(c *fiber.Ctx) (string, int, error) {
 	type BodyDto struct {
 		SeasonFileName       string `json:"seasonFileName"`
 		NumberOfGamesPerTeam int    `json:"numberOfGamesPerTeam"`
@@ -60,14 +60,14 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 	return bodyDto.SeasonFileName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
-func optimizeSchedule(games []models.Game) {
+func OptimizeSchedule(games []models.Game) {
 	log.Info("Pre-optimization analysis")
 	seasonStats, teamStats := analysis.RunTimeAnalysis(games)
 
 	// Need to make sure games are balanced in
 	// - Early / late
 	// - Days between games
-	balanceCount := getBalanceCount(&teamStats)
+	balanceCount := GetBalanceCount(&teamStats)
 	lastBalanceCount := -1
 
 	for count := 0; balanceCount != lastBalanceCount && count < 25; count++ {
@@ -77,13 +77,13 @@ func optimizeSchedule(games []models.Game) {
 		seasonStats, teamStats = analysis.RunTimeAnalysis(games)
 
 		lastBalanceCount = balanceCount
-		balanceCount := getBalanceCount(&teamStats)
+		balanceCount := GetBalanceCount(&teamStats)
 
 		log.Info("Balanced count: %v\n", balanceCount)
 	}
 }
 
-func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Season {
+func GenerateGames(leagues []models.League, numberOfGamesPerTeam int) models.Season {
 	log.Info("Generating games")
 	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 
@@ -112,10 +112,10 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Sea
 				team2 := league.Teams[numTeams-1-i].Id
 				team2Name := league.Teams[numTeams-1-i].Name
 
-				rounds[round].Games[i] = newGame(league.Name, team1, team1Name, team2, team2Name)
+				rounds[round].Games[i] = NewGame(league.Name, team1, team1Name, team2, team2Name)
 			}
 
-			rotateTeams(&league)
+			RotateTeams(&league)
 		}
 		season.LeagueRounds[league.Name] = rounds
 	}
@@ -123,10 +123,10 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Sea
 	return season
 }
 
-func assignTimes(times []string, season models.Season) []models.Game {
+func AssignTimes(times []string, season models.Season) []models.Game {
 	log.Info("Assigning ice times")
 
-	games := newGames(&season)
+	games := NewGames(&season)
 
 	log.Info("Have times for %v games\n", len(times))
 	log.Info("Have %v games\n", len(games))
@@ -161,7 +161,7 @@ func assignTimes(times []string, season models.Season) []models.Game {
 	return games
 }
 
-func getBalanceCount(teamStats *map[string]models.TeamStats) int {
+func GetBalanceCount(teamStats *map[string]models.TeamStats) int {
 	balanceCount := 0
 	for _, team := range *teamStats {
 		if team.Balanced {
@@ -171,14 +171,14 @@ func getBalanceCount(teamStats *map[string]models.TeamStats) int {
 	return balanceCount
 }
 
-func rotateTeams(league *models.League) {
+func RotateTeams(league *models.League) {
 	// Rotate teams except the first one
 	lastTeam := league.Teams[len(league.Teams)-1]
 	copy(league.Teams[2:], league.Teams[1:len(league.Teams)-1])
 	league.Teams[1] = lastTeam
 }
 
-func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
+func NewGame(league, team1, team1Name, team2, team2Name string) models.Game {
 	return models.Game{
 		Team1Id:     team1,
 		Team1Name:   team1Name,
@@ -191,7 +191,7 @@ func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
 	}
 }
 
-func newGames(season *models.Season) []models.Game {
+func NewGames(season *models.Season) []models.Game {
 	games := make([]models.Game, 0)
 	for i := 0; i < 10; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
@@ -205,7 +205,7 @@ func newGames(season *models.Season) []models.Game {
 	return games
 }
 
-func isEarlyGame(hour, minute int) bool {
+func IsEarlyGame(hour, minute int) bool {
 	switch hour {
 	case 20:
 		return true
