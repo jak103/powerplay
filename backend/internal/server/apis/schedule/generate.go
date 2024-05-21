@@ -47,6 +47,8 @@ func handleGenerate(c *fiber.Ctx) error {
 		return responder.InternalServerError(c)
 	}
 
+	// TODO Save to database
+
 	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
 }
 
