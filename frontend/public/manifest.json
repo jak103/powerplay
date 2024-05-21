@@ -13,6 +13,12 @@
       "src":"/icons/PowerPlay-Logo.png",
       "sizes": "200x200",
       "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src":"/icons/PowerPlay-Logo.png",
+      "sizes": "200x200",
+      "type": "image/png",
       "purpose": "any"
     }
   ],
