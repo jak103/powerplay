@@ -5,24 +5,21 @@ paths:
         - Stats
       summary: Get All Penalties
       description: |
-        **REQUIRED PERMISSIONS:** none:none  
-        **RATE LIMIT:** TBD
+        Get all penalties
       responses:
         200:
           description: The response body should contain the list of penalties
           content:
             application/json:
               schema:
-                $ref: '#/schemas/GetPenaltyResponse'
+                $ref: '#/schemas/GetPenaltiesResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
     post:
       tags:
         - Stats
-      summary: Create a new penalty
-      description: |
-        **REQUIRED PERMISSIONS:** none:none  
-        **RATE LIMIT:** TBD
+      summary: Create a New Penalty
+      description: Creates a new penalty
       requestBody:
         description: A JSON object with a valid penalty
         required: true
@@ -41,7 +38,7 @@ paths:
           $ref: "../common/errors.yml#/responses/BadRequest"
 
 schemas:
-  GetPenaltyResponse:
+  GetPenaltiesResponse:
     type: object
     properties:
       status_code:
@@ -55,22 +52,68 @@ schemas:
         properties:
           penalties:
             type: array
-            description: The penalty types for a game
+            description: All penalties
             example:
-            - Boarding
-            - Charging
-            - "Contact to the Head"
+            - player_id: 1
+              team_id: 1
+              game_id: 1
+              period: 1
+              duration: 100
+              created_by: 100
+              penalty_type_id: 1
+              penalty_type:
+                name: slashing
+                duration: 10
+                severity: severe
+            - player_id: 2
+              team_id: 1
+              game_id: 1
+              period: 2
+              duration: 100
+              created_by: 100
+              penalty_type_id: 2
+              penalty_type:
+                name: charging
+                duration: 5
+                severity: very_severe
   PostPenaltyRequest:
     type: object
     properties:
-      username:
-        type: string
-        description: The user's username
-        example: awesome_skater
-      password:
-        type: string
-        description: The user's password
-        example: midnight9
+      player_id:
+        type: int
+        description: The player's id
+        example: 1
+      team_id: 
+        type: int 
+        description: The team's id that the player is associated with
+        example: 1 
+      game_id: 
+        type: int 
+        description: The game's id
+        example: 1                
+      period: 
+        type: int 
+        description: The period in the game that the penalty occurred
+        example: 1 
+      duration: 
+        type: int 
+        description: The duration the player is benched
+        example: 1
+      created_by: 
+        type: int 
+        description: The id of the user that creates the penalty
+        example: 2
+      penalty_type_id: 
+        type: int 
+        description: The id of the penalty type
+        example: 1         
+      penalty_type: 
+        type: object
+        description: The penalty type
+        example:
+          name: slashing
+          duration: 1
+          severity: extreme
   PostPenaltyResponse:
     type: object
     properties:
@@ -80,13 +123,3 @@ schemas:
         $ref: "../common/schemas.yml#/schemas/StatusString200"
       request_id:
         $ref: "../common/schemas.yml#/schemas/RequestId"
-      response_data:
-        type: object
-        properties:
-          penalties:
-            type: array
-            description: The penalty types for a game
-            example:
-            - Boarding
-            - Charging
-            - "Contact to the Head"
