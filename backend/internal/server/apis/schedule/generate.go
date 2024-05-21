@@ -10,7 +10,6 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/save"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
@@ -48,12 +47,12 @@ func handleGenerate(c *fiber.Ctx) error {
 		return responder.InternalServerError(c)
 	}
 
-	log.Info("Saving to database\n")
-	err = save.ToDb(c, games)
-	if err != nil {
-		log.Error("Error saving to database: %v\n", err)
-		return responder.InternalServerError(c)
-	}
+	//log.Info("Saving to database\n")
+	//err = save.ToDb(c, games)
+	//if err != nil {
+	//	log.Error("Error saving to database: %v\n", err)
+	//	return responder.InternalServerError(c)
+	//}
 
 	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
 }

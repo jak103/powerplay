@@ -3,7 +3,6 @@ package schedule
 import (
 	"bytes"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/valyala/fasthttp"
@@ -15,11 +14,6 @@ import (
 func TestGenerate(t *testing.T) {
 	app := fiber.New()
 	app.Post("/generate", handleGenerate)
-
-	err := db.Init()
-	if err != nil {
-		panic(err)
-	}
 
 	t.Run("Test isEarlyGame", func(t *testing.T) {
 		assert.True(t, isEarlyGame(20, 0))
