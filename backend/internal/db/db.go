@@ -15,13 +15,13 @@ import (
 	"github.com/jak103/powerplay/internal/utils/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	gorm_logger "gorm.io/gorm/logger"
+	gormlogger "gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
 
-type session struct {
-	connection *gorm.DB
+type Session struct {
+	Connection *gorm.DB
 }
 
 func Init() error {
@@ -34,23 +34,23 @@ func Init() error {
 		config.Vars.Db.DbName,
 		config.Vars.Db.Port)
 
-	dsn_redacted := fmt.Sprintf("host=%s user=%s password=<REDACTED> dbname=%s port=%s sslmode=disable TimeZone=UTC",
+	dsnRedacted := fmt.Sprintf("host=%s user=%s password=<REDACTED> dbname=%s port=%s sslmode=disable TimeZone=UTC",
 		config.Vars.Db.Host,
 		config.Vars.Db.Username,
 		config.Vars.Db.DbName,
 		config.Vars.Db.Port)
 
-	log.Info("DB DSN: %s", dsn_redacted)
+	log.Info("DB DSN: %s", dsnRedacted)
 
 	// TODO replace GORM logger with our logger
-	newLogger := gorm_logger.New(
+	newLogger := gormlogger.New(
 		stdLog.New(os.Stdout, "\r\n", stdLog.LstdFlags), // io writer
-		gorm_logger.Config{
-			SlowThreshold:             time.Second,        // Slow SQL threshold
-			LogLevel:                  gorm_logger.Silent, // Log level
-			IgnoreRecordNotFoundError: true,               // Ignore ErrRecordNotFound error for logger
-			ParameterizedQueries:      true,               // Don't include params in the SQL log
-			Colorful:                  false,              // Disable color
+		gormlogger.Config{
+			SlowThreshold:             time.Second,       // Slow SQL threshold
+			LogLevel:                  gormlogger.Silent, // Log level
+			IgnoreRecordNotFoundError: true,              // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true,              // Don't include params in the SQL log
+			Colorful:                  false,             // Disable color
 		},
 	)
 
@@ -59,24 +59,24 @@ func Init() error {
 		log.WithErr(err).Alert("Failed to connect to DB")
 		return err
 	}
-	log.Info("Databse connected")
+	log.Info("Database connected")
 
 	return nil
 }
 
 func Migrate() error {
 	s := GetSession(nil)
-	return migrations.Run(s.connection)
+	return migrations.Run(s.Connection)
 }
 
-func GetSession(c *fiber.Ctx) session {
+func GetSession(c *fiber.Ctx) Session {
 	logger := log.TheLogger
 	if c != nil {
 		logger = locals.Logger(c)
 	}
 
-	s := session{
-		connection: db.Session(&gorm.Session{
+	s := Session{
+		Connection: db.Session(&gorm.Session{
 			Logger: &dbLogger{
 				theLogger: &logger,
 			},

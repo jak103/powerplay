@@ -22,6 +22,7 @@ type Game struct {
 	Start       time.Time `csv:"-"`
 	StartDate   string    `csv:"Start_Date"`
 	StartTime   string    `csv:"Start_Time"`
+	End         time.Time `csv:"-"`
 	EndDate     string    `csv:"End_Date"`
 	EndTime     string    `csv:"End_Time"`
 	Location    string    `csv:"Location"`     // George S. Eccles Ice Center --- Surface 1

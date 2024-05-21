@@ -8,7 +8,8 @@ import (
 )
 
 func GenerateCsv[T any](games []T, filename string) error {
-	log.Info("Writing CSV: %s", filename)
+	path := "output/" + filename
+	log.Info("Writing CSV: %s", path)
 
 	csvGames, err := gocsv.MarshalBytes(games)
 	if err != nil {
@@ -18,7 +19,7 @@ func GenerateCsv[T any](games []T, filename string) error {
 
 	log.Info("Data marshaled, now writing")
 
-	err = os.WriteFile(filename, csvGames, 0644)
+	err = os.WriteFile(path, csvGames, 0644)
 	if err != nil {
 		log.Error("Failed to write games %v", err)
 		return err
