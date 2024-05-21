@@ -1,18 +1,17 @@
 self.addEventListener('push', (e) => {
   console.log("Received push", e)
-  const data = e.data.json();
   console.log("Showing notitification");
   var options = {
-    body: data.message,
+    body: 'This notification was generate from a push.',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: data.primaryKey
+      primaryKey: '2'
     },
     actions: [
       {
         action: 'explore',
-        title: 'Explore',
+        title: 'Explore this new world',
       },
       {
         action: 'close',
@@ -20,7 +19,7 @@ self.addEventListener('push', (e) => {
       }
     ]
   };
-  e.waitUntil(self.registration.showNotification(data.title, options));
+  e.waitUntil(self.registration.showNotification('Hello World'));
   console.log("Done showing notification");
 })
 
@@ -36,15 +35,11 @@ self.addEventListener('install', (event) => {
         '/app/create-account',
         '/app/sign-in',
         '/app/offline-page',
-        //'/_nuxt/layouts/app-layout.vue?vue&type=style&index=0&scoped=031fc290&lang.scss',
-        //'/_nuxt/node_modules/nuxt/dist/app/plugins/check-if-layout-used.js?v=f43cdfe7',
-        //'/_nuxt/node_modules/nuxt/dist/app/components/nuxt-layout.js?v=f43cdfe7',
         // Add other assets as needed
       ]);
     })
   );
 });
-
 
 
 self.addEventListener('fetch', (event) => {
@@ -74,16 +69,5 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener("load", () => { // TESTING
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
-  }
-});
-
-
-// For saving the user's notification preferences, incomplete, as the DynamoDB is not accessible from the service worker
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'update-preferences') {
-    // Handle the preferences
-    // For simplicity, we're just logging them here
-    console.log('Received preferences:', event.data.preferences);
-    // You can store these preferences in DynamoDB (somehow) or use them directly
   }
 });
