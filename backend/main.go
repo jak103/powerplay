@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db"
+	ppseeders "github.com/jak103/powerplay/internal/db/seeders"
 	"github.com/jak103/powerplay/internal/server"
 	"github.com/jak103/powerplay/internal/utils/log"
 )
@@ -15,6 +16,19 @@ func runMigrations() {
 		return
 	}
 	log.Info("Migrations completed successfully")
+}
+
+func runSeeds() {
+	seeders := []ppseeders.Seeder{
+		ppseeders.PenaltyTypeSeeder{},
+		// Add more seeders here
+	}
+
+	// Seed the database
+	if err := db.RunSeeders(seeders); err != nil {
+		log.WithErr(err).Alert("Failed to seed database: %v", err)
+	}
+	log.Info("Successfully seeded database")
 }
 
 func main() {
@@ -54,6 +68,7 @@ func main() {
 	}
 
 	runMigrations()
+	runSeeds()
 
 	// run
 	server.Run()
