@@ -86,6 +86,7 @@ func Run(db *gorm.DB) error {
 			&models.Registration{},
 			&models.Venue{},
 			&models.KeyRecord{},
+			&models.Penalty{},
 		)
 		if err != nil {
 			return err
