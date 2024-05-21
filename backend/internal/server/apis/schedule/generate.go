@@ -147,18 +147,7 @@ func assignTimes(times []string, season models.Season) []models.Game {
 		games[i].EndDate = endTime.Format("01/02/2006")
 		games[i].EndTime = endTime.Format("15:04")
 
-		switch games[i].Start.Hour() {
-		case 20:
-			games[i].IsEarly = true
-		case 21:
-			if games[i].Start.Minute() <= 15 {
-				games[i].IsEarly = true
-			} else {
-				games[i].IsEarly = false
-			}
-		case 22, 23:
-			games[i].IsEarly = false
-		}
+		games[i].IsEarly = isEarlyGame(games[i].Start.Hour(), games[i].Start.Minute())
 	}
 
 	return games
@@ -198,6 +187,9 @@ func newGames(season *models.Season) []models.Game {
 	games := make([]models.Game, 0)
 	for i := 0; i < 10; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
+			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
+				continue
+			}
 			for j, game := range season.LeagueRounds[league][i].Games {
 				if game.Team1Id != "-1" && game.Team2Id != "-1" { // TODO what does -1 mean?
 					games = append(games, season.LeagueRounds[league][i].Games[j])
