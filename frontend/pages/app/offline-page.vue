@@ -16,7 +16,7 @@
 	},
 	mounted() {
 	  this.boundRedirectUser = this.redirectUser.bind(this);
-	  // Check if the user is already online when the component mounts
+	  // Check if the user is already back online when the component mounts
 	  if (navigator.onLine) {
 		this.redirectUser();
 	  } else {
@@ -36,8 +36,6 @@
 		this.redirectUser();
 	  },
 	  redirectUser() {
-		// Implement the redirection logic here
-		// For example, reload the page or navigate to a specific route
 		window.history.back();
 	  },
 	},
