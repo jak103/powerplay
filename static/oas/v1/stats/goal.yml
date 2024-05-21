@@ -8,52 +8,73 @@ paths:
         **REQUIRED PERMISSIONS:** none:none  
         **RATE LIMIT:** TBD
       requestBody:
-        description: The request body should contain ...
+        description: The request body should contain a user id, game id, team id, duration, period, assist1 id, assist2 id, powerplay, and penalty
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/schemas/GoalRequest"
+              $ref: "#/components/schemas/GoalRequest"
       responses:
         200:
           description: Successfully posted goal
           content:
             application/json:
               schema:
-                $ref: "#/schemas/GoalResponse"
+                $ref: "#/components/schemas/GoalResponse"
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
 
-schemas:
-  GoalRequest:
-    type: object
-    properties:
-      username:
-        type: string
-        description: The user's username
-        example: awesome_skater
-      password:
-        type: string
-        description: The user's password
-        example: midnight9
+components:
+  schemas:
+    GoalRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: The user's id
+          example: 12
+        game_id:
+          type: integer
+          description: The game id
+          example: 13
+        team_id:
+          type: integer
+          description: The team id
+          example: 1
+        duration:
+          type: integer
+          description: The duration
+          example: 27
+        period:
+          type: integer
+          description: The period scored in
+          example: 3
+        assist1_id:
+          type: integer
+          description: The assist 1 id (player)
+          example: 57
+        assist2_id:
+          type: integer
+          description: The assist 2 id (player)
+          example: 84
+        powerplay:
+          type: integer
+          description: Powerplay information
+          example: -2
+        penalty:
+          type: boolean
+          description: If a penalty happened
+          example: true
 
-  GoalResponse:
-    type: object
-    properties:
-      status_code:
-        $ref: "../common/schemas.yml#/schemas/StatusCode200"
-      status_string:
-        $ref: "../common/schemas.yml#/schemas/StatusString200"
-      request_id:
-        $ref: "../common/schemas.yml#/schemas/RequestId"
-      response_data:
-        type: object
-        properties:
-          jwt:
-            type: string
-            description: The Javascript Web Token for user authentication
-            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI1MzU1NTEsImlhdCI6MTcxMjQ0OTE1MSwianRpIjoiMSJ9.YCEqpVHC92akPbl4p8AgkO-7o6ebqMioOuOdWfocMGA
-          expiration:
-            type: string
-            format: date-time
-            example: 2024-04-08T00:20:46.503702735Z
+    GoalResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: object
+          properties:

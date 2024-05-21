@@ -10,7 +10,7 @@ info:
 paths:
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
-  /goals:
+  /goals/submit:
     $ref: "./stats/goal.yml#/paths/goals"
 
 components:
