@@ -1,4 +1,4 @@
-package tests
+package schedule
 
 import (
 	"bytes"
@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/server/apis/schedule"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,7 +31,7 @@ func TestGenerate(t *testing.T) {
 		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
 		c.Request().SetBody([]byte(body))
 
-		seasonFileName, numberOfGamesPerTeam, err := schedule.ReadBody(c)
+		seasonFileName, numberOfGamesPerTeam, err := ReadBody(c)
 		assert.Nil(t, err)
 		assert.Equal(t, "season.json", seasonFileName)
 		assert.Equal(t, 10, numberOfGamesPerTeam)
@@ -44,7 +43,7 @@ func TestGenerate(t *testing.T) {
 			{Start: time.Now().Add(1 * time.Hour)},
 		}
 
-		schedule.OptimizeSchedule(games)
+		OptimizeSchedule(games)
 
 		assert.NotEmpty(t, games)
 	})
@@ -54,7 +53,7 @@ func TestGenerate(t *testing.T) {
 			{Name: "League1", Teams: []models.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}}},
 		}
 
-		season := schedule.GenerateGames(leagues, 2)
+		season := GenerateGames(leagues, 2)
 
 		assert.NotEmpty(t, season.LeagueRounds)
 		assert.Equal(t, 2, len(season.LeagueRounds["League1"][0].Games))
@@ -70,7 +69,7 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := schedule.AssignTimes(times, season)
+		games := AssignTimes(times, season)
 
 		assert.Equal(t, 2, len(games))
 		assert.Equal(t, "20:00", games[0].StartTime)
@@ -82,7 +81,7 @@ func TestGenerate(t *testing.T) {
 			"Team2": {Balanced: false},
 		}
 
-		count := schedule.GetBalanceCount(&teamStats)
+		count := GetBalanceCount(&teamStats)
 
 		assert.Equal(t, 1, count)
 	})
@@ -92,7 +91,7 @@ func TestGenerate(t *testing.T) {
 			Teams: []models.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}, {Id: "3", Name: "Team3"}},
 		}
 
-		schedule.RotateTeams(&league)
+		RotateTeams(&league)
 
 		assert.Equal(t, "Team1", league.Teams[0].Name)
 		assert.Equal(t, "Team3", league.Teams[1].Name)
@@ -100,7 +99,7 @@ func TestGenerate(t *testing.T) {
 	})
 
 	t.Run("Test NewGame", func(t *testing.T) {
-		game := schedule.NewGame("League1", "1", "Team1", "2", "Team2")
+		game := NewGame("League1", "1", "Team1", "2", "Team2")
 
 		assert.Equal(t, "Team1", game.Team1Name)
 		assert.Equal(t, "Team2", game.Team2Name)
@@ -116,21 +115,16 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := schedule.NewGames(&season)
+		games := NewGames(&season)
 
 		assert.Equal(t, 1, len(games)) // Only one game should be added (the game without a bye)
 		assert.Equal(t, "1", games[0].Team1Id)
 	})
 
 	t.Run("Test IsEarlyGame", func(t *testing.T) {
-		assert.True(t, schedule.IsEarlyGame(20, 0))
-		assert.True(t, schedule.IsEarlyGame(21, 15))
-		assert.False(t, schedule.IsEarlyGame(21, 30))
-		assert.False(t, schedule.IsEarlyGame(22, 0))
+		assert.True(t, IsEarlyGame(20, 0))
+		assert.True(t, IsEarlyGame(21, 15))
+		assert.False(t, IsEarlyGame(21, 30))
+		assert.False(t, IsEarlyGame(22, 0))
 	})
-}
-
-func main() {
-	t := &testing.T{}
-	TestGenerate(t)
 }

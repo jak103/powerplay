@@ -3,6 +3,9 @@ package schedule
 import (
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+	"time"
+
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
@@ -10,8 +13,6 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
-	"gorm.io/gorm"
-	"time"
 )
 
 func HandleGenerate(c *fiber.Ctx) error {
