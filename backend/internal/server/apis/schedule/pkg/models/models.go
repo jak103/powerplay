@@ -19,21 +19,21 @@ type Round struct {
 // https://help.sportsengine.com/en/articles/6380725-schedule-upload-tutorial
 // https://intercom.help/SportsEngine/en/articles/6310600-schedule-upload-fields-reference-guide
 type Game struct {
-	Start       time.Time `csv:"-"`
-	StartDate   string    `csv:"Start_Date"`
-	StartTime   string    `csv:"Start_Time"`
-	EndDate     string    `csv:"End_Date"`
-	EndTime     string    `csv:"End_Time"`
-	Location    string    `csv:"Location"`     // George S. Eccles Ice Center --- Surface 1
-	LocationUrl string    `csv:"Location_URL"` // https://www.google.com/maps?cid=12548177465055817450
-	EventType   string    `csv:"Event_Type"`   // Must be "Game"
-	League      string    `csv:"-"`            // Not in CSV
-	Team1Id     string    `csv:"Team1_ID"`
-	Team2Id     string    `csv:"Team2_ID"`
-	Team1Name   string    `csv:"Team1_Name"`
-	Team2Name   string    `csv:"Team2_Name"`
-	IsEarly     bool      `csv:"-"`
-	Optimized   bool      `csv:"-"`
+    Start       time.Time `json:"start"`
+	StartDate   string    `json:"startDate"`
+	StartTime   string    `json:"startTime"`
+	EndDate     string    `json:"endDate"`
+	EndTime     string    `json:"endTime"`
+	Location    string    `json:"location"`
+	LocationUrl string    `json:"locationUrl"`
+	EventType   string    `json:"eventType"`
+	League      string    `json:"league"`
+	Team1Id     string    `json:"team1Id"`
+	Team2Id     string    `json:"team2Id"`
+	Team1Name   string    `json:"team1Name"`
+	Team2Name   string    `json:"team2Name"`
+	IsEarly     bool      `json:"isEarly"`
+	Optimized   bool      `json:"optimized"`
 }
 
 func (g Game) String() string {
@@ -65,15 +65,15 @@ type LeagueIceTimes struct {
 }
 
 type TeamStats struct {
-	Name                    string
-	League                  string
-	EarlyGames              int
-	LateGames               int
-	DaysOfTheWeek           map[time.Weekday]int
-	DaysBetweenGames        []int
-	AverageDaysBetweenGames float32
-	Games                   []Game
-	Balanced                bool
+    Name                    string                  `json:"name"`
+	League                  string                  `json:"league"`
+	EarlyGames              int                     `json:"earlyGame"`
+	LateGames               int                     `json:"lateGame"`
+	DaysOfTheWeek           map[time.Weekday]int    `json:"daysOfTheWeek"`
+	DaysBetweenGames        []int                   `json:"daysBetweenGames"`
+	AverageDaysBetweenGames float32                 `json:"averageDaysBetweenGames"`
+	Games                   []Game                  `json:"games"`
+	Balanced                bool                    `json:"balanced"`
 }
 
 type SeasonStats struct {

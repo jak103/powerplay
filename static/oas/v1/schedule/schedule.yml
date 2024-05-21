@@ -1,0 +1,101 @@
+paths:
+  analysis:
+    get:
+      summary: Request analysis of schedule
+      description: |
+        **REQUIRED PERMISSIONS:** admin
+      responses:
+        200:
+          description: Successfully analyzed
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/AnalysisResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+
+schemas:
+  AnalysisResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: object
+        properties:
+          teamStats:
+            type: array
+            items:
+              $ref: '#/components/schemas/Team'
+
+components:
+  schemas:
+    Team:
+      type: object
+      properties:
+        name:
+          type: string
+        league:
+          type: string
+        earlyGames:
+          type: int
+        lateGames:
+          type: int
+        daysOfTheWeek:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              day:
+                type: string
+              count:
+                type: string
+        daysBetweenGames:
+          type: array
+          items:
+            type: integer
+        averageDaysBetweenGames:
+          type: float
+        games:
+          type: array
+          items:
+            $ref: '#components/schemas/Game'
+        balanced:
+          type: boolean
+    Game:
+      type: object
+      properties:
+        start:
+          type: string
+        startDate:
+          type: string
+        startTime:
+          type: string
+        endDate:
+          type: string
+        endTime:
+          type: string
+        location:
+          type: string
+        locationUrl:
+          type: string
+        eventType:
+          type: string
+        league:
+          type: string
+        team1Id:
+          type: string
+        team2Id:
+          type: string
+        team1Name:
+          type: string
+        team2Name:
+          type: string
+        isEarly:
+          type: boolean
+        optimized:
+          type: boolean

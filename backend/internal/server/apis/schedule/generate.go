@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 	"time"
-
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"

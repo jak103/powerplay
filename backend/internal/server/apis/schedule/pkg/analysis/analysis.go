@@ -53,6 +53,44 @@ func RunTimeAnalysis(games []models.Game) (models.SeasonStats, map[string]models
 	return seasonStats, teamStats
 }
 
+func Serialize(ts map[string]models.TeamStats) []models.TeamStats {
+	var stats []models.TeamStats
+	for _, v := range ts {
+		var games []models.Game
+		for _, g := range v.Games {
+			game := models.Game{
+				Start:       g.Start,
+				StartDate:   g.StartDate,
+				StartTime:   g.StartTime,
+				EndDate:     g.EndDate,
+				EndTime:     g.EndTime,
+				Location:    g.Location,
+				LocationUrl: g.LocationUrl,
+				Team1Id:     g.Team1Id,
+				Team2Id:     g.Team2Id,
+				Team1Name:   g.Team1Name,
+				Team2Name:   g.Team2Name,
+				IsEarly:     g.IsEarly,
+				Optimized:   g.Optimized,
+			}
+			games = append(games, game)
+		}
+		td := models.TeamStats{
+			Name:                    v.Name,
+			League:                  v.League,
+			EarlyGames:              v.EarlyGames,
+			LateGames:               v.LateGames,
+			DaysOfTheWeek:           v.DaysOfTheWeek,
+			DaysBetweenGames:        v.DaysBetweenGames,
+			AverageDaysBetweenGames: v.AverageDaysBetweenGames,
+			Games:                   games,
+			Balanced:                v.Balanced,
+		}
+		stats = append(stats, td)
+	}
+	return stats
+}
+
 func newStats(league, team string) models.TeamStats {
 	return models.TeamStats{
 		League:        league,
