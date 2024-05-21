@@ -60,7 +60,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
 }
 
-func saveToDb(session *db.Session, games []models.Game) error {
+func saveToDb(session *db.Session, games []scheduleModels.Game) error {
 	dbGames := make([]dbModels.Game, len(games))
 	for i, game := range games {
 		dbGames[i] = mapScheduleGameToDbGame(game)
