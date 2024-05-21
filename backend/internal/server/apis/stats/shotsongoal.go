@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "shotsOnGoal", auth.Public, postShotsOnGoalHandler)
+	apis.RegisterHandler(fiber.MethodPost, "shotsongoal", auth.Public, postShotsOnGoalHandler)
 	// Todo add register handler for GET
 }
 

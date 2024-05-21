@@ -1,14 +1,13 @@
+
 paths:
-  shotsongoal:
+  shotsOnGoal:
     post:
       tags:
-        - ShotsOnGoal
-      summary: Shot on Goal post request
-      description: |
-        **REQUIRED PERMISSIONS:** none:none  
-        **RATE LIMIT:** TBD
+        - Stats
+      summary: Shot on Goal POST request
+      description: Get all penalty types
       requestBody:
-        description: The request body should contain the details of the shot on goal.
+        description: The request body should contain a user id, game id, team id, duration, period, assist1 id, assist2 id, powerplay, and penalty
         required: true
         content:
           application/json:
@@ -16,14 +15,14 @@ paths:
               $ref: "#/schemas/ShotOnGoalRequest"
       responses:
         200:
-          description: Successfully posted shot on goal
+          description: The request body should contain the details of the shot on goal.
           content:
             application/json:
               schema:
-                $ref: "#/schemas/ShotOnGoalResponse"
+                $ref: '#/schemas/ShotOnGoalResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
-
+  
 
 schemas:
   ShotOnGoalRequest:
