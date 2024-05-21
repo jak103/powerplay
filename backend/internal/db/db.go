@@ -21,7 +21,7 @@ import (
 var db *gorm.DB
 
 type Session struct {
-	connection *gorm.DB
+	Connection *gorm.DB
 }
 
 func Init() error {
@@ -66,7 +66,7 @@ func Init() error {
 
 func Migrate() error {
 	s := GetSession(nil)
-	return migrations.Run(s.connection)
+	return migrations.Run(s.Connection)
 }
 
 func GetSession(c *fiber.Ctx) Session {
@@ -76,7 +76,7 @@ func GetSession(c *fiber.Ctx) Session {
 	}
 
 	s := Session{
-		connection: db.Session(&gorm.Session{
+		Connection: db.Session(&gorm.Session{
 			Logger: &dbLogger{
 				theLogger: &logger,
 			},
