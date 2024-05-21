@@ -35,7 +35,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	season := generateGames(seasonConfig.Leagues, numberOfGamesPerTeam)
 
 	log.Info("Assigning ice times\n")
-	games := assignTimes(seasonConfig.IceTimes, season)
+	games := assignTimes(seasonConfig.IceTimes, season, numberOfGamesPerTeam)
 
 	log.Info("Optimizing schedule\n")
 	optimizeSchedule(games)
@@ -134,9 +134,9 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Sea
 	return season
 }
 
-func assignTimes(times []string, season models.Season) []models.Game {
+func assignTimes(times []string, season models.Season, numberOfGamesPerTeam int) []models.Game {
 
-	games := newGames(&season)
+	games := newGames(&season, numberOfGamesPerTeam)
 
 	log.Info("Have times for %v games\n", len(times))
 	log.Info("Have %v games\n", len(games))
@@ -191,9 +191,9 @@ func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
 	}
 }
 
-func newGames(season *models.Season) []models.Game {
+func newGames(season *models.Season, numberOfGamesPerTeam int) []models.Game {
 	games := make([]models.Game, 0)
-	for i := 0; i < 10; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
+	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
 				continue
