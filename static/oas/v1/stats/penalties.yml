@@ -26,14 +26,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/schemas/PostPenaltyRequest"
+              $ref: "#/schemas/PostPenaltiesRequest"
       responses:
         200:
           description: Successfully created a new penalty
           content:
             application/json:
               schema:
-                $ref: '#/schemas/PostPenaltyResponse'
+                $ref: '#/schemas/PostPenaltiesResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
 
@@ -54,67 +54,72 @@ schemas:
             type: array
             description: All penalties
             example:
-            - player_id: 1
+            - id: 1
+              created_at: "2009-11-10T23:00:00Z"
+              updated_at: "2009-11-10T23:00:00Z"
+              player_id: 55
               team_id: 1
-              game_id: 1
+              game_id: 42
               period: 1
-              duration: 100
-              created_by: 100
+              duration: 10
+              created_by: 1
               penalty_type_id: 1
               penalty_type:
-                name: slashing
-                duration: 10
-                severity: severe
-            - player_id: 2
+                id: 1
+                created_at: "2009-11-10T23:00:00Z"
+                updated_at: "2009-11-10T23:00:00Z"
+                name: Tripping
+                duration: 2
+                severity: Minor
+            - id: 2
+              created_at: "2009-11-10T23:00:00Z"
+              updated_at: "2009-11-10T23:00:00Z"
+              player_id: 88
               team_id: 1
-              game_id: 1
+              game_id: 42
               period: 2
-              duration: 100
-              created_by: 100
+              duration: 10
+              created_by: 1
               penalty_type_id: 2
               penalty_type:
-                name: charging
-                duration: 5
-                severity: very_severe
-  PostPenaltyRequest:
+                id: 1
+                created_at: "2009-11-10T23:00:00Z"
+                updated_at: "2009-11-10T23:00:00Z"
+                name: Hooking
+                duration: 2
+                severity: Minor
+  PostPenaltiesRequest:
     type: object
     properties:
       player_id:
         type: int
-        description: The player's id
+        description: The player's ID
         example: 1
       team_id: 
         type: int 
-        description: The team's id that the player is associated with
+        description: The team's ID that the player is associated with
         example: 1 
       game_id: 
         type: int 
-        description: The game's id
-        example: 1                
+        description: The game's ID
+        example: 1
       period: 
         type: int 
         description: The period in the game that the penalty occurred
         example: 1 
       duration: 
         type: int 
-        description: The duration the player is benched
+        description: The duration the player is benched in seconds
         example: 1
       created_by: 
         type: int 
-        description: The id of the user that creates the penalty
+        description: The ID of the user that creates the penalty
         example: 2
       penalty_type_id: 
         type: int 
-        description: The id of the penalty type
-        example: 1         
-      penalty_type: 
-        type: object
-        description: The penalty type
-        example:
-          name: slashing
-          duration: 1
-          severity: extreme
-  PostPenaltyResponse:
+        description: The ID of the Penalty Type
+        example: 1
+  PostPenaltiesResponse:
     type: object
     properties:
       status_code:

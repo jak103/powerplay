@@ -1,6 +1,8 @@
 package stats
 
 import (
+	"encoding/json"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
@@ -26,18 +28,16 @@ func getPenaltiesHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	// jsonData, err := json.Marshal(penalties)
-	// if err != nil {
-	// 	log.WithErr(err).Alert("Failed to serialize penalties response payload")
-	// 	return err
-	// }
+	jsonData, err := json.Marshal(penalties)
+	if err != nil {
+		log.WithErr(err).Alert("Failed to serialize penalties response payload")
+		return err
+	}
 
-	// c.Type("json")
+	c.Type("json")
 
-	// // Send JSON response
-	// return c.Send(jsonData)
-
-	return responder.OkWithData(c, penalties)
+	// Send JSON response
+	return c.Send(jsonData)
 }
 
 func postPenaltyHandler(c *fiber.Ctx) error {
