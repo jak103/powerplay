@@ -1,4 +1,4 @@
-package schedule
+package csv
 
 import (
 	"encoding/csv"
@@ -13,18 +13,14 @@ type Schedule struct {
 	Duration time.Duration
 }
 
-func readCSV() {
-	if len(os.Args) < 2 {
-		fmt.Println("Please provide a CSV file as the first argument")
-		return
-	}
-
-	filename := os.Args[1]
-
+//	 Reads CSV with the following format:
+//		[Date] [Time]
+//		YYYY-MM-DD, HH:MM:SS
+//		Returns an array of Schedule structs
+func readCSV(filename string) ([]Schedule, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("Error opening CSV file: ", err)
-		return
+		return nil, err
 	}
 	defer func(file *os.File) {
 		err := file.Close()
@@ -37,8 +33,7 @@ func readCSV() {
 	reader := csv.NewReader(file)
 	lines, err := reader.ReadAll()
 	if err != nil {
-		fmt.Println("Error reading CSV file: ", err)
-		return
+		return nil, err
 	}
 
 	var dateTimes []Schedule
@@ -69,4 +64,5 @@ func readCSV() {
 
 		dateTimes = append(dateTimes, schedule)
 	}
+	return dateTimes, nil
 }
