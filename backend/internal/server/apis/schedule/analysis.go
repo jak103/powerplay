@@ -12,7 +12,7 @@ import (
 )
 
 type response struct {
-	TeamStats []models.TeamData `json:"teamStats"`
+	TeamStats []models.TeamStats `json:"teamStats"`
 }
 
 func init() {
@@ -26,17 +26,6 @@ func handleAnalysis(c *fiber.Ctx) error {
 	//TODO: get the schedule from the database with this id
 	log.Info(scheduleId)
 
-	// TODO: get team stats and serialize all of the teams stats
-	// Research if we are storing these in a database, if not, we can store them
-	// The map contains the team name, an example json object might look like this:
-	// {
-	//     teamName1: {
-	//         team1Data
-	//     }
-	//     teamName2: {
-	//         team2Data
-	//     }
-	// }
 	_, ts := analysis.RunTimeAnalysis(games)
 
 	printTeamSchedules(games, seasonConfig)
