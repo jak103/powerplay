@@ -5,13 +5,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"time"
 
-	"github.com/jak103/powerplay/internal/db"
-	dbModels "github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
-	scheduleModels "github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/save"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
@@ -50,40 +49,13 @@ func handleGenerate(c *fiber.Ctx) error {
 	}
 
 	log.Info("Saving to database\n")
-	session := db.GetSession(c)
-	err = saveToDb(&session, games)
+	err = save.ToDb(c, games)
 	if err != nil {
 		log.Error("Error saving to database: %v\n", err)
 		return responder.InternalServerError(c)
 	}
 
 	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
-}
-
-func saveToDb(session *db.Session, games []scheduleModels.Game) error {
-	dbGames := make([]dbModels.Game, len(games))
-	for i, game := range games {
-		dbGames[i] = mapScheduleGameToDbGame(game)
-	}
-
-	for _, dbGame := range dbGames {
-		if err := session.Connection.Save(&dbGame).Error; err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func mapScheduleGameToDbGame(game scheduleModels.Game) dbModels.Game {
-	return dbModels.Game{
-		Teams: []dbModels.Team{
-			{Name: game.Team1Name},
-			{Name: game.Team2Name},
-		},
-		Start: game.Start,
-		End:   game.End,
-	}
 }
 
 func readBody(c *fiber.Ctx) (string, int, error) {
@@ -101,7 +73,7 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 	return bodyDto.SeasonFileName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
-func optimizeSchedule(games []scheduleModels.Game) {
+func optimizeSchedule(games []models.Game) {
 	log.Info("Pre-optimization analysis")
 	seasonStats, teamStats := analysis.RunTimeAnalysis(games)
 
@@ -124,8 +96,8 @@ func optimizeSchedule(games []scheduleModels.Game) {
 	}
 }
 
-func generateGames(leagues []scheduleModels.League, numberOfGamesPerTeam int) scheduleModels.Season {
-	season := scheduleModels.Season{LeagueRounds: make(map[string][]scheduleModels.Round)}
+func generateGames(leagues []models.League, numberOfGamesPerTeam int) models.Season {
+	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 
 	for _, league := range leagues {
 		numTeams := len(league.Teams)
@@ -136,16 +108,16 @@ func generateGames(leagues []scheduleModels.League, numberOfGamesPerTeam int) sc
 		log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
 
 		if numTeams%2 == 1 {
-			league.Teams = append(league.Teams, scheduleModels.Team{Name: "Bye", Id: "-1"})
+			league.Teams = append(league.Teams, models.Team{Name: "Bye", Id: "-1"})
 			numTeams = len(league.Teams)
 		}
 
 		numberOfRounds := numberOfGamesPerTeam
 
-		rounds := make([]scheduleModels.Round, numberOfRounds)
+		rounds := make([]models.Round, numberOfRounds)
 
 		for round := 0; round < numberOfRounds; round++ {
-			rounds[round].Games = make([]scheduleModels.Game, numTeams/2)
+			rounds[round].Games = make([]models.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
 				team1 := league.Teams[i].Id
 				team1Name := league.Teams[i].Name
@@ -163,7 +135,7 @@ func generateGames(leagues []scheduleModels.League, numberOfGamesPerTeam int) sc
 	return season
 }
 
-func assignTimes(times []string, season scheduleModels.Season) []scheduleModels.Game {
+func assignTimes(times []string, season models.Season) []models.Game {
 
 	games := newGames(&season)
 
@@ -190,7 +162,7 @@ func assignTimes(times []string, season scheduleModels.Season) []scheduleModels.
 	return games
 }
 
-func getBalanceCount(teamStats *map[string]scheduleModels.TeamStats) int {
+func getBalanceCount(teamStats *map[string]models.TeamStats) int {
 	balanceCount := 0
 	for _, team := range *teamStats {
 		if team.Balanced {
@@ -200,15 +172,15 @@ func getBalanceCount(teamStats *map[string]scheduleModels.TeamStats) int {
 	return balanceCount
 }
 
-func rotateTeams(league *scheduleModels.League) {
+func rotateTeams(league *models.League) {
 	// Rotate teams except the first one
 	lastTeam := league.Teams[len(league.Teams)-1]
 	copy(league.Teams[2:], league.Teams[1:len(league.Teams)-1])
 	league.Teams[1] = lastTeam
 }
 
-func newGame(league, team1, team1Name, team2, team2Name string) scheduleModels.Game {
-	return scheduleModels.Game{
+func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
+	return models.Game{
 		Team1Id:     team1,
 		Team1Name:   team1Name,
 		Team2Id:     team2,
@@ -220,8 +192,8 @@ func newGame(league, team1, team1Name, team2, team2Name string) scheduleModels.G
 	}
 }
 
-func newGames(season *scheduleModels.Season) []scheduleModels.Game {
-	games := make([]scheduleModels.Game, 0)
+func newGames(season *models.Season) []models.Game {
+	games := make([]models.Game, 0)
 	for i := 0; i < 10; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
