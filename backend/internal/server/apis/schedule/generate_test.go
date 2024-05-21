@@ -51,7 +51,11 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := newGames(&season, 10)
+		games, err := newGames(&season, 10)
+		if err != nil {
+			t.Errorf("newGames() error = %v", err)
+			return
+		}
 
 		assert.Equal(t, 1, len(games)) // Only one game should be added (the game without a bye)
 		assert.Equal(t, "1", games[0].Team1Id)
@@ -79,7 +83,11 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := assignTimes(times, season, 10)
+		games, err := assignTimes(times, season, 2)
+		if err != nil {
+			t.Errorf("assignTimes() error = %v", err)
+			return
+		}
 
 		assert.Equal(t, 2, len(games))
 		assert.Equal(t, "20:00", games[0].StartTime)
@@ -104,7 +112,11 @@ func TestGenerate(t *testing.T) {
 			{Name: "League1", Teams: []models.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}}},
 		}
 
-		season := generateGames(leagues, 2)
+		season, err := generateGames(leagues, 2)
+		if err != nil {
+			t.Errorf("generateGames() error = %v", err)
+			return
+		}
 
 		assert.NotEmpty(t, season.LeagueRounds)
 		assert.Equal(t, 1, len(season.LeagueRounds["League1"][0].Games))

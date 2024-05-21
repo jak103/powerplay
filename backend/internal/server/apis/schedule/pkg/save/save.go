@@ -1,6 +1,7 @@
 package save
 
 import (
+	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	dbModels "github.com/jak103/powerplay/internal/models"
@@ -8,6 +9,9 @@ import (
 )
 
 func ToDb(c *fiber.Ctx, games []scheduleModels.Game) error {
+	if c == nil || len(games) == 0 {
+		return errors.New("invalid input")
+	}
 	session := db.GetSession(c)
 	dbGames := make([]dbModels.Game, len(games))
 	for i, game := range games {
