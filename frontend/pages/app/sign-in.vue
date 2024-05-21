@@ -7,27 +7,28 @@ definePageMeta({
   layout: "auth-layout",
 });
 const signIn = async () => {
-  
-  const response = await fetch('http://localhost:9001/api/v1/auth', {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email.value,
-      password: password.value
-    })
-  });
-  if(response.ok){
+  try {
+    const response = await fetch('http://localhost:9001/api/v1/auth', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
     localStorage.setItem('jwt', data.response_data.jwt);
-    useRouter().push('/app')
-  }
-  else{
-    let errorMessage = document.createElement("p");
-    console.error('Login failed');
-    document.body.appendChild(errorMessage);
+    useRouter().push('/app');
+  } catch (error) {
+    console.error('Login failed:', error);
   }
 }
 </script>
