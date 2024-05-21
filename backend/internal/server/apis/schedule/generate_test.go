@@ -51,7 +51,7 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := newGames(&season)
+		games := newGames(&season, 10)
 
 		assert.Equal(t, 1, len(games)) // Only one game should be added (the game without a bye)
 		assert.Equal(t, "1", games[0].Team1Id)
@@ -79,7 +79,7 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := assignTimes(times, season)
+		games := assignTimes(times, season, 10)
 
 		assert.Equal(t, 2, len(games))
 		assert.Equal(t, "20:00", games[0].StartTime)
