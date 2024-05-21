@@ -1,0 +1,92 @@
+paths:
+  penalties:
+    get:
+      tags:
+        - Stats
+      summary: Get All Penalties
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      responses:
+        200:
+          description: The response body should contain the list of penalties
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/GetPenaltyResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+    post:
+      tags:
+        - Stats
+      summary: Create a new penalty
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      requestBody:
+        description: A JSON object with a valid penalty
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/PostPenaltyRequest"
+      responses:
+        200:
+          description: Successfully created a new penalty
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/PostPenaltyResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+
+schemas:
+  GetPenaltyResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: object
+        properties:
+          penalties:
+            type: array
+            description: The penalty types for a game
+            example:
+            - Boarding
+            - Charging
+            - "Contact to the Head"
+  PostPenaltyRequest:
+    type: object
+    properties:
+      username:
+        type: string
+        description: The user's username
+        example: awesome_skater
+      password:
+        type: string
+        description: The user's password
+        example: midnight9
+  PostPenaltyResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: object
+        properties:
+          penalties:
+            type: array
+            description: The penalty types for a game
+            example:
+            - Boarding
+            - Charging
+            - "Contact to the Head"
