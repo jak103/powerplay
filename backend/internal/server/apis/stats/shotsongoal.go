@@ -11,29 +11,31 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "shotsongoal", auth.Public, postShotsOnGoalHandler)
+	apis.RegisterHandler(fiber.MethodPost, "/shotsongoal", auth.Public, postShotsOnGoalHandler)
 	// Todo add register handler for GET
 }
 
 func postShotsOnGoalHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
-	shotOnGoal := new(models.ShotOnGoal)
-	err := c.BodyParser(shotOnGoal)
+	log.Info("Handling creating new shot on goal")
+	log.Debug("body: %q", c.Request().Body())
+	shotOnGoalRequest := new(models.ShotOnGoal)
+	err := c.BodyParser(shotOnGoalRequest)
 	if err != nil {
-		log.WithErr(err).Alert("Failed to parse ShotsOnGoal POST request.")
+		log.WithErr(err).Error("Failed to parse ShotsOnGoal POST request.")
 		return err
 	}
 
 	db := db.GetSession(c)
-	model, err := db.SaveShotOnGoal(shotOnGoal)
+	record, err := db.SaveShotOnGoal(shotOnGoalRequest)
 
 	if err != nil {
-		log.WithErr(err).Alert("Failed to ")
+		log.WithErr(err).Alert("Failed to parse request payload")
 		return responder.InternalServerError(c)
 	}
 
-	if model == nil {
-		return responder.InternalServerError(c)
+	if record == nil {
+		return responder.BadRequest(c,"Could not Post shot on goal to database.")
 	}
 	return responder.Ok(c)	
 }

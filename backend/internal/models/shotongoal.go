@@ -8,3 +8,8 @@ type ShotOnGoal struct{
 	ShotTime uint `json:"shot_time" gorm:"not_null"`
 	Scorekeeper uint `json:"scorekeeper gorm:"not_null"`
 }
+
+// Should overide GOs incorrect pluralization
+func (ShotOnGoal) TableName() string {
+    return "shots_on_goal"
+}
