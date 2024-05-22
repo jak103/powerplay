@@ -51,9 +51,6 @@ schemas:
   UserCreationResponse:
     type: object
     properties:
-      message:
-        type: string
-        example: User created successfully
       status_code:
         $ref: "../common/schemas.yml#/schemas/StatusCode200"
       status_string:
@@ -63,6 +60,9 @@ schemas:
       response_data:
         type: object
         properties:
+          message:
+            type: string
+            example: User created successfully
           user_id:
             type: integer
             example: 1

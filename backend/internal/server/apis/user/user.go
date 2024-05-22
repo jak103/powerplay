@@ -1,6 +1,13 @@
 package user
 
 import (
+	"errors"
+	"net/mail"
+	"reflect"
+	"regexp"
+	"strconv"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
@@ -9,16 +16,17 @@ import (
 )
 
 type createRequest struct {
-	Username       string `json:"username"`
-	FirstName      string `json:"firstName"`
-	LastName       string `json:"lastName"`
-	Email          string `json:"email"`
-	Password       string `json:"password"`
-	PhoneNumber    string `json:"phoneNumber"`
-	BaseExperience int    `json:"baseExperience"`
+	Username   string `json:"username"`
+	FirstName  string `json:"firstName"`
+	LastName   string `json:"lastName"`
+	Email      string `json:"email"`
+	Password   string `json:"password"`
+	Phone      string `json:"phoneNumber"`
+	SkillLevel int    `json:"skillLevel"`
 }
 
 type createResponse struct {
+	Message  string `json:"message"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	UserId   int    `json:"user_id"`
@@ -28,6 +36,38 @@ func init() {
 	apis.RegisterHandler(fiber.MethodGet, "/user", auth.Authenticated, getCurrentUser)
 	apis.RegisterHandler(fiber.MethodPost, "/user", auth.Public, createUserAccount)
 
+}
+
+func removeFormat(str string) string {
+	str = strings.ReplaceAll(str, " ", "")
+	return regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(str, "")
+}
+
+func validateUser(u *createRequest) error {
+
+	//Check data field has been filled for all values
+	values := reflect.ValueOf(*u)
+	for i := 0; i < values.NumField(); i++ {
+		v := values.Field(i).String()
+		if v == "" {
+			return errors.New("data field is empty")
+		}
+	}
+
+	//Validate email has an @ in middle
+	if _, err := mail.ParseAddress(u.Email); err != nil {
+		return errors.New("email is invalid")
+	}
+	//Validate phone number is 10 digit int
+	u.Phone = removeFormat(u.Phone)
+	if _, err := strconv.Atoi(u.Phone); err != nil || len(u.Phone) != 10 {
+		return errors.New("phone number is invalid")
+	}
+	//Validate skill level is an at least 0
+	if u.SkillLevel < 0 {
+		return errors.New("skill level is negative")
+	}
+	return nil
 }
 
 func getCurrentUser(c *fiber.Ctx) error {
@@ -45,10 +85,18 @@ func createUserAccount(c *fiber.Ctx) error {
 		return responder.BadRequest(c, "Failed to parse user creation request")
 	}
 
-	// TODO: Implement user creation and get a read ID
+	// validate the request
+	err = validateUser(&creds)
+	if err != nil {
+		log.WithErr(err).Error(err.Error())
+		return responder.BadRequest(c, err.Error())
+	}
+
+	// TODO: Implement user creation through the DATABASE here
 	id := 1
 
 	createdUserResponse := createResponse{
+		Message:  "User created successfully",
 		Username: creds.Username,
 		Email:    creds.Email,
 		UserId:   id,

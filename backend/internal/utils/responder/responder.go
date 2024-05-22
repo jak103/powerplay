@@ -60,7 +60,9 @@ func respond(c *fiber.Ctx, statusCode int, data *json.RawMessage, message ...any
 	var msg *string
 	if len(message) > 0 {
 		format, args := message[0].(string), message[1:]
-		*msg = fmt.Sprintf(format, args...)
+		// fix a nil pointer dereference error here
+		formattedMessage := fmt.Sprintf(format, args...)
+		msg = &formattedMessage
 	}
 
 	res := response{
