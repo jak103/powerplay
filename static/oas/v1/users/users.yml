@@ -18,7 +18,7 @@ paths:
               schema:
                 $ref: '#/schemas/UserCreationResponse'
         400:
-          $ref: "./common/errors.yml#/responses/BadRequest"
+          $ref: "../common/errors.yml#/responses/BadRequest"
 
 # made the input schema follow the same format as the database table for users. I also removed fields that would be populated by the server. 
 schemas:
@@ -51,9 +51,6 @@ schemas:
   UserCreationResponse:
     type: object
     properties:
-      message:
-        type: string
-        example: User created successfully
       status_code:
         $ref: "../common/schemas.yml#/schemas/StatusCode200"
       status_string:
@@ -63,6 +60,9 @@ schemas:
       response_data:
         type: object
         properties:
+          message:
+            type: string
+            example: User created successfully
           user_id:
             type: integer
             example: 1
