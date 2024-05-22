@@ -3,7 +3,6 @@ package games
 import (
 	"bytes"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/server/apis/schedule"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/valyala/fasthttp"
@@ -14,7 +13,7 @@ import (
 
 func TestGenerate(t *testing.T) {
 	app := fiber.New()
-	app.Post("/games", handleGenerate)
+	app.Post("/schedule/games", handleGenerate)
 
 	t.Run("Test isEarlyGame", func(t *testing.T) {
 		assert.True(t, isEarlyGame(20, 0))
@@ -128,19 +127,19 @@ func TestGenerate(t *testing.T) {
 
 		c := app.AcquireCtx(&fasthttp.RequestCtx{})
 		defer app.ReleaseCtx(c)
-		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
+		body := `{"seasonName":"test", "numberOfGamesPerTeam": 10}`
 		c.Request().SetBody([]byte(body))
 
-		seasonFileName, numberOfGamesPerTeam, err := schedule.readBody(c)
+		seasonFileName, numberOfGamesPerTeam, err := readBody(c)
 		assert.Nil(t, err)
 		assert.Equal(t, "test", seasonFileName)
 		assert.Equal(t, 10, numberOfGamesPerTeam)
 	})
 
 	t.Run("Test handleGenerate", func(t *testing.T) {
-		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
+		body := `{"seasonName":"test", "numberOfGamesPerTeam": 10}`
 
-		req := httptest.NewRequest("POST", "/games", bytes.NewBufferString(body))
+		req := httptest.NewRequest("POST", "/schedule/games", bytes.NewBufferString(body))
 		req.Header.Set("Content-Type", "application/json")
 
 		resp, err := app.Test(req)

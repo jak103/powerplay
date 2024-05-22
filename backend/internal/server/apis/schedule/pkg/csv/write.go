@@ -21,8 +21,12 @@ func GenerateCsv[T any](games []T, filename string) error {
 
 	err = os.WriteFile(path, csvGames, 0644)
 	if err != nil {
-		log.Error("Failed to write games %v", err)
-		return err
+		path = "../output/" + filename
+		err = os.WriteFile(path, csvGames, 0644)
+		if err != nil {
+			log.Error("Failed to write games %v", err)
+			return err
+		}
 	}
 	log.Info("Done writing")
 	return nil

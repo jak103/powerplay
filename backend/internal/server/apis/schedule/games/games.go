@@ -23,13 +23,13 @@ func init() {
 
 func handleGenerate(c *fiber.Ctx) error {
 	log.Info("Reading body\n")
-	seasonFileName, numberOfGamesPerTeam, err := readBody(c)
+	seasonName, numberOfGamesPerTeam, err := readBody(c)
 	if err != nil {
 		log.Error("Error reading body: %v\n", err)
 		return err
 	}
 
-	if seasonFileName == "" {
+	if seasonName == "" {
 		log.Error("Season file name is empty\n")
 		return responder.BadRequest(c, "Season file name is empty")
 	}
@@ -40,7 +40,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	}
 
 	log.Info("Reading config file for season\n")
-	seasonConfig, err := parser.SeasonConfig(seasonFileName)
+	seasonConfig, err := parser.SeasonConfig(seasonName)
 	if err != nil {
 		log.Error("Error reading file: %v\n", err)
 		return responder.BadRequest(c, "Error reading file")
@@ -78,7 +78,7 @@ func handleGenerate(c *fiber.Ctx) error {
 
 func readBody(c *fiber.Ctx) (string, int, error) {
 	type BodyDto struct {
-		SeasonFileName       string `json:"seasonFileName"`
+		SeasonName           string `json:"seasonName"`
 		NumberOfGamesPerTeam int    `json:"numberOfGamesPerTeam"`
 	}
 	body := c.Body()
@@ -88,7 +88,7 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 		return "", 0, responder.BadRequest(c, "Error reading body")
 	}
 
-	return bodyDto.SeasonFileName, bodyDto.NumberOfGamesPerTeam, nil
+	return bodyDto.SeasonName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
 func optimizeSchedule(games []models.Game) {
