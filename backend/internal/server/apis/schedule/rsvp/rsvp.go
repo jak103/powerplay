@@ -1,6 +1,7 @@
 package rsvp
 
 import (
+	"encoding/json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
@@ -9,6 +10,14 @@ import (
 
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/rsvp", auth.Authenticated, handleRsvp)
+}
+
+type BodyDto struct {
+	SeasonId int `json:"season_id"`
+	LeagueId int `json:"league_id"`
+	TeamId   int `json:"team_id"`
+	GameId   int `json:"game_id"`
+	Rsvp     int `json:"rsvp"`
 }
 
 func handleRsvp(c *fiber.Ctx) error {
@@ -25,6 +34,12 @@ func handleRsvp(c *fiber.Ctx) error {
 	return responder.NotYetImplemented(c)
 }
 
-func readBody(c *fiber.Ctx) ([5]int, error) {
-
+func readBody(c *fiber.Ctx) (BodyDto, error) {
+	body := c.Body()
+	var bodyDto BodyDto
+	err := json.Unmarshal(body, &bodyDto)
+	if err != nil {
+		return BodyDto{}, responder.BadRequest(c, "Error reading body")
+	}
+	return bodyDto, nil
 }
