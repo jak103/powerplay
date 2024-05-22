@@ -11,5 +11,4 @@ func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/analysis", auth.Authenticated, handleAnalysis)
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/ref", auth.Authenticated, handleRef)
 	apis.RegisterHandler(fiber.MethodPost, "/rsvp", auth.Authenticated, handleRsvp)
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/update_ids", auth.Authenticated, handleUpdateIds)
 }

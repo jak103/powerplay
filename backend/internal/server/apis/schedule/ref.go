@@ -46,6 +46,9 @@ func handleRef(c *fiber.Ctx) error {
 		refSchedule = append(refSchedule, row)
 	}
 
-	csv.GenerateCsv(refSchedule, "ref_schedule.csv")
+	err := csv.GenerateCsv(refSchedule, "ref_schedule.csv")
+	if err != nil {
+		return responder.InternalServerError(c, "Error writing csv")
+	}
 	return responder.NotYetImplemented(c)
 }
