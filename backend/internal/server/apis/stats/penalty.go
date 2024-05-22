@@ -25,19 +25,19 @@ func getPenaltiesHandler(c *fiber.Ctx) error {
 	penalties, err := db.GetPenalties()
 	if err != nil {
 		log.WithErr(err).Alert("Failed to get all penalties from the database")
-		return err
+		return responder.InternalServerError(c)
 	}
 
 	jsonData, err := json.Marshal(penalties)
 	if err != nil {
 		log.WithErr(err).Alert("Failed to serialize penalties response payload")
-		return err
+		return responder.InternalServerError(c)
 	}
 
 	c.Type("json")
 
 	// Send JSON response
-	return c.Send(jsonData)
+	return responder.OkWithData(c, jsonData)
 }
 
 func postPenaltyHandler(c *fiber.Ctx) error {
@@ -50,7 +50,7 @@ func postPenaltyHandler(c *fiber.Ctx) error {
 	err := c.BodyParser(penaltyRequest)
 	if err != nil {
 		log.WithErr(err).Alert("Failed to parse penalty request payload")
-		return responder.InternalServerError(c)
+		return responder.BadRequest(c, "Failed to parse penalty request payload")
 	}
 
 	db := db.GetSession(c)
