@@ -43,7 +43,7 @@
       <NuxtLink v-for="team in myTeams" :key="team.id" :to='"/app/team-info"' class="team-box" @click="handleTeamClick(league)">
         <div class="line"></div> <!-- Line above team box -->
         <div class="logo-name-container">
-          <img :src="team.logo" alt="Team Logo" class="team-logo">
+          <img :src="team.logo" class="team-logo">
           <div class="league-name">{{ team.name }}</div>
         </div>
       </NuxtLink>
@@ -56,7 +56,7 @@
       <NuxtLink v-for="team in myTeams" :key="team.id" :to='"/app/team-info"' class="team-box" @click="handleTeamClick(league)">
         <div class="line"></div> <!-- Line above league box -->
         <div class="logo-name-container">
-          <img :src="team.logo" alt="League Logo" class="team-logo">
+          <img :src="team.logo"  class="team-logo">
           <div class="league-name">{{ team.division }}</div>
         </div>
       </NuxtLink>
