@@ -2,7 +2,7 @@ paths:
   goals:
     post:
       tags:
-        - Goals
+        - Stats
       summary: Goal post request
       description: |
         **REQUIRED PERMISSIONS:** none:none  
