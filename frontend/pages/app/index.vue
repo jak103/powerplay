@@ -1,7 +1,5 @@
 
 
-
-
 <template>
   <div>
     <AppHeader :name="Home"/>
@@ -53,7 +51,7 @@
     <div class="section">
       <h2 class="section-header">My Leagues</h2>
       <!-- List of leagues -->
-      <NuxtLink v-for="team in myTeams" :key="team.id" :to='"/app/team-info"' class="team-box" @click="handleTeamClick(league)">
+      <NuxtLink v-for="team in myTeams" :key="team.id" :to='"/app/league-info"' class="team-box" @click="handleTeamClick(league)">
         <div class="line"></div> <!-- Line above league box -->
         <div class="logo-name-container">
           <img :src="team.logo"  class="team-logo">

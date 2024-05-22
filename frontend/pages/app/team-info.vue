@@ -1,19 +1,19 @@
 
 
 <template>
+
   <div>
+    <AppHeader :name="Home"/>
 
-    <AppHeader :name="chat"/>
-
-    <!-- League Info -->
+    <!-- Team Info -->
     <div class="section">
       <div class="team-info">
         <div class="team-logo">
-          <img :src="league.logo">
+          <img :src="team.logo">
         </div>
         <div class="team-text">
-          <h2 class="team-name">{{ league[0].name }}</h2>
-          <p class="team-subtitle">Manager: {{ league[0].manager }}</p>
+          <h2 class="team-name">{{ team[0].name }}</h2>
+          <p class="team-subtitle">Manager: {{ team[0].manager }}</p>
         </div>
       </div>
     </div>
@@ -33,10 +33,6 @@
         Roster
       </NuxtLink>
       <NuxtLink :to='"/app/schedule"' class="box">
-        <i class="fas fa-user-plus"></i> <!-- Font Awesome icon for Standings -->
-        Sub List
-      </NuxtLink>
-      <NuxtLink :to='"/app/schedule"' class="box">
         <i class="fas fa-trophy"></i> <!-- Font Awesome icon for Standings -->
         Standings
       </NuxtLink>
@@ -49,17 +45,18 @@
 </template>
 
 <script>
-import AppHeader from '~/components/AppHeader.vue';
 import '@fortawesome/fontawesome-free/css/all.css'; // Import Font Awesome CSS
 export default {
   data() {
     return {
-      league: [
+      team: [
         {
           id: 1,
-          name: 'A League',
-          logo: 'path/to/logo.png',
-          manager: 'Jacob Christensen',
+          name: 'District 5',
+          logo: 'path/to/team_a_logo.png',
+          division: 'A League',
+          manager: 'Captain Hook',
+          // Add more team objects as needed
         },
       ]
     };

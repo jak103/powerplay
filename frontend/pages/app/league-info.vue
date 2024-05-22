@@ -3,7 +3,7 @@
 <template>
   <div>
 
-    <AppHeader :name="chat"/>
+    <AppHeader :name="Home"/>
 
     <!-- League Info -->
     <div class="section">
@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import AppHeader from '~/components/AppHeader.vue';
 import '@fortawesome/fontawesome-free/css/all.css'; // Import Font Awesome CSS
 export default {
   data() {
