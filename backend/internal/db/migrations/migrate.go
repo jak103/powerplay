@@ -10,6 +10,7 @@ import (
 var migrations []*gormigrate.Migration
 
 func init() {
+	// todo: break into migration files #59 - https://github.com/jak103/powerplay/issues/59
 	migrations = append(migrations,
 		&gormigrate.Migration{
 			ID: "create_penalty_type_table",
@@ -21,6 +22,27 @@ func init() {
 			},
 		},
 		&gormigrate.Migration{
+			ID: "penalty_type_remove_player_column",
+			Migrate: func(tx *gorm.DB) error {
+				if tx.Migrator().HasColumn(&models.PenaltyType{}, "PlayerID") {
+					if err := tx.Migrator().DropColumn(&models.PenaltyType{}, "PlayerID"); err != nil {
+						log.WithErr(err).Alert("Error dropping column 'PlayerID' on PenaltyType")
+						return err
+					}
+				}
+				return nil
+			},
+			Rollback: func(tx *gorm.DB) error {
+				if !tx.Migrator().HasColumn(&models.PenaltyType{}, "player_id") {
+					if err := tx.Migrator().AddColumn(&models.PenaltyType{}, "player_id"); err != nil {
+						return err
+					}
+				}
+				return nil
+			},
+		},
+     
+		&gormigrate.Migration{
 			ID: "create_shots_on_goal_table",
 			Migrate: func(tx *gorm.DB) error {
 				return tx.AutoMigrate(&models.ShotOnGoal{})
@@ -28,7 +50,7 @@ func init() {
 			Rollback: func(tx *gorm.DB) error {
 				return tx.Migrator().DropTable("goals")
 			},
-		},
+		},      
 		// Add more migrations here
 	)
 }
@@ -74,6 +96,7 @@ func Run(db *gorm.DB) error {
 			&models.Registration{},
 			&models.Venue{},
 			&models.KeyRecord{},
+			&models.Penalty{},
 		)
 		if err != nil {
 			return err
