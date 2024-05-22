@@ -1,4 +1,4 @@
-package generate
+package games
 
 import (
 	"encoding/json"
@@ -18,12 +18,10 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/generate", auth.Authenticated, handleGenerate)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleGenerate)
 }
 
 func handleGenerate(c *fiber.Ctx) error {
-	log.Info("Scheduler v0.1\n")
-
 	log.Info("Reading body\n")
 	seasonFileName, numberOfGamesPerTeam, err := readBody(c)
 	if err != nil {
@@ -122,7 +120,7 @@ func optimizeSchedule(games []models.Game) {
 
 func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Season, error) {
 	if len(leagues) == 0 {
-		return models.Season{}, errors.New("no leagues to generate games for")
+		return models.Season{}, errors.New("no leagues to games games for")
 	}
 	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 

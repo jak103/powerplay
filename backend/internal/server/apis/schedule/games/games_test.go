@@ -1,4 +1,4 @@
-package generate
+package games
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ import (
 
 func TestGenerate(t *testing.T) {
 	app := fiber.New()
-	app.Post("/generate", handleGenerate)
+	app.Post("/games", handleGenerate)
 
 	t.Run("Test isEarlyGame", func(t *testing.T) {
 		assert.True(t, isEarlyGame(20, 0))
@@ -58,7 +58,7 @@ func TestGenerate(t *testing.T) {
 			return
 		}
 
-		assert.Equal(t, 1, len(games)) // Only one game should be added (the game without a bye)
+		assert.Equal(t, 1, len(games)) // Only one games should be added (the games without a bye)
 		assert.Equal(t, "1", games[0].Team1Id)
 	})
 
@@ -140,7 +140,7 @@ func TestGenerate(t *testing.T) {
 	t.Run("Test handleGenerate", func(t *testing.T) {
 		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
 
-		req := httptest.NewRequest("POST", "/generate", bytes.NewBufferString(body))
+		req := httptest.NewRequest("POST", "/games", bytes.NewBufferString(body))
 		req.Header.Set("Content-Type", "application/json")
 
 		resp, err := app.Test(req)

@@ -1,4 +1,4 @@
-package rsvp
+package player
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/rsvp", auth.Authenticated, handleRsvp)
+	apis.RegisterHandler(fiber.MethodPost, "/rsvp/player", auth.Authenticated, handleRsvp)
 }
 
 type BodyDto struct {
@@ -17,7 +17,7 @@ type BodyDto struct {
 	LeagueId int `json:"league_id"`
 	TeamId   int `json:"team_id"`
 	GameId   int `json:"game_id"`
-	Rsvp     int `json:"rsvp"`
+	Rsvp     int `json:"player"`
 }
 
 func handleRsvp(c *fiber.Ctx) error {
@@ -26,11 +26,11 @@ func handleRsvp(c *fiber.Ctx) error {
 	// - league_id (int)
 	// - team_id (int)
 	// - game_id (int)
-	// - rsvp (string) - "yes":1 or "no":0
-	// With this information, we can update the team roster for that game.
-	// We should also check if the user is on the team roster for that game.
+	// - player (string) - "yes":1 or "no":0
+	// With this information, we can update the team roster for that games.
+	// We should also check if the user is on the team roster for that games.
 	// If not, we should check if they are a sub for that team.
-	// So we need to have another table in the database that keeps track of who played in each game.
+	// So we need to have another table in the database that keeps track of who played in each games.
 	return responder.NotYetImplemented(c)
 }
 

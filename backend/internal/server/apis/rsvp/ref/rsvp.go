@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/ref", auth.Authenticated, handleRef)
+	apis.RegisterHandler(fiber.MethodPost, "/rsvp/ref", auth.Authenticated, handleRef)
 }
 
 type RefScheduleRow struct {
