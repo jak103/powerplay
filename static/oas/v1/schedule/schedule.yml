@@ -1,18 +1,26 @@
 paths:
-  analysis:
-    get:
-      summary: Request analysis of schedule
-      description: |
-        **REQUIRED PERMISSIONS:** admin
-      responses:
-        200:
-          description: Successfully analyzed
-          content:
-            application/json:
-              schema:
-                $ref: '#/schemas/AnalysisResponse'
-        400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+    analysis:
+      get:
+        parameters:
+          - in: path
+            name: scheduleId
+            required: true
+            schema:
+              type: integer
+        tags:
+          - analysis
+        summary: Request analysis of schedule
+        description: |
+          **REQUIRED PERMISSIONS:** admin
+        responses:
+          200:
+            description: Successfully analyzed
+            content:
+              application/json:
+                schema:
+                  $ref: '#/schemas/AnalysisResponse'
+          400:
+            $ref: "../common/errors.yml#/responses/BadRequest"
 
 schemas:
   AnalysisResponse:
@@ -25,12 +33,9 @@ schemas:
       request_id:
         $ref: "../common/schemas.yml#/schemas/RequestId"
       response_data:
-        type: object
-        properties:
-          teamStats:
-            type: array
-            items:
-              $ref: '#/components/schemas/Team'
+        type: array
+        items:
+          $ref: '#/components/schemas/Team'
 
 components:
   schemas:

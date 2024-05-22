@@ -12,19 +12,19 @@ import (
 )
 
 type response struct {
-	TeamStats []models.TeamStats `json:"teamStats"`
+	TeamStats []models.TeamStats
 }
 
 func init() {
-	apis.RegisterHandler(fiber.MethodGet, "/schedule/analysis/:scheduleId<int/>", auth.ManagerOnly, handleAnalysis)
+	apis.RegisterHandler(fiber.MethodGet, "/schedule/analysis/:scheduleId<int/>", auth.Public, handleAnalysis)
 }
 
 func handleAnalysis(c *fiber.Ctx) error {
 	games, seasonConfig := parser.ReadGames("summer_2024")
 
-	scheduleId := c.Params("scheduleId")
 	//TODO: get the schedule from the database with this id
-	log.Info(scheduleId)
+    scheduleId := c.Params("scheduleId")
+    log.Info("Schedule Id: %v\n", scheduleId)
 
 	_, ts := analysis.RunTimeAnalysis(games)
 
