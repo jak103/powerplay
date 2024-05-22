@@ -15,7 +15,7 @@
 	  };
 	},
 	mounted() {
-	  this.boundRedirectUser = this.redirectUser.bind(this);
+	  this.boundRedirectUser = () => this.redirectUser();
 	  // Check if the user is already back online when the component mounts
 	  if (navigator.onLine) {
 		this.redirectUser();
