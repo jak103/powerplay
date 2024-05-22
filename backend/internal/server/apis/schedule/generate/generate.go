@@ -1,9 +1,11 @@
-package schedule
+package generate
 
 import (
 	"encoding/json"
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/server/apis"
+	"github.com/jak103/powerplay/internal/server/services/auth"
 	"time"
 
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
@@ -14,6 +16,10 @@ import (
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
+
+func init() {
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/generate", auth.Authenticated, handleGenerate)
+}
 
 func handleGenerate(c *fiber.Ctx) error {
 	log.Info("Scheduler v0.1\n")

@@ -1,8 +1,9 @@
-package schedule
+package generate
 
 import (
 	"bytes"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/server/apis/schedule"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/valyala/fasthttp"
@@ -130,7 +131,7 @@ func TestGenerate(t *testing.T) {
 		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
 		c.Request().SetBody([]byte(body))
 
-		seasonFileName, numberOfGamesPerTeam, err := readBody(c)
+		seasonFileName, numberOfGamesPerTeam, err := schedule.readBody(c)
 		assert.Nil(t, err)
 		assert.Equal(t, "test", seasonFileName)
 		assert.Equal(t, 10, numberOfGamesPerTeam)

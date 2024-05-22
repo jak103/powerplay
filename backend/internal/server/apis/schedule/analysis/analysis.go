@@ -1,13 +1,19 @@
-package schedule
+package analysis
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
+
+func init() {
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/analysis", auth.Authenticated, handleAnalysis)
+}
 
 func handleAnalysis(c *fiber.Ctx) error {
 	games, seasonConfig := parser.ReadGames("summer_2024")
