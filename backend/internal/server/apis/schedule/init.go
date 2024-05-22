@@ -6,7 +6,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/services/auth"
 )
 
-func Init() {
+func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/generate", auth.Authenticated, handleGenerate)
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/analysis", auth.Authenticated, handleAnalysis)
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/ref", auth.Authenticated, handleRef)
