@@ -57,11 +57,11 @@ components:
           type: integer
           description: The assist 2 id (player)
           example: 84
-        powerplay:
+        playerdifferential:
           type: integer
           description: Powerplay information
           example: -2
-        penalty:
+        ispenaltyshot:
           type: boolean
           description: If a penalty happened
           example: true

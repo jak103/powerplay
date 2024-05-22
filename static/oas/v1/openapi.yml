@@ -18,7 +18,7 @@ paths:
 
   # /[URL path]
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
-  /goals/submit:
+  /goals:
     $ref: "./stats/goal.yml#/paths/goals"
 
 components:

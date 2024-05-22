@@ -4,17 +4,17 @@ package models
 
 type Goal struct {
 	DbModel
-	UserId   	uint          	`json:"user_id"`
-	GameId   	uint          	`json:"game_id"` 
-	//Game     	Game          	`gorm:"game"` TODO: When seeding is finished we can officially test this
-	TeamId   	uint          	`json:"team_id"` 
-	//Team     	Team			`gorm:"team"` TODO: When seeding is finished we can officially test this
-	Duration 	uint			`json:"duration"` // Do we potentially want to change this to time.Duration
-	Period	    uint			`json:"period"`
-	Assist1Id	uint   	   		`json:"assist1_id"`
-	Assist2Id	uint   	   		`json:"assist2_id"`
-	Powerplay	int		   		`json:"powerplay"`
-	Penatly		bool	   		`json:"penalty"`
+	UserId   			uint          	`json:"user_id"`
+	GameId   			uint          	`json:"game_id"` 
+	//Game     			Game          	`gorm:"game"` TODO: When seeding is finished we can officially test this
+	TeamId   			uint          	`json:"team_id"` 
+	//Team     			Team			`gorm:"team"` TODO: When seeding is finished we can officially test this
+	Duration 			uint			`json:"duration"` // Do we potentially want to change this to time.Duration
+	Period	    		uint			`json:"period"`
+	Assist1Id			uint   	   		`json:"assist1_id"`
+	Assist2Id			uint   	   		`json:"assist2_id"`
+	PlayerDifferential	int		   		`json:"powerplay"`
+	IsPenaltyShot		bool	   		`json:"penalty"`
 
 	//powerplay - was someone in the box; bool
 	//penalty - was scored on penalty shot; bool
