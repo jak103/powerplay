@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+
 const email = ref('');
 const password = ref('');
 definePageMeta({
@@ -25,7 +26,7 @@ const signIn = async () => {
     }
 
     const data = await response.json();
-    localStorage.setItem('jwt', data.response_data.jwt);
+    document.cookie = `jwt=${data.response_data.jwt}; path=/`;
     useRouter().push('/app');
   } catch (error) {
     console.error('Login failed:', error);
