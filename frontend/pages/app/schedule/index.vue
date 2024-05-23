@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%;">
     <h1>Schedule</h1>
     <GameInfo
       v-for="(game, index) in games"

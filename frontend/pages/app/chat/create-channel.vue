@@ -1,15 +1,6 @@
 <script lang="ts" setup>
-<<<<<<< HEAD
-  import { useCounterStore } from '../store'
-
-
-  const store = useCounterStore();
-  const test = () => { store.increment() }
-  const dec = () => { store.decrement() }
-=======
   import FloatingButtonGeneric from '~/components/FloatingButtonGeneric.vue';
 
->>>>>>> d1e57528dc4a1af6e507bc111af6da07ac0d6411
   const addChannel = "Add Channel"
   const chatRoom = "/app/chat/chat-room"
 
@@ -18,18 +9,6 @@
 
 <template>
   <AppHeader :name="addChannel"/>
-<<<<<<< HEAD
-  <div>
-    <h1>Create Channel</h1>
-    <p>This is where channels can be created</p>
-
-    <p>This is a test of the store</p>
-    <div>
-      <h1>{{ store.count }}</h1>
-      <button @click="test">increment</button>
-      <button @click="dec">decrement</button>
-    </div>
-=======
   <div id="container">
     <h1>Create a channel</h1>
     <p class="maintext">Name</p>
@@ -45,7 +24,6 @@
       <p class="subtext">Private - Only specific people</p>
     </div>
     <FloatingButtonGeneric text="Create Channel" :link="chatRoom"/>
->>>>>>> d1e57528dc4a1af6e507bc111af6da07ac0d6411
   </div>
 </template>
 

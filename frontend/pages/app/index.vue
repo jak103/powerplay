@@ -3,7 +3,7 @@
 
 
 <template>
-  <div>
+  <div style="width: 100%">
     <!-- Header -->
     <header class="header">
       <div class="back-arrow">

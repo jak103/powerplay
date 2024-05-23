@@ -95,7 +95,7 @@
 
 <template>
   <AppHeader :name="chat"/>
-  <div id="container">
+  <div style="width: 100%;">
     <div>
       <h2>Teams</h2>
       <Card v-for="channel in teams" :key="channel.channel_id" :type="channel.type"
