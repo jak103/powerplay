@@ -12,5 +12,9 @@ export default defineNuxtConfig({
         exactActiveClass: 'exact-active',
       }
     }
-  }
+  },
+  modules: [
+    // ...
+    '@pinia/nuxt',
+  ],
 });

@@ -3,12 +3,7 @@
   import AppHeader from '~/components/AppHeader.vue';
   import Card from '~/components/Card.vue';
 
-  const theme = ref<null | string>(null);
-  onMounted(() => {
-    theme.value = localStorage.getItem("theme") || "light";
-  });
-
-
+  
   // TODO: pull data in this form from the backend
   const data = {
     channels : [
