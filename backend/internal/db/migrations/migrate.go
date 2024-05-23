@@ -50,6 +50,17 @@ func init() {
 				return tx.Migrator().DropTable("goals")
 			},
 		},
+     
+		&gormigrate.Migration{
+			ID: "create_shots_on_goal_table",
+			Migrate: func(tx *gorm.DB) error {
+				return tx.AutoMigrate(&models.ShotOnGoal{})
+			},
+			Rollback: func(tx *gorm.DB) error {
+				return tx.Migrator().DropTable("goals")
+			},
+		},
+
 		// Add more migrations here
 	)
 }
