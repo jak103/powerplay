@@ -26,7 +26,7 @@ func readCSV(filename string) ([]Schedule, error) {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-			log.Error("Error closing CSV file: ", err)
+			log.Error("Error closing CSV file: %v", err)
 			return
 		}
 	}(file)
@@ -46,13 +46,13 @@ func readCSV(filename string) ([]Schedule, error) {
 
 		date, err := time.Parse("2006-01-02", dateStr)
 		if err != nil {
-			log.Error("Error parsing date: ", err)
+			log.Error("Error parsing date: %v", err)
 			continue
 		}
 
 		timeOfDay, err := time.Parse("15:04:05", timeStr)
 		if err != nil {
-			log.Error("Error parsing time: ", err)
+			log.Error("Error parsing time: %v", err)
 			continue
 		}
 
