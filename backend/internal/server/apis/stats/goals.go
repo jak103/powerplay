@@ -17,7 +17,6 @@ func init() {
 
 func postGoalsHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
-	log.Info("Handling creating new goal")
 	log.Debug("body: %q", c.Request().Body())
 	goalPostRequest := new(models.Goal)
 	err := c.BodyParser(goalPostRequest)
