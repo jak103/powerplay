@@ -4,17 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/services/auth"
 	"time"
 
 	"github.com/jak103/powerplay/internal/models"
-	pkgModels "github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
-
+	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
@@ -93,7 +91,7 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 	return bodyDto.SeasonName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
-func optimizeSchedule(games []pkgModels.Game) {
+func optimizeSchedule(games []models.Game) {
 	if len(games) == 0 {
 		log.Info("No games to optimize")
 		return
@@ -120,11 +118,11 @@ func optimizeSchedule(games []pkgModels.Game) {
 	}
 }
 
-func generateGames(leagues []models.League, numberOfGamesPerTeam int) (pkgModels.Season, error) {
+func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Season, error) {
 	if len(leagues) == 0 {
-		return pkgModels.Season{}, errors.New("no leagues to games games for")
+		return models.Season{}, errors.New("no leagues to games games for")
 	}
-	season := pkgModels.Season{LeagueRounds: make(map[string][]pkgModels.Round)}
+	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 
 	for _, league := range leagues {
 		numTeams := len(league.Teams)
@@ -135,16 +133,16 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (pkgModels
 		log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
 
 		if numTeams%2 == 1 {
-			league.Teams = append(league.Teams, pkgModels.Team{Name: "Bye", Id: "-1"})
+			league.Teams = append(league.Teams, models.Team{Name: "Bye", Id: "-1"})
 			numTeams = len(league.Teams)
 		}
 
 		numberOfRounds := numberOfGamesPerTeam
 
-		rounds := make([]pkgModels.Round, numberOfRounds)
+		rounds := make([]models.Round, numberOfRounds)
 
 		for round := 0; round < numberOfRounds; round++ {
-			rounds[round].Games = make([]pkgModels.Game, numTeams/2)
+			rounds[round].Games = make([]models.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
 				team1 := league.Teams[i].Id
 				team1Name := league.Teams[i].Name
@@ -162,7 +160,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (pkgModels
 	return season, nil
 }
 
-func assignTimes(times []string, season pkgModels.Season, numberOfGamesPerTeam int) ([]pkgModels.Game, error) {
+func assignTimes(times []string, season models.Season, numberOfGamesPerTeam int) ([]models.Game, error) {
 	if len(times) == 0 {
 		return nil, errors.New("no times to assign")
 	}
@@ -201,7 +199,7 @@ func assignTimes(times []string, season pkgModels.Season, numberOfGamesPerTeam i
 	return games, nil
 }
 
-func getBalanceCount(teamStats *map[string]pkgModels.TeamStats) int {
+func getBalanceCount(teamStats *map[string]models.TeamStats) int {
 	if teamStats == nil {
 		return 0
 	}
@@ -224,9 +222,9 @@ func rotateTeams(league *models.League) {
 	league.Teams[1] = lastTeam
 }
 
-func newGame(league, team1, team1Name, team2, team2Name string) pkgModels.Game {
+func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
 	if team1 == "-1" || team2 == "-1" {
-		return pkgModels.Game{
+		return models.Game{
 			Team1Id:     team1,
 			Team1Name:   team1Name,
 			Team2Id:     team2,
@@ -237,7 +235,7 @@ func newGame(league, team1, team1Name, team2, team2Name string) pkgModels.Game {
 			EventType:   "Bye",
 		}
 	}
-	return pkgModels.Game{
+	return models.Game{
 		Team1Id:     team1,
 		Team1Name:   team1Name,
 		Team2Id:     team2,
@@ -249,14 +247,14 @@ func newGame(league, team1, team1Name, team2, team2Name string) pkgModels.Game {
 	}
 }
 
-func newGames(season *pkgModels.Season, numberOfGamesPerTeam int) ([]pkgModels.Game, error) {
+func newGames(season *models.Season, numberOfGamesPerTeam int) ([]models.Game, error) {
 	if season == nil {
 		return nil, errors.New("no season to get games from")
 	}
 	if season.LeagueRounds == nil || len(season.LeagueRounds) == 0 {
 		return nil, errors.New("no rounds to get games from")
 	}
-	games := make([]pkgModels.Game, 0)
+	games := make([]models.Game, 0)
 	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
