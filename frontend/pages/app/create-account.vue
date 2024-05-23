@@ -2,9 +2,26 @@
 definePageMeta({
   layout: "auth-layout",
 });
+const password = ref('')
+const confirmPassword = ref('')
+
 const createAccount = () => {
-  useRouter().push('/app')
+  //useRouter().push('/app')
+  validatePassword()
 }
+function validatePassword(){
+  //useRouter().push('/app')
+  if(password.value == confirmPassword.value){
+    console.log("They match!")
+  }
+  else{
+
+    console.log("They don't match...")
+  }
+
+}
+
+
 </script>
 
 <template>
@@ -21,15 +38,15 @@ const createAccount = () => {
     </div>
     <div>
       <label for="email" class="form-label">Email</label>
-      <input id="email" class="form-control" type="email" />
+      <input id="email" class="form-control" type="email"/>
     </div>
     <div>
-      <label for="password" class="form-label">Password</label>
-      <input id="password" class="form-control" type="password" />
+      <label for="password" class="form-label">Password {{password }}</label>
+      <input id="password" class="form-control" type="password" v-model="password">
     </div>
     <div>
       <label for="confirm-password" class="form-label">Confirm Password</label>
-      <input id="confirm-password" class="form-control" type="password" />
+      <input id="confirm-password" class="form-control" type="password" v-model="confirmPassword"/>
     </div>
     <div>
       <label for="phone-number" class="form-label">Phone Number</label>
