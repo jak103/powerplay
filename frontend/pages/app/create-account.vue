@@ -2,16 +2,25 @@
 definePageMeta({
   layout: "auth-layout",
 });
+//user inputs
 const password = ref('')
 const confirmPassword = ref('')
+const birthDate = ref('')
+const phoneNumber = ref('')
 
+//error messages if needed
 const pass_errorMessage = ref('')
+const birthday_errorMessage = ref('')
+const phone_errorMessage = ref('')
 
 const createAccount = () => {
   //useRouter().push('/app')
   console.log('called')
   pass_errorMessage.value = ''
+  
   validatePassword()
+  validatePhone()
+  validateBirthday()
   console.log(pass_errorMessage.value)
 }
 function validatePassword(){
@@ -34,6 +43,12 @@ for (let i = 0; i < password.value.length; i++) {
 }
 if(!specialChar){pass_errorMessage.value = "Your password must contain a special character!"
   return false}
+}
+function validatePhone(){
+  
+}
+function validateBirthday(){
+
 }
 
 
@@ -67,12 +82,12 @@ if(!specialChar){pass_errorMessage.value = "Your password must contain a special
       <p>{{pass_errorMessage}}</p>
     </div>
     <div>
-      <label for="phone-number" class="form-label">Phone Number</label>
-      <input id="phone-number" class="form-control" type="text" />
+      <label for="phone-number" class="form-label" >Phone Number</label>
+      <input id="phone-number" class="form-control" type="text" v-model="phoneNumber"/>
     </div>
     <div>
       <label for="birth-date" class="form-label">Birth Date</label>
-      <input id="birth-date" class="form-control" type="date" />
+      <input id="birth-date" class="form-control" type="date" v-model="birthDate" />
     </div>
     <div>
       <label for="experience" class="form-label">Years of Experience</label>
