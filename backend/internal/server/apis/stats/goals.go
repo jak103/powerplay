@@ -1,8 +1,6 @@
 package stats
 
 import (
-	"encoding/json"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
@@ -20,7 +18,6 @@ func init() {
 
 func postGoalsHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
-	log.Info("Handling creating new goal")
 	log.Debug("body: %q", c.Request().Body())
 	goalPostRequest := new(models.Goal)
 	err := c.BodyParser(goalPostRequest)
@@ -50,22 +47,12 @@ func postGoalsHandler(c *fiber.Ctx) error {
 
 func getGoalsHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
-	log.Info("Handling getting all goals")
 	db := db.GetSession(c)
 	goals, err := db.GetGoals()
 	if err != nil {
 		log.WithErr(err).Alert("Failed to get all goals from the database")
 		return err
 	}
-
-	jsonData, err := json.Marshal(goals)
-	if err != nil {
-		log.WithErr(err).Alert("Failed to serialize goals response payload")
-		return err
-	}
-
-	c.Type("json")
-
 	// Send JSON response
-	return c.Send(jsonData)
+	return responder.OkWithData(c, goals)
 }
