@@ -12,7 +12,7 @@ type Penalty struct {
 	PlayerID      uint        `json:"player_id"`
 	TeamID        uint        `json:"team_id"`
 	GameID        uint        `json:"game_id"`
-	Period        uint        `json:"period"` // TODO: how to represent Shootouts?
+	Period        uint        `json:"period"`
 	Duration      uint        `json:"duration"`
 	CreatedBy     uint        `json:"created_by"`
 	PenaltyType   PenaltyType `json:"penalty_type"`
