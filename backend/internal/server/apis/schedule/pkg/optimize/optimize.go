@@ -8,7 +8,7 @@ import (
 
 func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map[string]models.TeamStats) {
 	resetOptimized(games)
-	log.Info("OPT: Early game percent: %v%%\n", seasonStats.EarlyPercentage()*100)
+	log.Info("OPT: Early games percent: %v%%\n", seasonStats.EarlyPercentage()*100)
 	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games
 	seasonEarlyLow := int(seasonStats.EarlyPercentage() * 10.0)    // - 1
 
@@ -43,13 +43,13 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 				// find a good candidate to swap games with
 				// Will it improve that balance
 				if games[i-1].IsEarly == tooManyEarly {
-					log.Info("Can't swap game because it won't improve balance\n")
+					log.Info("Can't swap games because it won't improve balance\n")
 					continue
 				}
 
 				// Does it force the swapped teams out of balance?
 				if !correctBalanceDirection(teamStats, seasonEarlyHigh, seasonEarlyLow, games[i-1].Team1Name, games[i-1].Team2Name, tooManyEarly) {
-					log.Info("Not swapping game because it won't help: %s (%v-%v) v (%v-%v)\n", games[i-1],
+					log.Info("Not swapping games because it won't help: %s (%v-%v) v (%v-%v)\n", games[i-1],
 						teamStats[games[i-1].Team1Name].EarlyGames,
 						teamStats[games[i-1].Team1Name].LateGames,
 						teamStats[games[i-1].Team2Name].EarlyGames,
@@ -59,7 +59,7 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 
 				// Don't swap games that are already optimized
 				if games[i].Optimized && games[i-1].Optimized {
-					log.Info("Can't swap game because it has already been swapped\n")
+					log.Info("Can't swap games because it has already been swapped\n")
 					continue
 				}
 
@@ -80,13 +80,13 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 				// find a good candidate to swap games with
 				// Will it improve that balance
 				if games[i+1].IsEarly == tooManyEarly {
-					log.Info("Can't swap game because it won't improve balance\n")
+					log.Info("Can't swap games because it won't improve balance\n")
 					continue
 				}
 
 				// Does it force the swapped teams out of balance?
 				if !correctBalanceDirection(teamStats, seasonEarlyHigh, seasonEarlyLow, games[i+1].Team1Name, games[i+1].Team2Name, tooManyEarly) {
-					log.Info("Not swapping game because it won't help: %s (%v-%v) v (%v-%v)\n", games[i+1],
+					log.Info("Not swapping games because it won't help: %s (%v-%v) v (%v-%v)\n", games[i+1],
 						teamStats[games[i+1].Team1Name].EarlyGames,
 						teamStats[games[i+1].Team1Name].LateGames,
 						teamStats[games[i+1].Team2Name].EarlyGames,
@@ -96,7 +96,7 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 
 				// Don't swap games that are already swapped
 				if games[i].Optimized && games[i+1].Optimized {
-					log.Info("Can't swap game because it has already been swapped\n")
+					log.Info("Can't swap games because it has already been swapped\n")
 					continue
 				}
 
@@ -215,7 +215,7 @@ func correctBalanceDirection(teamStats map[string]models.TeamStats, seasonEarlyH
 		return true
 	}
 
-	// If this is going to move another game later, do it
+	// If this is going to move another games later, do it
 	if !tooManyEarly && (teamStats[team1].EarlyGames > seasonEarlyHigh || teamStats[team2].EarlyGames > seasonEarlyHigh) {
 		log.Info("Swap up with %s (%v-%v) v %s (%v-%v)\n", team1, team1Stats.EarlyGames, team1Stats.LateGames, team2, team2Stats.EarlyGames, team2Stats.LateGames)
 		return true

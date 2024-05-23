@@ -1,4 +1,4 @@
-package schedule
+package games
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 
 func TestGenerate(t *testing.T) {
 	app := fiber.New()
-	app.Post("/generate", handleGenerate)
+	app.Post("/schedule/games", handleGenerate)
 
 	t.Run("Test isEarlyGame", func(t *testing.T) {
 		assert.True(t, isEarlyGame(20, 0))
@@ -51,9 +51,13 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := newGames(&season)
+		games, err := newGames(&season, 10)
+		if err != nil {
+			t.Errorf("newGames() error = %v", err)
+			return
+		}
 
-		assert.Equal(t, 1, len(games)) // Only one game should be added (the game without a bye)
+		assert.Equal(t, 1, len(games)) // Only one games should be added (the games without a bye)
 		assert.Equal(t, "1", games[0].Team1Id)
 	})
 
@@ -79,7 +83,11 @@ func TestGenerate(t *testing.T) {
 			},
 		}
 
-		games := assignTimes(times, season)
+		games, err := assignTimes(times, season, 2)
+		if err != nil {
+			t.Errorf("assignTimes() error = %v", err)
+			return
+		}
 
 		assert.Equal(t, 2, len(games))
 		assert.Equal(t, "20:00", games[0].StartTime)
@@ -104,7 +112,11 @@ func TestGenerate(t *testing.T) {
 			{Name: "League1", Teams: []models.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}}},
 		}
 
-		season := generateGames(leagues, 2)
+		season, err := generateGames(leagues, 2)
+		if err != nil {
+			t.Errorf("generateGames() error = %v", err)
+			return
+		}
 
 		assert.NotEmpty(t, season.LeagueRounds)
 		assert.Equal(t, 1, len(season.LeagueRounds["League1"][0].Games))
@@ -115,7 +127,7 @@ func TestGenerate(t *testing.T) {
 
 		c := app.AcquireCtx(&fasthttp.RequestCtx{})
 		defer app.ReleaseCtx(c)
-		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
+		body := `{"seasonName":"test", "numberOfGamesPerTeam": 10}`
 		c.Request().SetBody([]byte(body))
 
 		seasonFileName, numberOfGamesPerTeam, err := readBody(c)
@@ -125,9 +137,9 @@ func TestGenerate(t *testing.T) {
 	})
 
 	t.Run("Test handleGenerate", func(t *testing.T) {
-		body := `{"seasonFileName":"test", "numberOfGamesPerTeam": 10}`
+		body := `{"seasonName":"test", "numberOfGamesPerTeam": 10}`
 
-		req := httptest.NewRequest("POST", "/generate", bytes.NewBufferString(body))
+		req := httptest.NewRequest("POST", "/schedule/games", bytes.NewBufferString(body))
 		req.Header.Set("Content-Type", "application/json")
 
 		resp, err := app.Test(req)

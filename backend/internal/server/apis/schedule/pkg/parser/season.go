@@ -9,11 +9,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func SeasonConfig(season string) (*models.SeasonConfig, error) {
-	configBytes, err := os.ReadFile(fmt.Sprintf("input/%s_config.yml", season))
+func SeasonConfig(seasonName string) (*models.SeasonConfig, error) {
+	configBytes, err := os.ReadFile(fmt.Sprintf("input/%s_config.yml", seasonName))
 	if err != nil {
-		log.Error("Error reading file: %v\n", err)
-		return nil, err
+		configBytes, err = os.ReadFile(fmt.Sprintf("../input/%s_config.yml", seasonName))
+		if err != nil {
+			log.Error("Error reading file: %v\n", err)
+			return nil, err
+		}
 	}
 
 	log.Info("Read %v bytes\n", len(configBytes))
