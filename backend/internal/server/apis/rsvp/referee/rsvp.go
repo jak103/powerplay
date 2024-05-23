@@ -1,4 +1,4 @@
-package ref
+package referee
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/rsvp/ref", auth.Authenticated, handleRef)
+	apis.RegisterHandler(fiber.MethodPost, "/rsvp/referee", auth.Authenticated, handleRef)
 }
 
 type RefScheduleRow struct {
@@ -25,7 +25,7 @@ type RefScheduleRow struct {
 }
 
 func handleRef(c *fiber.Ctx) error {
-	games, seasonConfig := parser.ReadGames("spring_2024")
+	games, seasonConfig := parser.ReadGames("test")
 
 	refSchedule := make([]RefScheduleRow, 0)
 
