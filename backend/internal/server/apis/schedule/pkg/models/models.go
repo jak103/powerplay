@@ -27,7 +27,7 @@ type Game struct {
 	EndTime     string    `csv:"End_Time"`
 	Location    string    `csv:"Location"`     // George S. Eccles Ice Center --- Surface 1
 	LocationUrl string    `csv:"Location_URL"` // https://www.google.com/maps?cid=12548177465055817450
-	EventType   string    `csv:"Event_Type"`   // Must be "Game"
+	EventType   string    `csv:"Event_Type"`   // Must be "Game" or "Bye"
 	League      string    `csv:"-"`            // Not in CSV
 	Team1Id     string    `csv:"Team1_ID"`
 	Team2Id     string    `csv:"Team2_ID"`

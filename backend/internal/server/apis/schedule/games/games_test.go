@@ -3,7 +3,8 @@ package games
 import (
 	"bytes"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/models"
+	pkgModels "github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/valyala/fasthttp"
 	"net/http/httptest"
@@ -13,7 +14,7 @@ import (
 
 func TestGenerate(t *testing.T) {
 	app := fiber.New()
-	app.Post("/schedule/games", handleGenerate)
+	app.Post("/schedule/games", handleGames)
 
 	t.Run("Test isEarlyGame", func(t *testing.T) {
 		assert.True(t, isEarlyGame(20, 0))
@@ -24,7 +25,7 @@ func TestGenerate(t *testing.T) {
 
 	t.Run("Test rotateTeams", func(t *testing.T) {
 		league := models.League{
-			Teams: []models.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}, {Id: "3", Name: "Team3"}},
+			Teams: []pkgModels.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}, {Id: "3", Name: "Team3"}},
 		}
 
 		rotateTeams(&league)
@@ -43,10 +44,10 @@ func TestGenerate(t *testing.T) {
 	})
 
 	t.Run("Test newGames", func(t *testing.T) {
-		season := models.Season{
-			LeagueRounds: map[string][]models.Round{
+		season := pkgModels.Season{
+			LeagueRounds: map[string][]pkgModels.Round{
 				"A": {
-					{Games: []models.Game{{Team1Id: "1", Team2Id: "2"}, {Team1Id: "-1", Team2Id: "3"}}},
+					{Games: []pkgModels.Game{{Team1Id: "1", Team2Id: "2"}, {Team1Id: "-1", Team2Id: "3"}}},
 				},
 			},
 		}
@@ -62,7 +63,7 @@ func TestGenerate(t *testing.T) {
 	})
 
 	t.Run("Test getBalanceCount", func(t *testing.T) {
-		teamStats := map[string]models.TeamStats{
+		teamStats := map[string]pkgModels.TeamStats{
 			"Team1": {Balanced: true},
 			"Team2": {Balanced: false},
 		}
@@ -75,10 +76,10 @@ func TestGenerate(t *testing.T) {
 	t.Run("Test assignTimes", func(t *testing.T) {
 		times := []string{"1/2/23 20:00", "1/3/23 21:00"}
 
-		season := models.Season{
-			LeagueRounds: map[string][]models.Round{
+		season := pkgModels.Season{
+			LeagueRounds: map[string][]pkgModels.Round{
 				"A": {
-					{Games: []models.Game{{Team1Id: "1", Team2Id: "2"}, {Team1Id: "3", Team2Id: "4"}}},
+					{Games: []pkgModels.Game{{Team1Id: "1", Team2Id: "2"}, {Team1Id: "3", Team2Id: "4"}}},
 				},
 			},
 		}
@@ -97,7 +98,7 @@ func TestGenerate(t *testing.T) {
 	})
 
 	t.Run("Test optimizeSchedule", func(t *testing.T) {
-		games := []models.Game{
+		games := []pkgModels.Game{
 			{Start: time.Now()},
 			{Start: time.Now().Add(1 * time.Hour)},
 		}
@@ -109,7 +110,7 @@ func TestGenerate(t *testing.T) {
 
 	t.Run("Test generateGames", func(t *testing.T) {
 		leagues := []models.League{
-			{Name: "League1", Teams: []models.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}}},
+			{Name: "League1", Teams: []pkgModels.Team{{Id: "1", Name: "Team1"}, {Id: "2", Name: "Team2"}}},
 		}
 
 		season, err := generateGames(leagues, 2)
@@ -136,7 +137,7 @@ func TestGenerate(t *testing.T) {
 		assert.Equal(t, 10, numberOfGamesPerTeam)
 	})
 
-	t.Run("Test handleGenerate", func(t *testing.T) {
+	t.Run("Test handleGames", func(t *testing.T) {
 		body := `{"seasonName":"test", "numberOfGamesPerTeam": 10}`
 
 		req := httptest.NewRequest("POST", "/schedule/games", bytes.NewBufferString(body))

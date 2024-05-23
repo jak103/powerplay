@@ -12,6 +12,13 @@ type Game struct {
 	End             time.Time `json:"end"`
 	Venue           Venue     `json:"venue"`
 	VenueID         uint
+	Team1Id         string `csv:"Team1_ID"`
+	Team2Id         string `csv:"Team2_ID"`
+	Team1Name       string `csv:"Team1_Name"`
+	Team2Name       string `csv:"Team2_Name"`
+	IsEarly         bool   `csv:"-"`
+	EventType       string `csv:"Event_Type"` // Must be "Game" or "Bye"
+	Optimized       bool   `csv:"-"`
 
 	// ManagerOnCall    User      `json:"manager_on_call"`
 	// ManagerOnCallID  uint
