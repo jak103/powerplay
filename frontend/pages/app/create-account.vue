@@ -5,20 +5,35 @@ definePageMeta({
 const password = ref('')
 const confirmPassword = ref('')
 
+const pass_errorMessage = ref('')
+
 const createAccount = () => {
   //useRouter().push('/app')
+  console.log('called')
+  pass_errorMessage.value = ''
   validatePassword()
+  console.log(pass_errorMessage.value)
 }
 function validatePassword(){
-  //useRouter().push('/app')
-  if(password.value == confirmPassword.value){
-    console.log("They match!")
-  }
-  else{
+if(password.value != confirmPassword.value){
+  pass_errorMessage.value = "Your password doesn't match!"
+  return false
+}
+if(password.value.length < 8){
+  pass_errorMessage.value = "Your password must be at least 8 characters long!"
+  return false
+}
 
-    console.log("They don't match...")
+var specialCharacters = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '{', '}', '[', ']', '|', '\\', ':', ';', '"', "'", '<', '>', ',', '.', '/'];
+var specialChar = false 
+for (let i = 0; i < password.value.length; i++) {
+  if (specialCharacters.includes(password.value[i])) {
+    specialChar = true
+    break;
   }
-
+}
+if(!specialChar){pass_errorMessage.value = "Your password must contain a special character!"
+  return false}
 }
 
 
@@ -41,12 +56,15 @@ function validatePassword(){
       <input id="email" class="form-control" type="email"/>
     </div>
     <div>
-      <label for="password" class="form-label">Password {{password }}</label>
+      <label for="password" class="form-label">Password</label>
       <input id="password" class="form-control" type="password" v-model="password">
     </div>
     <div>
       <label for="confirm-password" class="form-label">Confirm Password</label>
       <input id="confirm-password" class="form-control" type="password" v-model="confirmPassword"/>
+    </div>
+    <div v-if="pass_errorMessage != ''"  style='background-color: #ff4444 ; border-radius: 8px; line-height:center;outline-color: #CC0000;padding-top:8px; padding-left:6px;'>
+      <p>{{pass_errorMessage}}</p>
     </div>
     <div>
       <label for="phone-number" class="form-label">Phone Number</label>
