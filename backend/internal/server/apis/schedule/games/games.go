@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/write"
 	"time"
 
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/read"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
@@ -23,6 +23,7 @@ func init() {
 
 func handleGames(c *fiber.Ctx) error {
 	log.Info("Reading body\n")
+	// TODO numberOfGamesPerTeam is read from the request for now. We need to read this from the ice_times.csv file.
 	seasonName, numberOfGamesPerTeam, err := readBody(c)
 	if err != nil {
 		log.Error("Error reading body: %v\n", err)
@@ -40,7 +41,7 @@ func handleGames(c *fiber.Ctx) error {
 	}
 
 	log.Info("Reading config file for season\n")
-	seasonConfig, err := parser.SeasonConfig(seasonName)
+	seasonConfig, err := read.SeasonConfig(seasonName)
 	if err != nil {
 		log.Error("Error reading file: %v\n", err)
 		return responder.BadRequest(c, "Error reading file")
@@ -57,17 +58,17 @@ func handleGames(c *fiber.Ctx) error {
 	}
 
 	log.Info("Optimizing schedule\n")
-	optimizeSchedule(games)
+	optimizeSchedule(games, numberOfGamesPerTeam)
 
 	log.Info("Writing csv\n")
-	err = csv.GenerateCsv(games, "schedule.csv")
+	err = write.Csv(games, "schedule.csv")
 	if err != nil {
 		log.Error("Error writing csv: %v\n", err)
 		return responder.InternalServerError(c)
 	}
 
 	//log.Info("Saving to database\n")
-	//err = save.ToDb(c, games)
+	//err = write.ToDb(c, games)
 	//if err != nil {
 	//	log.Error("Error saving to database: %v\n", err)
 	//	return responder.InternalServerError(c)
@@ -91,13 +92,13 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 	return bodyDto.SeasonName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
-func optimizeSchedule(games []models.Game) {
+func optimizeSchedule(games []models.Game, numberOfGamesPerTeam int) {
 	if len(games) == 0 {
 		log.Info("No games to optimize")
 		return
 	}
 	log.Info("Pre-optimization analysis")
-	seasonStats, teamStats := analysis.RunTimeAnalysis(games)
+	seasonStats, teamStats := analysis.RunTimeAnalysis(games, numberOfGamesPerTeam)
 
 	// Need to make sure games are balanced in
 	// - Early / late
@@ -109,7 +110,7 @@ func optimizeSchedule(games []models.Game) {
 		optimize.Schedule(games, seasonStats, teamStats)
 
 		log.Info("Post-optimization analysis")
-		seasonStats, teamStats = analysis.RunTimeAnalysis(games)
+		seasonStats, teamStats = analysis.RunTimeAnalysis(games, numberOfGamesPerTeam)
 
 		lastBalanceCount = balanceCount
 		balanceCount := getBalanceCount(&teamStats)

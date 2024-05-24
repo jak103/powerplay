@@ -34,7 +34,7 @@ func subscriptionHandler(c *fiber.Ctx) error {
 	// err = db.SaveSubscription(subscriptionRequest)
 	notifications.SaveSubscription(*subscriptionRequest)
 	if err != nil {
-		log.WithErr(err).Alert("Failed to save subscription request")
+		log.WithErr(err).Alert("Failed to write subscription request")
 		return responder.InternalServerError(c)
 	}
 

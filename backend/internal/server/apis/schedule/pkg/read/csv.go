@@ -1,12 +1,11 @@
-package parser
+package read
 
 import (
 	"fmt"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/utils/log"
-	"os"
-
 	"gopkg.in/yaml.v3"
+	"os"
 )
 
 func SeasonConfig(seasonName string) (*models.SeasonConfig, error) {

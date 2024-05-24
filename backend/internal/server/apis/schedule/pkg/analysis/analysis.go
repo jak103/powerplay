@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func RunTimeAnalysis(games []models.Game) (models.SeasonStats, map[string]models.TeamStats) {
+func RunTimeAnalysis(games []models.Game, numberOfGamesPerTeam int) (models.SeasonStats, map[string]models.TeamStats) {
 	seasonStats := models.SeasonStats{
 		TotalGames: len(games),
 	}
@@ -39,7 +39,7 @@ func RunTimeAnalysis(games []models.Game) (models.SeasonStats, map[string]models
 		teamStats[game.Teams[1].Name] = team2Stats
 	}
 
-	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games
+	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*float32(numberOfGamesPerTeam)) + 1
 
 	for _, team := range teamStats {
 		team.Balanced = team.EarlyGames <= seasonEarlyHigh

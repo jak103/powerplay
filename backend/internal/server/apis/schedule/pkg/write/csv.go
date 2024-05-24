@@ -1,4 +1,4 @@
-package csv
+package write
 
 import (
 	"os"
@@ -7,7 +7,7 @@ import (
 	"github.com/jak103/powerplay/internal/utils/log"
 )
 
-func GenerateCsv[T any](games []T, filename string) error {
+func Csv[T any](games []T, filename string) error {
 	path := "output/" + filename
 	log.Info("Writing CSV: %s", path)
 

@@ -1,4 +1,4 @@
-package save
+package write
 
 import (
 	"errors"

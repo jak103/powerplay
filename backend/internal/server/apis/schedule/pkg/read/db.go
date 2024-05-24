@@ -1,16 +1,15 @@
-package parser
+package read
 
 import (
 	"fmt"
+	"github.com/gocarina/gocsv"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"os"
 	"time"
-
-	"github.com/gocarina/gocsv"
 )
 
-func ReadGames(season string) ([]models.Game, models.SeasonConfig) {
+func Games(season string) ([]models.Game, models.SeasonConfig) {
 	log.Info("Reading config file season_config.yml\n")
 
 	seasonConfig, err := SeasonConfig(season)

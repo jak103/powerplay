@@ -182,7 +182,6 @@ func updateStats(teamStats map[string]models.TeamStats, games []models.Game, i, 
 }
 
 func swapGames(games []models.Game, i, j int) {
-	// TODO you cant modify the ID. Need to figure out how to do this in a different way
 	team1Name := games[i].Teams[0].Name
 	team1Id := games[i].Teams[0].ID
 	team2Name := games[i].Teams[1].Name

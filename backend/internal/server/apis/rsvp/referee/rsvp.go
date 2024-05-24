@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/write"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
@@ -52,7 +52,7 @@ func handleRef(c *fiber.Ctx) error {
 		refSchedule = append(refSchedule, row)
 	}
 
-	err := csv.GenerateCsv(refSchedule, "ref_schedule.csv")
+	err := write.Csv(refSchedule, "ref_schedule.csv")
 	if err != nil {
 		return responder.InternalServerError(c, "Error writing csv")
 	}

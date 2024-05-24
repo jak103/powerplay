@@ -5,7 +5,7 @@ import (
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/read"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
@@ -16,9 +16,10 @@ func init() {
 }
 
 func handleAnalysis(c *fiber.Ctx) error {
-	games, seasonConfig := parser.ReadGames("summer_2024")
+	games, seasonConfig := read.Games("test")
 
-	analysis.RunTimeAnalysis(games)
+	// TODO numberOfGamesPerTeam is hardcoded to 10 for now. We need to read this from the ice_times.csv file.
+	analysis.RunTimeAnalysis(games, 10)
 
 	printTeamSchedules(games, seasonConfig)
 	return responder.NotYetImplemented(c)
@@ -29,7 +30,7 @@ func printTeamSchedules(games []models.Game, seasonConfig models.SeasonConfig) {
 		for _, team := range league.Teams {
 			log.Info("-----------\n%v\n", team.Name)
 			for _, game := range games {
-				if team.Name == game.Team1Name || team.Name == game.Team2Name {
+				if team.Name == game.Teams[0].Name || team.Name == game.Teams[1].Name {
 					log.Info("%s\n", game)
 				}
 			}
