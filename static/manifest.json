@@ -1,7 +1,7 @@
 {
   "name": "Nuxt3 PWA",
   "short_name": "N3 PWA",
-  "start_url": "/",
+  "start_url": "/app",
   "display": "standalone",
   "background_color": "#ffffff",
   "lang": "en",
