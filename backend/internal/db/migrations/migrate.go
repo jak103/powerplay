@@ -41,6 +41,15 @@ func init() {
 				return nil
 			},
 		},
+		&gormigrate.Migration{
+			ID: "create_goals_table",
+			Migrate: func(tx *gorm.DB) error {
+				return tx.AutoMigrate(&models.Goal{})
+			},
+			Rollback: func(tx *gorm.DB) error {
+				return tx.Migrator().DropTable("goals")
+			},
+		},
      
 		&gormigrate.Migration{
 			ID: "create_shots_on_goal_table",
@@ -50,7 +59,8 @@ func init() {
 			Rollback: func(tx *gorm.DB) error {
 				return tx.Migrator().DropTable("goals")
 			},
-		},      
+		},
+
 		// Add more migrations here
 	)
 }
@@ -96,6 +106,7 @@ func Run(db *gorm.DB) error {
 			&models.Registration{},
 			&models.Venue{},
 			&models.KeyRecord{},
+			&models.Goal{},
 			&models.Penalty{},
 		)
 		if err != nil {

@@ -1,0 +1,79 @@
+paths:
+  goals:
+    post:
+      tags:
+        - Stats
+      summary: Goal post request
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      requestBody:
+        description: The request body should contain a user id, game id, team id, duration, period, assist1 id, assist2 id, powerplay, and penalty
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalRequest"
+      responses:
+        200:
+          description: Successfully posted goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoalResponse"
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+
+components:
+  schemas:
+    GoalRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: The user's id
+          example: 12
+        game_id:
+          type: integer
+          description: The game id
+          example: 13
+        team_id:
+          type: integer
+          description: The team id
+          example: 1
+        duration:
+          type: integer
+          description: The duration
+          example: 27
+        period:
+          type: integer
+          description: The period scored in
+          example: 3
+        assist1_id:
+          type: integer
+          description: The assist 1 id (player)
+          example: 57
+        assist2_id:
+          type: integer
+          description: The assist 2 id (player)
+          example: 84
+        playerdifferential:
+          type: integer
+          description: Powerplay information
+          example: -2
+        ispenaltyshot:
+          type: boolean
+          description: If a penalty happened
+          example: true
+
+    GoalResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: object
