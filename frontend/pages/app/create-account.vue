@@ -6,6 +6,7 @@ definePageMeta({
 const password = ref('')
 const confirmPassword = ref('')
 const birthDate = ref('')
+const phoneNumberInput = ref('')
 const phoneNumber = ref('')
 
 //error messages if needed
@@ -15,7 +16,6 @@ const phone_errorMessage = ref('')
 
 const createAccount = () => {
   //useRouter().push('/app')
-  console.log('called')
   pass_errorMessage.value = ''
   
   validatePassword()
@@ -44,8 +44,25 @@ for (let i = 0; i < password.value.length; i++) {
 if(!specialChar){pass_errorMessage.value = "Your password must contain a special character!"
   return false}
 }
+
 function validatePhone(){
+phoneNumber.value = ''
+phone_errorMessage.value = ''
+
+var charCodeZero = "0".charCodeAt(0);
+var charCodeNine = "9".charCodeAt(0);
+
+for ( let i = 0; i < phoneNumberInput.value.length; i++) {
+  var char = phoneNumberInput.value[i]
+  if (char.charCodeAt(0) >= charCodeZero && char.charCodeAt(0) <= charCodeNine ) {
   
+    phoneNumber.value = phoneNumber.value + char
+  }
+}
+console.log(phoneNumber.value)
+if(phoneNumber.value.length != 10){
+  phone_errorMessage.value = "The phone number you entered is invalid!"
+} 
 }
 function validateBirthday(){
 
@@ -83,7 +100,10 @@ function validateBirthday(){
     </div>
     <div>
       <label for="phone-number" class="form-label" >Phone Number</label>
-      <input id="phone-number" class="form-control" type="text" v-model="phoneNumber"/>
+      <input id="phone-number" class="form-control" type="text" v-model="phoneNumberInput"/>
+    </div>
+    <div v-if="phone_errorMessage != ''"  style='background-color: #ff4444 ; border-radius: 8px; line-height:center;outline-color: #CC0000;padding-top:8px; padding-left:6px;'>
+      <p>{{phone_errorMessage}}</p>
     </div>
     <div>
       <label for="birth-date" class="form-label">Birth Date</label>
