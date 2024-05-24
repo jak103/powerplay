@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/write"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/helpers/parser"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/helpers/write"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )

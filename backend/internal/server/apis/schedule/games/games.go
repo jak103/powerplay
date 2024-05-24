@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/write"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/helpers/util"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/helpers/write"
 	"time"
 
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/read"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/helpers/analysis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/helpers/optimize"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/helpers/read"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
@@ -92,16 +93,14 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 	return bodyDto.SeasonName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
-func assignLockerRooms(games []models.Game) {
-	// TODO Assign locker rooms to each game
-	// Yes, when you generate a game you should provide a locker room assignment.
-	// There are 4 lockers rooms that can be used.
-	//They are locker room 1, 2, 3, & 5.
-	//Locker room 4 is always the women’s locker room.
-	//The algorithm is pretty simple.
-	//For the early game, home team is locker room 3, and away is locker room 1.
-	//For the late game home team is locker room 5, and away team is locker room 2.
-
+func assignLockerRooms(game *models.Game) {
+	if game.IsEarly {
+		game.Team1LockerRoom = "3" // Home team
+		game.Team2LockerRoom = "1" // Away team
+	} else {
+		game.Team1LockerRoom = "5"
+		game.Team2LockerRoom = "2"
+	}
 }
 
 func optimizeSchedule(games []models.Game, numberOfGamesPerTeam int) {
@@ -204,7 +203,7 @@ func assignTimes(times []string, season models.Season, numberOfGamesPerTeam int)
 		games[i].EndDate = endTime.Format("01/02/2006")
 		games[i].EndTime = endTime.Format("15:04")
 
-		games[i].IsEarly = isEarlyGame(games[i].Start.Hour(), games[i].Start.Minute())
+		games[i].IsEarly = util.IsEarlyGame(games[i].Start.Hour(), games[i].Start.Minute())
 	}
 
 	return games, nil
@@ -241,10 +240,12 @@ func newGame(league string, team1 models.Team, team2 models.Team) models.Game {
 			IsBye:  true,
 		}
 	}
-	return models.Game{
+	game := models.Game{
 		Teams:  []models.Team{team1, team2},
 		League: league,
 	}
+	assignLockerRooms(&game)
+	return game
 }
 
 func newGames(season *models.Season, numberOfGamesPerTeam int) ([]models.Game, error) {
@@ -268,19 +269,4 @@ func newGames(season *models.Season, numberOfGamesPerTeam int) ([]models.Game, e
 		}
 	}
 	return games, nil
-}
-
-func isEarlyGame(hour, minute int) bool {
-	if hour < 20 {
-		return true
-	}
-	switch hour {
-	case 20:
-		return true
-	case 21:
-		return minute <= 15
-	case 22, 23:
-		return false
-	}
-	return false
 }
