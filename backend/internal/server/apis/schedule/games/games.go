@@ -94,6 +94,14 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 
 func assignLockerRooms(games []models.Game) {
 	// TODO Assign locker rooms to each game
+	// Yes, when you generate a game you should provide a locker room assignment.
+	// There are 4 lockers rooms that can be used.
+	//They are locker room 1, 2, 3, & 5.
+	//Locker room 4 is always the women’s locker room.
+	//The algorithm is pretty simple.
+	//For the early game, home team is locker room 3, and away is locker room 1.
+	//For the late game home team is locker room 5, and away team is locker room 2.
+
 }
 
 func optimizeSchedule(games []models.Game, numberOfGamesPerTeam int) {
