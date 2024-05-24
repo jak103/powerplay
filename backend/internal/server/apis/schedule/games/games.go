@@ -133,7 +133,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Se
 		log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
 
 		if numTeams%2 == 1 {
-			league.Teams = append(league.Teams, models.Team{Name: "Bye", Id: "-1"})
+			league.Teams = append(league.Teams, models.Team{IsBye: true})
 			numTeams = len(league.Teams)
 		}
 
@@ -144,12 +144,10 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Se
 		for round := 0; round < numberOfRounds; round++ {
 			rounds[round].Games = make([]models.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
-				team1 := league.Teams[i].Id
-				team1Name := league.Teams[i].Name
-				team2 := league.Teams[numTeams-1-i].Id
-				team2Name := league.Teams[numTeams-1-i].Name
+				team1 := league.Teams[i]
+				team2 := league.Teams[numTeams-1-i]
 
-				rounds[round].Games[i] = newGame(league.Name, team1, team1Name, team2, team2Name)
+				rounds[round].Games[i] = newGame(league.Name, team1, team2)
 			}
 
 			rotateTeams(&league)
@@ -222,28 +220,17 @@ func rotateTeams(league *models.League) {
 	league.Teams[1] = lastTeam
 }
 
-func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
-	if team1 == "-1" || team2 == "-1" {
+func newGame(league string, team1 models.Team, team2 models.Team) models.Game {
+	if team1.IsBye || team2.IsBye {
 		return models.Game{
-			Team1Id:     team1,
-			Team1Name:   team1Name,
-			Team2Id:     team2,
-			Team2Name:   team2Name,
-			League:      league,
-			Location:    "Bye",
-			LocationUrl: "",
-			EventType:   "Bye",
+			Teams:  []models.Team{team1, team2},
+			League: league,
+			IsBye:  true,
 		}
 	}
 	return models.Game{
-		Team1Id:     team1,
-		Team1Name:   team1Name,
-		Team2Id:     team2,
-		Team2Name:   team2Name,
-		League:      league,
-		Location:    "George S. Eccles Ice Center --- Surface 1",
-		LocationUrl: "https://www.google.com/maps?cid=12548177465055817450",
-		EventType:   "Game",
+		Teams:  []models.Team{team1, team2},
+		League: league,
 	}
 }
 
@@ -256,12 +243,12 @@ func newGames(season *models.Season, numberOfGamesPerTeam int) ([]models.Game, e
 	}
 	games := make([]models.Game, 0)
 	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
-		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
+		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues, so if you play in two leagues, you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
 				continue
 			}
 			for j, game := range season.LeagueRounds[league][i].Games {
-				if game.Team1Id != "-1" && game.Team2Id != "-1" {
+				if !game.Teams[0].IsBye && !game.Teams[1].IsBye {
 					games = append(games, season.LeagueRounds[league][i].Games[j])
 				}
 			}

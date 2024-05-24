@@ -1,7 +1,7 @@
 package optimize
 
 import (
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"sort"
 )
@@ -39,7 +39,7 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 		swaps := false
 		// Look through all of the teams games and swaps
 		for i := 1; i < len(games); i++ {
-			if games[i].Team1Name == team || games[i].Team2Name == team {
+			if games[i].Teams[0].Name == team || games[i].Teams[1].Name == team {
 				// find a good candidate to swap games with
 				// Will it improve that balance
 				if games[i-1].IsEarly == tooManyEarly {
@@ -48,12 +48,12 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 				}
 
 				// Does it force the swapped teams out of balance?
-				if !correctBalanceDirection(teamStats, seasonEarlyHigh, seasonEarlyLow, games[i-1].Team1Name, games[i-1].Team2Name, tooManyEarly) {
+				if !correctBalanceDirection(teamStats, seasonEarlyHigh, seasonEarlyLow, games[i-1].Teams[0].Name, games[i-1].Teams[1].Name, tooManyEarly) {
 					log.Info("Not swapping games because it won't help: %s (%v-%v) v (%v-%v)\n", games[i-1],
-						teamStats[games[i-1].Team1Name].EarlyGames,
-						teamStats[games[i-1].Team1Name].LateGames,
-						teamStats[games[i-1].Team2Name].EarlyGames,
-						teamStats[games[i-1].Team2Name].LateGames)
+						teamStats[games[i-1].Teams[0].Name].EarlyGames,
+						teamStats[games[i-1].Teams[0].Name].LateGames,
+						teamStats[games[i-1].Teams[1].Name].EarlyGames,
+						teamStats[games[i-1].Teams[1].Name].LateGames)
 					continue
 				}
 
@@ -76,7 +76,7 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 
 		// Look through all of the teams games and swaps
 		for i := 0; i < len(games)-1; i++ {
-			if games[i].Team1Name == team || games[i].Team2Name == team {
+			if games[i].Teams[0].Name == team || games[i].Teams[1].Name == team {
 				// find a good candidate to swap games with
 				// Will it improve that balance
 				if games[i+1].IsEarly == tooManyEarly {
@@ -85,12 +85,12 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 				}
 
 				// Does it force the swapped teams out of balance?
-				if !correctBalanceDirection(teamStats, seasonEarlyHigh, seasonEarlyLow, games[i+1].Team1Name, games[i+1].Team2Name, tooManyEarly) {
+				if !correctBalanceDirection(teamStats, seasonEarlyHigh, seasonEarlyLow, games[i+1].Teams[0].Name, games[i+1].Teams[1].Name, tooManyEarly) {
 					log.Info("Not swapping games because it won't help: %s (%v-%v) v (%v-%v)\n", games[i+1],
-						teamStats[games[i+1].Team1Name].EarlyGames,
-						teamStats[games[i+1].Team1Name].LateGames,
-						teamStats[games[i+1].Team2Name].EarlyGames,
-						teamStats[games[i+1].Team2Name].LateGames)
+						teamStats[games[i+1].Teams[0].Name].EarlyGames,
+						teamStats[games[i+1].Teams[0].Name].LateGames,
+						teamStats[games[i+1].Teams[1].Name].EarlyGames,
+						teamStats[games[i+1].Teams[1].Name].LateGames)
 					continue
 				}
 
@@ -114,7 +114,7 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 		if !swaps {
 			// Look through all of the teams games and swaps
 			for i := 1; i < len(games); i++ {
-				if games[i].Team1Name == team || games[i].Team2Name == team {
+				if games[i].Teams[0].Name == team || games[i].Teams[1].Name == team {
 					if teamStats[team].EarlyGames > seasonEarlyHigh {
 						log.Info("No swaps and we aren't balanced\n")
 						// If we made it here, then all the constraints are met, go ahead and swap games
@@ -145,10 +145,10 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 }
 
 func updateStats(teamStats map[string]models.TeamStats, games []models.Game, i, j int) {
-	game1Team1Stats := teamStats[games[i].Team1Name]
-	game1Team2Stats := teamStats[games[i].Team2Name]
-	game2Team1Stats := teamStats[games[j].Team1Name]
-	game2Team2Stats := teamStats[games[j].Team2Name]
+	game1Team1Stats := teamStats[games[i].Teams[0].Name]
+	game1Team2Stats := teamStats[games[i].Teams[1].Name]
+	game2Team1Stats := teamStats[games[j].Teams[0].Name]
+	game2Team2Stats := teamStats[games[j].Teams[1].Name]
 
 	if games[i].IsEarly {
 		game1Team1Stats.EarlyGames--
@@ -172,32 +172,33 @@ func updateStats(teamStats map[string]models.TeamStats, games []models.Game, i, 
 		game2Team2Stats.LateGames++
 	}
 
-	teamStats[games[i].Team1Name] = game1Team1Stats
-	teamStats[games[i].Team2Name] = game1Team2Stats
-	teamStats[games[j].Team1Name] = game2Team1Stats
-	teamStats[games[j].Team2Name] = game2Team2Stats
+	teamStats[games[i].Teams[0].Name] = game1Team1Stats
+	teamStats[games[i].Teams[1].Name] = game1Team2Stats
+	teamStats[games[j].Teams[0].Name] = game2Team1Stats
+	teamStats[games[j].Teams[1].Name] = game2Team2Stats
 
 	log.Info("Now %v (%v-%v) v %v (%v-%v)\n", game1Team1Stats.Name, game1Team1Stats.EarlyGames, game1Team1Stats.LateGames, game1Team2Stats.Name, game1Team2Stats.EarlyGames, game1Team2Stats.LateGames)
 	log.Info("Now %v (%v-%v) v %v (%v-%v)\n", game2Team1Stats.Name, game2Team1Stats.EarlyGames, game2Team1Stats.LateGames, game2Team2Stats.Name, game2Team2Stats.EarlyGames, game2Team2Stats.LateGames)
 }
 
 func swapGames(games []models.Game, i, j int) {
-	team1Name := games[i].Team1Name
-	team1Id := games[i].Team1Id
-	team2Name := games[i].Team2Name
-	team2Id := games[i].Team2Id
+	// TODO you cant modify the ID. Need to figure out how to do this in a different way
+	team1Name := games[i].Teams[0].Name
+	team1Id := games[i].Teams[0].ID
+	team2Name := games[i].Teams[1].Name
+	team2Id := games[i].Teams[1].ID
 	league := games[i].League
 
-	games[i].Team1Name = games[j].Team1Name
-	games[i].Team1Id = games[j].Team1Id
-	games[i].Team2Name = games[j].Team2Name
-	games[i].Team2Id = games[j].Team2Id
+	games[i].Teams[0].Name = games[j].Teams[0].Name
+	games[i].Teams[0].ID = games[j].Teams[0].ID
+	games[i].Teams[1].Name = games[j].Teams[1].Name
+	games[i].Teams[1].ID = games[j].Teams[1].ID
 	games[i].League = games[j].League
 
-	games[j].Team1Name = team1Name
-	games[j].Team1Id = team1Id
-	games[j].Team2Name = team2Name
-	games[j].Team2Id = team2Id
+	games[j].Teams[0].Name = team1Name
+	games[j].Teams[0].ID = team1Id
+	games[j].Teams[1].Name = team2Name
+	games[j].Teams[1].ID = team2Id
 	games[j].League = league
 
 	// mark the swapped games as optimized so they can't be swapped again

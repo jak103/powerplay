@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"os"
 	"time"
@@ -54,7 +54,7 @@ func ReadGames(season string) ([]models.Game, models.SeasonConfig) {
 
 		for _, league := range seasonConfig.Leagues {
 			for _, team := range league.Teams {
-				if games[i].Team1Name == team.Name {
+				if games[i].Teams[0].Name == team.Name {
 					games[i].League = league.Name
 					break
 				}

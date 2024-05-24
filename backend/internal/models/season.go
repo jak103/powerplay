@@ -8,6 +8,11 @@ type Season struct {
 	Start time.Time `json:"start"`
 	End   time.Time `json:"end"`
 	// Registrations []Registration `json:"registrations"`
-	Schedule []Game   `json:"schedule"`
-	Rosters  []Roster `json:"rosters"`
+	Schedule     []Game   `json:"schedule"`
+	Rosters      []Roster `json:"rosters"`
+	LeagueRounds map[string][]Round
+}
+
+type Round struct {
+	Games []Game
 }

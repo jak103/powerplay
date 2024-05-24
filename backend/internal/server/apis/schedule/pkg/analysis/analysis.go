@@ -2,7 +2,7 @@ package analysis
 
 import (
 	"fmt"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/utils/log"
 
 	"sort"
@@ -20,12 +20,12 @@ func RunTimeAnalysis(games []models.Game) (models.SeasonStats, map[string]models
 		var team2Stats models.TeamStats
 		var ok bool
 
-		if team1Stats, ok = teamStats[game.Team1Name]; !ok {
-			team1Stats = newStats(game.League, game.Team1Name)
+		if team1Stats, ok = teamStats[game.Teams[0].Name]; !ok {
+			team1Stats = newStats(game.League, game.Teams[0].Name)
 		}
 
-		if team2Stats, ok = teamStats[game.Team2Name]; !ok {
-			team2Stats = newStats(game.League, game.Team2Name)
+		if team2Stats, ok = teamStats[game.Teams[1].Name]; !ok {
+			team2Stats = newStats(game.League, game.Teams[1].Name)
 		}
 
 		team1Stats.Games = append(team1Stats.Games, game)
@@ -35,8 +35,8 @@ func RunTimeAnalysis(games []models.Game) (models.SeasonStats, map[string]models
 
 		daysOfTheWeek(game, &team1Stats, &team2Stats)
 
-		teamStats[game.Team1Name] = team1Stats
-		teamStats[game.Team2Name] = team2Stats
+		teamStats[game.Teams[0].Name] = team1Stats
+		teamStats[game.Teams[1].Name] = team2Stats
 	}
 
 	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games

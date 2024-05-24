@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"os"
 

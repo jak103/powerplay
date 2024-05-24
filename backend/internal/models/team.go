@@ -8,6 +8,7 @@ type Team struct {
 	Active   bool   //`json:"active"`
 	LeagueID uint   //`json:"league_id"`
 	League   League `json:"league"`
+	IsBye    bool   //`json:"is_bye"`
 	// Captain   User   `json:"primary_captain" gorm:"foreignKey:CaptainID"`
 	// CaptainID uint   `json:"primary_captain_id"`
 }

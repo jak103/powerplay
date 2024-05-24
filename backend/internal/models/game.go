@@ -8,17 +8,18 @@ type Game struct {
 	Teams           []Team    `json:"teams" gorm:"many2many:games_teams;"`
 	Team1LockerRoom string    `json:"home_locker_room"`
 	Team2LockerRoom string    `json:"away_locker_room"`
-	Start           time.Time `json:"start"`
-	End             time.Time `json:"end"`
+	Start           time.Time `csv:"-"`
+	StartDate       string    `csv:"Start_Date"`
+	StartTime       string    `csv:"Start_Time"`
+	End             time.Time `csv:"-"`
+	EndDate         string    `csv:"End_Date"`
+	EndTime         string    `csv:"End_Time"`
 	Venue           Venue     `json:"venue"`
 	VenueID         uint
-	Team1Id         string `csv:"Team1_ID"`
-	Team2Id         string `csv:"Team2_ID"`
-	Team1Name       string `csv:"Team1_Name"`
-	Team2Name       string `csv:"Team2_Name"`
 	IsEarly         bool   `csv:"-"`
-	EventType       string `csv:"Event_Type"` // Must be "Game" or "Bye"
 	Optimized       bool   `csv:"-"`
+	League          string `csv:"-"` // Not in CSV
+	IsBye           bool   `csv:"-"`
 
 	// ManagerOnCall    User      `json:"manager_on_call"`
 	// ManagerOnCallID  uint
