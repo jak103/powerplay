@@ -92,6 +92,10 @@ func readBody(c *fiber.Ctx) (string, int, error) {
 	return bodyDto.SeasonName, bodyDto.NumberOfGamesPerTeam, nil
 }
 
+func assignLockerRooms(games []models.Game) {
+	// TODO Assign locker rooms to each game
+}
+
 func optimizeSchedule(games []models.Game, numberOfGamesPerTeam int) {
 	if len(games) == 0 {
 		log.Info("No games to optimize")
