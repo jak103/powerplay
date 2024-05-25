@@ -1,0 +1,205 @@
+paths:
+  games:
+    get:
+      tags:
+        - Games
+      summary: Get All Games
+      description: |
+        Get all games
+      responses:
+        200:
+          description: The response body should contain the list of games
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGamesResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+    post:
+      tags:
+        - Games
+      summary: Create a New Game
+      description: |
+        Create a new game
+      requestBody:
+        description: json object with valid game
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/Game'
+      responses:
+        200:
+          description: Game created successfully
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+        500:
+          $ref: "../common/errors.yml#/responses/InternalServerError"
+    /games/{gameId}:
+      get:
+        tags:
+          - Games
+        summary: Get Game by ID
+        description: |
+          Get game details by ID
+        parameters:
+          - name: gameId
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: The response body should contain the game details
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Game'
+          400:
+            $ref: "../common/errors.yml#/responses/BadRequest"
+          404:
+            $ref: "../common/errors.yml#/responses/NotFound"
+      put:
+        tags:
+          - Games
+        summary: Update Game by ID
+        description: |
+          Update game details by ID
+        parameters:
+          - name: gameId
+            in: path
+            required: true
+            schema:
+              type: string
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        responses:
+          200:
+            description: Game updated successfully
+          400:
+            $ref: "../common/errors.yml#/responses/BadRequest"
+          404:
+            $ref: "../common/errors.yml#/responses/NotFound"
+          500:
+            $ref: "../common/errors.yml#/responses/InternalServerError"
+
+components:
+  schemas:
+    GetGamesResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: object
+          properties:
+            games:
+              type: array
+              description: All games
+              items:
+                $ref: '#/components/schemas/Game'
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-01-02T12:00:00Z"
+        away_team:
+          $ref: '#/components/schemas/Team'
+        away_team_id:
+          type: integer
+          example: 1
+        away_team_locker_room:
+          type: string
+          example: "Locker Room A"
+        away_team_shots_on_goal:
+          type: integer
+          example: 15
+        end:
+          type: string
+          format: date-time
+          example: "2023-01-01T14:00:00Z"
+        home_team:
+          $ref: '#/components/schemas/Team'
+        home_team_id:
+          type: integer
+          example: 2
+        home_team_locker_room:
+          type: string
+          example: "Locker Room B"
+        home_team_shots_on_goal:
+          type: integer
+          example: 20
+        league_id:
+          type: integer
+          example: 1
+        league:
+          $ref: '#/components/schemas/League'
+        manager_on_call:
+          $ref: '#/components/schemas/User'
+        manager_on_call_id:
+          type: integer
+          example: 3
+        primary_referee:
+          $ref: '#/components/schemas/User'
+        primary_referee_id:
+          type: integer
+          example: 4
+        score_keeper:
+          $ref: '#/components/schemas/User'
+        score_keeper_id:
+          type: integer
+          example: 5
+        secondary_referee:
+          $ref: '#/components/schemas/User'
+        secondary_referee_id:
+          type: integer
+          example: 6
+        season:
+          $ref: '#/components/schemas/Season'
+        season_id:
+          type: integer
+          example: 1
+        start:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+        venue:
+          $ref: '#/components/schemas/Venue'
+        venue_id:
+          type: integer
+          example: 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
