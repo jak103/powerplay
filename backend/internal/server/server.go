@@ -1,7 +1,10 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/middleware"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/utils/locals"
@@ -23,9 +26,9 @@ func Run() {
 
 	apis.SetupRoutes(app)
 
-	app.Static("/", "/app/static") // TODO make this an env var?
+	app.Static("/", "/app/static")
 
-	app.Listen(":9001")
+	app.Listen(fmt.Sprintf(":%s", config.Vars.Port))
 }
 
 func globalErrorHandler(c *fiber.Ctx, err error) error {

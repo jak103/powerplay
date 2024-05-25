@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server"
