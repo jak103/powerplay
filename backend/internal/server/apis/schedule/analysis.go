@@ -1,7 +1,10 @@
 package schedule
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
@@ -16,19 +19,26 @@ type response struct {
 }
 
 func init() {
-	apis.RegisterHandler(fiber.MethodGet, "/schedule/analysis/:scheduleId<int/>", auth.Public, handleAnalysis)
+	apis.RegisterHandler(fiber.MethodGet, "/schedule/analysis/:seasonId<int/>", auth.Public, handleAnalysis)
 }
 
 func handleAnalysis(c *fiber.Ctx) error {
-	games, seasonConfig := parser.ReadGames("summer_2024")
-
 	//TODO: get the schedule from the database with this id
-    scheduleId := c.Params("scheduleId")
-    log.Info("Schedule Id: %v\n", scheduleId)
+    seasonId, err := strconv.Atoi(c.Params("seasonId"))
+    if err != nil {
+        log.Error("Season Id was not an integer", err)
+        responder.BadRequest(c, "Bad Request: Season Id was not an integer")
+    }
 
+    db := db.GetSession(c)
+    games, err := db.GetGamesBySeason(seasonId)
+    if err != nil {
+        log.Error("Could not retrieve the games from the database")
+        responder.InternalServerError(c, "Could not retrieve the games from the database")
+    }
+
+    //TODO: Change this to use different model.Game
 	_, ts := analysis.RunTimeAnalysis(games)
-
-	printTeamSchedules(games, seasonConfig)
 
 	data := response{
 		TeamStats: analysis.Serialize(ts),

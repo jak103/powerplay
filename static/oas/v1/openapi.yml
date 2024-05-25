@@ -13,7 +13,7 @@ paths:
     $ref: "./auth/auth.yml#/paths/auth"
   /user:
     $ref: "./users/users.yml#/paths/user"
-  /schedule/analysis/{scheduleId}:
+  /schedule/analysis/{seasonId}:
     $ref: "./schedule/schedule.yml#/paths/analysis"
 
   # /[URL path]

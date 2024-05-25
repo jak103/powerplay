@@ -53,6 +53,7 @@ func RunTimeAnalysis(games []models.Game) (models.SeasonStats, map[string]models
 	return seasonStats, teamStats
 }
 
+//TODO: Change this to not have to do a double loop, this was only a temporary thing, then I changed how it worked
 func Serialize(ts map[string]models.TeamStats) []models.TeamStats {
 	var stats []models.TeamStats
 	for _, v := range ts {

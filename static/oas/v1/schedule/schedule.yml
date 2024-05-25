@@ -3,13 +3,13 @@ paths:
       get:
         parameters:
           - in: path
-            name: scheduleId
+            name: seasonId
             required: true
             schema:
               type: integer
         tags:
           - analysis
-        summary: Request analysis of schedule
+        summary: Request analysis of schedule corresponding to seasonId
         description: |
           **REQUIRED PERMISSIONS:** admin
         responses:
