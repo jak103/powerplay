@@ -1,6 +1,7 @@
 package analysis
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
@@ -20,12 +21,20 @@ func init() {
 }
 
 func handleAnalysis(c *fiber.Ctx) error {
-	games, leagues, err := something(c, "test")
-	if err != nil {
-		log.Error("Error reading games and leagues: %v\n", err)
+	type BodyDto struct {
+		Season string `json:"season"`
 	}
 
-	// TODO numberOfGamesPerTeam is hardcoded to 10 for now. We need to read this from the upload.csv file.
+	body := c.Body()
+	var bodyDto BodyDto
+	err := json.Unmarshal(body, &bodyDto)
+	if err != nil {
+		return responder.BadRequest(c, "Error reading body")
+	}
+
+	games, err := read.Games(c, bodyDto.Season)
+	leagues, err := read.Leagues(c, bodyDto.Season)
+
 	analysis.RunTimeAnalysis(games, 10)
 
 	printTeamSchedules(games, leagues)
