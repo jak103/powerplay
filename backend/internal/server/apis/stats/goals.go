@@ -13,6 +13,7 @@ import (
 
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/goals", auth.Public, postGoalsHandler)
+	apis.RegisterHandler(fiber.MethodGet, "/goals", auth.Public, getGoalsHandler)
 }
 
 func postGoalsHandler(c *fiber.Ctx) error {
@@ -42,4 +43,16 @@ func postGoalsHandler(c *fiber.Ctx) error {
 	
 	return responder.Ok(c)
 
+}
+
+func getGoalsHandler(c *fiber.Ctx) error {
+	log := locals.Logger(c)
+	db := db.GetSession(c)
+	goals, err := db.GetGoals()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to get all goals from the database")
+		return err
+	}
+	// Send JSON response
+	return responder.OkWithData(c, goals)
 }

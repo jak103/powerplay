@@ -41,7 +41,7 @@ func init() {
 				return nil
 			},
 		},
-		&gormigrate.Migration{
+&gormigrate.Migration{
 			ID: "create_goals_table",
 			Migrate: func(tx *gorm.DB) error {
 				return tx.AutoMigrate(&models.Goal{})
@@ -60,7 +60,6 @@ func init() {
 				return tx.Migrator().DropTable("goals")
 			},
 		},
-
 		// Add more migrations here
 	)
 }

@@ -13,8 +13,8 @@ type Goal struct {
 	Period	    		uint			`json:"period"`
 	Assist1Id			uint   	   		`json:"assist1_id"`
 	Assist2Id			uint   	   		`json:"assist2_id"`
-	PlayerDifferential	int		   		`json:"powerplay"`
-	IsPenaltyShot		bool	   		`json:"penalty"`
+	PlayerDifferential	int		   		`json:"playerdifferential"`
+	IsPenaltyShot		bool	   		`json:"ispenaltyshot"`
 
 	//powerplay - was someone in the box; bool
 	//penalty - was scored on penalty shot; bool
