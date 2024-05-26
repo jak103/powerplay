@@ -8,9 +8,9 @@ import (
 )
 
 func IceTimes(seasonName string) ([]string, error) {
-	fileBytes, err := os.ReadFile(fmt.Sprintf("uploads/%s_config.yml", seasonName))
+	fileBytes, err := os.ReadFile(fmt.Sprintf("uploads/%s.yml", seasonName))
 	if err != nil {
-		fileBytes, err = os.ReadFile(fmt.Sprintf("../uploads/%s_config.yml", seasonName))
+		fileBytes, err = os.ReadFile(fmt.Sprintf("../uploads/%s.yml", seasonName))
 		if err != nil {
 			log.Error("Error reading file: %v\n", err)
 			return nil, err
