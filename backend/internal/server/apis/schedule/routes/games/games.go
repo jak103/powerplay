@@ -24,7 +24,7 @@ func init() {
 
 func handleGames(c *fiber.Ctx) error {
 	log.Info("Reading body\n")
-	// TODO numberOfGamesPerTeam is read from the request for now. We need to read this from the upload.csv file.
+	// TODO numberOfGamesPerTeam is read from the request for now. We need to read this from the upload.yml file.
 	seasonName, numberOfGamesPerTeam, err := readBody(c)
 	if err != nil {
 		log.Error("Error reading body: %v\n", err)
@@ -79,12 +79,11 @@ func handleGames(c *fiber.Ctx) error {
 }
 
 func readBody(c *fiber.Ctx) (string, int, error) {
-	type dto struct {
+	body := c.Body()
+	var bodyDto struct {
 		SeasonName           string `json:"seasonName"`
 		NumberOfGamesPerTeam int    `json:"numberOfGamesPerTeam"`
 	}
-	body := c.Body()
-	var bodyDto dto
 	err := json.Unmarshal(body, &bodyDto)
 	if err != nil {
 		return "", 0, responder.BadRequest(c, "Error reading body")
