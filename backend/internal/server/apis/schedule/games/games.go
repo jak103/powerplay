@@ -5,16 +5,15 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/services/auth"
-	"time"
-
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"time"
 )
 
 func init() {
@@ -120,7 +119,7 @@ func optimizeSchedule(games []models.Game) {
 
 func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Season, error) {
 	if len(leagues) == 0 {
-		return models.Season{}, errors.New("no leagues to games games for")
+		return models.Season{}, errors.New("no leagues to generate games for")
 	}
 	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
 

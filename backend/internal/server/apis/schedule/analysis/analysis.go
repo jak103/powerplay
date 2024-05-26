@@ -1,6 +1,7 @@
 package analysis
 
 import (
+	"encoding/json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
@@ -16,7 +17,18 @@ func init() {
 }
 
 func handleAnalysis(c *fiber.Ctx) error {
-	games, seasonConfig := parser.ReadGames("summer_2024")
+	type BodyDto struct {
+		Season string `json:"season"`
+	}
+
+	body := c.Body()
+	var bodyDto BodyDto
+	err := json.Unmarshal(body, &bodyDto)
+	if err != nil {
+		return responder.BadRequest(c, "Error reading body")
+	}
+
+	games, seasonConfig := parser.ReadGames(bodyDto.Season)
 
 	analysis.RunTimeAnalysis(games)
 
