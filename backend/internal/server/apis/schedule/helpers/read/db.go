@@ -1,65 +1,34 @@
 package read
 
 import (
-	"fmt"
-	"github.com/gocarina/gocsv"
+	"errors"
+	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
-	"github.com/jak103/powerplay/internal/utils/log"
-	"os"
-	"time"
 )
 
-func Games(season string) ([]models.Game, models.SeasonConfig) {
-	log.Info("Reading config file season_config.yml\n")
+// TODO not sure this is how you read from the db
 
-	seasonConfig, err := SeasonConfig(season)
-	if err != nil {
-		log.Error("Error reading file: %v\n", err)
+func Games(c *fiber.Ctx, season string) ([]models.Game, error) {
+	if c == nil || len(season) == 0 {
+		return nil, errors.New("invalid uploads")
 	}
-
+	session := db.GetSession(c)
 	var games []models.Game
-
-	scheduleFile, err := os.OpenFile(fmt.Sprintf("schedule_%s.csv", season), os.O_RDONLY, os.ModePerm)
-	if err != nil {
-		log.Error("Failed to open schedule file: %v\n", err)
+	if err := session.Connection.Where("season = ?", season).Find(&games).Error; err != nil {
+		return nil, err
 	}
+	return games, nil
+}
 
-	err = gocsv.UnmarshalFile(scheduleFile, &games)
-	if err != nil {
-		log.Error("Failed to unmarshal schedule file: %v\n", err)
+func Leagues(c *fiber.Ctx, season string) ([]models.League, error) {
+	if c == nil || len(season) == 0 {
+		return nil, errors.New("invalid uploads")
 	}
-
-	log.Info("Read %v games\n", len(games))
-
-	for i := range games {
-		games[i].Start, err = time.Parse("01/02/2006 15:04", fmt.Sprintf("%v %v", games[i].StartDate, games[i].StartTime))
-		if err != nil {
-			log.Error("Time parse error: %v\n", err)
-		}
-
-		switch games[i].Start.Hour() {
-		case 20:
-			games[i].IsEarly = true
-		case 21:
-			if games[i].Start.Minute() <= 15 {
-				games[i].IsEarly = true
-			} else {
-				games[i].IsEarly = false
-			}
-
-		case 22, 23:
-			games[i].IsEarly = false
-		}
-
-		for _, league := range seasonConfig.Leagues {
-			for _, team := range league.Teams {
-				if games[i].Teams[0].Name == team.Name {
-					games[i].League = league.Name
-					break
-				}
-			}
-		}
+	session := db.GetSession(c)
+	var leagues []models.League
+	if err := session.Connection.Where("season = ?", season).Find(&leagues).Error; err != nil {
+		return nil, err
 	}
-
-	return games, *seasonConfig
+	return leagues, nil
 }

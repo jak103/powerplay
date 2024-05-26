@@ -24,7 +24,7 @@ func init() {
 
 func handleGames(c *fiber.Ctx) error {
 	log.Info("Reading body\n")
-	// TODO numberOfGamesPerTeam is read from the request for now. We need to read this from the ice_times.csv file.
+	// TODO numberOfGamesPerTeam is read from the request for now. We need to read this from the upload.csv file.
 	seasonName, numberOfGamesPerTeam, err := readBody(c)
 	if err != nil {
 		log.Error("Error reading body: %v\n", err)
@@ -41,18 +41,25 @@ func handleGames(c *fiber.Ctx) error {
 		return responder.BadRequest(c, "Number of games per team is 0")
 	}
 
-	log.Info("Reading config file for season\n")
-	seasonConfig, err := read.SeasonConfig(seasonName)
+	log.Info("Reading ice times for season\n")
+	iceTimes, err := read.IceTimes(seasonName)
+	if err != nil {
+		log.Error("Error reading file: %v\n", err)
+		return responder.BadRequest(c, "Error reading file")
+	}
+
+	log.Info("Reading leagues for season\n")
+	leagues, err := read.Leagues(c, seasonName)
 	if err != nil {
 		log.Error("Error reading file: %v\n", err)
 		return responder.BadRequest(c, "Error reading file")
 	}
 
 	log.Info("Generating games\n")
-	season, err := generateGames(seasonConfig.Leagues, numberOfGamesPerTeam)
+	season, err := generateGames(leagues, numberOfGamesPerTeam)
 
 	log.Info("Assigning ice times\n")
-	games, err := assignTimes(seasonConfig.IceTimes, season, numberOfGamesPerTeam)
+	games, err := assignTimes(iceTimes, season, numberOfGamesPerTeam)
 	if err != nil {
 		log.Error("Error assigning ice times: %v\n", err)
 		return responder.BadRequest(c, "Error assigning ice times")
@@ -61,30 +68,23 @@ func handleGames(c *fiber.Ctx) error {
 	log.Info("Optimizing schedule\n")
 	optimizeSchedule(games, numberOfGamesPerTeam)
 
-	log.Info("Writing csv\n")
-	err = write.Csv(games, "schedule.csv")
+	log.Info("Saving to database\n")
+	err = write.Games(c, games)
 	if err != nil {
-		log.Error("Error writing csv: %v\n", err)
+		log.Error("Error saving to database: %v\n", err)
 		return responder.InternalServerError(c)
 	}
-
-	//log.Info("Saving to database\n")
-	//err = write.ToDb(c, games)
-	//if err != nil {
-	//	log.Error("Error saving to database: %v\n", err)
-	//	return responder.InternalServerError(c)
-	//}
 
 	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
 }
 
 func readBody(c *fiber.Ctx) (string, int, error) {
-	type BodyDto struct {
+	type dto struct {
 		SeasonName           string `json:"seasonName"`
 		NumberOfGamesPerTeam int    `json:"numberOfGamesPerTeam"`
 	}
 	body := c.Body()
-	var bodyDto BodyDto
+	var bodyDto dto
 	err := json.Unmarshal(body, &bodyDto)
 	if err != nil {
 		return "", 0, responder.BadRequest(c, "Error reading body")

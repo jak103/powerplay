@@ -7,9 +7,9 @@ import (
 	"github.com/jak103/powerplay/internal/models"
 )
 
-func ToDb(c *fiber.Ctx, games []models.Game) error {
+func Games(c *fiber.Ctx, games []models.Game) error {
 	if c == nil || len(games) == 0 {
-		return errors.New("invalid input")
+		return errors.New("invalid uploads")
 	}
 	session := db.GetSession(c)
 
