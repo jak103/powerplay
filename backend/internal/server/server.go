@@ -28,7 +28,7 @@ func Run() {
 
 	apis.SetupRoutes(app)
 
-	app.Static("/", "/app/static")
+	app.Static("/", "/powerplay/static")
 
 	app.Listen(fmt.Sprintf(":%s", config.Vars.Port))
 }
