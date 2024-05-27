@@ -41,7 +41,7 @@ func init() {
 				return nil
 			},
 		},
-&gormigrate.Migration{
+		&gormigrate.Migration{
 			ID: "create_goals_table",
 			Migrate: func(tx *gorm.DB) error {
 				return tx.AutoMigrate(&models.Goal{})
@@ -50,7 +50,7 @@ func init() {
 				return tx.Migrator().DropTable("goals")
 			},
 		},
-     
+
 		&gormigrate.Migration{
 			ID: "create_shots_on_goal_table",
 			Migrate: func(tx *gorm.DB) error {
@@ -96,16 +96,16 @@ func Run(db *gorm.DB) error {
 		log.Info("Initializing powerplay schema")
 		err := tx.AutoMigrate(
 			&models.User{},
+			&models.Season{},
 			&models.League{},
 			&models.Team{},
 			&models.Roster{},
-			&models.Staff{},
-			&models.Game{},
-			&models.Season{},
-			&models.Registration{},
 			&models.Venue{},
+			&models.Game{},
+			&models.Registration{},
 			&models.KeyRecord{},
 			&models.Goal{},
+			&models.PenaltyType{},
 			&models.Penalty{},
 		)
 		if err != nil {

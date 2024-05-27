@@ -4,7 +4,7 @@
 migrate:
 	@echo "🚀 Running app in detached mode and applying migrations"
 	@docker-compose -f docker-compose.yml up -d
-	@docker-compose -f docker-compose.yml exec backend bash -c "cd /app/backend && go run . -migrate" || (echo "Migration failed, halting" && exit 1)
+	@docker-compose -f docker-compose.yml exec backend bash -c "cd /powerplay/backend && go run . -migrate" || (echo "Migration failed, halting" && exit 1)
 
 nuke-migrations:
 	@echo "💥 Truncating migrations table"
@@ -22,4 +22,4 @@ run_local_image:
 
 test:
 	@echo "🚀 Testing code: Running go test inside the backend container"
-	@docker-compose -f docker-compose.yml exec -T backend bash -c "cd /app/backend && go test -v ./..."
+	@docker-compose -f docker-compose.yml exec -T backend bash -c "cd /powerplay/backend && go test -v ./..."
