@@ -2,6 +2,7 @@ package models
 
 type Registration struct {
 	DbModel
+	SeasonID  uint `json:"season_id"`
 	UserID    uint
 	User      User       `json:"user"`
 	Questions []Question `type:"questions"`

@@ -28,6 +28,8 @@ func RegisterHandler(method, path string, roles []auth.Role, handlers ...fiber.H
 	}
 
 	routes[method+path] = r
+
+	log.Debug("Registering handler: %s %s", method, path)
 }
 
 func SetupRoutes(app *fiber.App) {
