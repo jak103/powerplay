@@ -19,13 +19,17 @@ type Game struct {
 	Status   Status    `json:"status"`
 
 	HomeTeam            Team   `json:"home_team"`
+	HomeTeamID          uint   `json:"home_team_id"`
 	HomeTeamRoster      Roster `json:"home_team_roster"`
+	HomeTeamRosterID    uint   `json:"home_team_roster_id"`
 	HomeTeamLockerRoom  string `json:"home_team_locker_room"`
 	HomeTeamShotsOnGoal int    `json:"home_team_shots_on_goal"`
 	HomeTeamScore       int    `json:"home_team_score"`
 
 	AwayTeam            Team   `json:"away_team"`
+	AwayTeamID          uint   `json:"away_team_id"`
 	AwayTeamRoster      Roster `json:"away_team_roster"`
+	AwayTeamRosterID    uint   `json:"away_team_roster_id"`
 	AwayTeamLockerRoom  string `json:"away_team_locker_room"`
 	AwayTeamShotsOnGoal int    `json:"away_team_shots_on_goal"`
 	AwayTeamScore       int    `json:"away_team_score"`
@@ -33,7 +37,7 @@ type Game struct {
 	ScoreKeeper        *User `json:"score_keeper"`
 	ScoreKeeperID      uint  `json:"score_keeper_id"`
 	PrimaryReferee     *User `json:"primary_referee"`
-	PrimaryRefereeID   *User `json:"primary_referee_id"`
+	PrimaryRefereeID   *uint `json:"primary_referee_id"`
 	SecondaryReferee   *User `json:"secondary_referee"`
-	SecondaryRefereeID *User `json:"secondary_referee_id"`
+	SecondaryRefereeID *uint `json:"secondary_referee_id"`
 }
