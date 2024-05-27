@@ -15,6 +15,8 @@ paths:
     $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"   
   /user:
     $ref: "./users/users.yml#/paths/user"
+  /penaltyTypes:
+    $ref: "./stats/penalties.yml#/paths/penaltyTypes"
   /penalties:
     $ref: "./stats/penalties.yml#/paths/penalties"
 

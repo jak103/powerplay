@@ -7,13 +7,26 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
+	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
 func init() {
-	//apis.RegisterHandler(fiber.MethodGet, "/penaltyTypes", auth.Public, getPenaltyTypes)
+	apis.RegisterHandler(fiber.MethodGet, "/penaltyTypes", auth.Public, getPenaltyTypes)
 	apis.RegisterHandler(fiber.MethodGet, "/penalties", auth.Public, getPenaltiesHandler)
 	apis.RegisterHandler(fiber.MethodPost, "/penalties", auth.Public, postPenaltyHandler)
+}
+
+func getPenaltyTypes(c *fiber.Ctx) error {
+
+	db := db.GetSession(c)
+	penaltyTypes, err := db.GetPenaltyTypes()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to get all penalty types from the database")
+		return err
+	}
+
+	return responder.OkWithData(c, penaltyTypes)
 }
 
 func getPenaltiesHandler(c *fiber.Ctx) error {

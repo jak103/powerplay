@@ -1,4 +1,19 @@
 paths:
+  penaltyTypes:
+    get:
+      tags:
+        - Stats
+      summary: Get Penalty Types
+      description: Get all penalty types
+      responses:
+        200:
+          description: The response body should contain the penalty types
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/GetPenaltyTypeResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
   penalties:
     get:
       tags:
@@ -128,3 +143,41 @@ schemas:
         $ref: "../common/schemas.yml#/schemas/StatusString200"
       request_id:
         $ref: "../common/schemas.yml#/schemas/RequestId"
+  GetPenaltyTypeResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: array
+        items:
+          type: object
+          properties:
+            id: 
+              type: int
+              description: Id of penalty type
+              example: 1
+            created_at:
+              type: string
+              description: Time penalty type was created 
+              example: "2024-05-22T03:08:30.187262Z"
+            updated_at:
+              type: string
+              description: Time penalty type was updated
+              example: "2024-05-22T03:08:30.187262Z"
+            name: 
+              type: string
+              description: Name of penalty
+              example: Hooking
+            duration:  
+              type: int
+              description: Duration of penalty
+              example: 2
+            severity: 
+              type: string
+              description: Severity of the penalty
+              example: minor
