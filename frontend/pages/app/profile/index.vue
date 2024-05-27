@@ -127,6 +127,9 @@ Profile</NuxtLink>
   font-size: 10px;
   margin-bottom: 5px;
 }
+.bottom-buttons{
+  margin-bottom: 20px;
+}
 .bottom-buttons div{
   display: flex;
   flex-direction: row;
