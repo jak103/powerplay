@@ -2,73 +2,111 @@
 definePageMeta({
   layout: "auth-layout",
 });
-//user inputs
+
+// user inputs
 const password = ref('')
 const confirmPassword = ref('')
 const birthDate = ref('')
 const phoneNumberInput = ref('')
 const phoneNumber = ref('')
+const email = ref('')
 
-//error messages if needed
+// error messages if needed
 const pass_errorMessage = ref('')
 const birthday_errorMessage = ref('')
 const phone_errorMessage = ref('')
+const email_errorMessage = ref('')
 
 const createAccount = () => {
-  //useRouter().push('/app')
   pass_errorMessage.value = ''
-  
-  validatePassword()
-  validatePhone()
-  validateBirthday()
-  console.log(pass_errorMessage.value)
-}
-function validatePassword(){
-if(password.value != confirmPassword.value){
-  pass_errorMessage.value = "Your password doesn't match!"
-  return false
-}
-if(password.value.length < 8){
-  pass_errorMessage.value = "Your password must be at least 8 characters long!"
-  return false
-}
+  birthday_errorMessage.value = ''
+  phone_errorMessage.value = ''
+  email_errorMessage.value = ''
 
-var specialCharacters = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '{', '}', '[', ']', '|', '\\', ':', ';', '"', "'", '<', '>', ',', '.', '/'];
-var specialChar = false 
-for (let i = 0; i < password.value.length; i++) {
-  if (specialCharacters.includes(password.value[i])) {
-    specialChar = true
-    break;
+  const isPasswordValid = validatePassword()
+  const isPhoneValid = validatePhone()
+  const isBirthdayValid = validateBirthday()
+  const isEmailValid = validateEmail()
+
+  if (isPasswordValid && isPhoneValid && isBirthdayValid && isEmailValid) {
+    // All validations passed
+    // useRouter().push('/app')
   }
 }
-if(!specialChar){pass_errorMessage.value = "Your password must contain a special character!"
-  return false}
-}
 
-function validatePhone(){
-phoneNumber.value = ''
-phone_errorMessage.value = ''
-
-var charCodeZero = "0".charCodeAt(0);
-var charCodeNine = "9".charCodeAt(0);
-
-for ( let i = 0; i < phoneNumberInput.value.length; i++) {
-  var char = phoneNumberInput.value[i]
-  if (char.charCodeAt(0) >= charCodeZero && char.charCodeAt(0) <= charCodeNine ) {
-  
-    phoneNumber.value = phoneNumber.value + char
+function validatePassword() {
+  if (password.value !== confirmPassword.value) {
+    pass_errorMessage.value = "Your password doesn't match!"
+    return false
   }
-}
-console.log(phoneNumber.value)
-if(phoneNumber.value.length != 10){
-  phone_errorMessage.value = "The phone number you entered is invalid!"
-} 
-}
-function validateBirthday(){
+  if (password.value.length < 8) {
+    pass_errorMessage.value = "Your password must be at least 8 characters long!"
+    return false
+  }
 
+  const specialCharacters = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '{', '}', '[', ']', '|', '\\', ':', ';', '"', "'", '<', '>', ',', '.', '/']
+  const specialChar = password.value.split('').some(char => specialCharacters.includes(char))
+  
+  if (!specialChar) {
+    pass_errorMessage.value = "Your password must contain a special character!"
+    return false
+  }
+
+  return true
 }
 
+function validatePhone() {
+  phoneNumber.value = ''
+  phone_errorMessage.value = ''
 
+  const charCodeZero = '0'.charCodeAt(0)
+  const charCodeNine = '9'.charCodeAt(0)
+
+  for (let i = 0; i < phoneNumberInput.value.length; i++) {
+    const char = phoneNumberInput.value[i]
+    if (char.charCodeAt(0) >= charCodeZero && char.charCodeAt(0) <= charCodeNine) {
+      phoneNumber.value += char
+    }
+  }
+  
+  if (phoneNumber.value.length !== 10) {
+    phone_errorMessage.value = "The phone number you entered is invalid!"
+    return false
+  }
+
+  return true
+}
+
+function validateBirthday() {
+  birthday_errorMessage.value = ''
+  if (birthDate.value === '') {
+    birthday_errorMessage.value = 'Please enter your birthday!'
+    return false
+  } 
+
+  const [year, month, day] = birthDate.value.split('-').map(part => parseInt(part, 10))
+  const currentDate = new Date()
+  const currentYear = currentDate.getFullYear()
+  const currentMonth = currentDate.getMonth() + 1
+  const currentDay = currentDate.getDate()
+  
+  if (year > currentYear || (year === currentYear && (month > currentMonth || (month === currentMonth && day > currentDay)))) {
+    birthday_errorMessage.value = 'Invalid birthday entered!'
+    return false
+  }
+
+  return true
+}
+
+function validateEmail() {
+  email_errorMessage.value = ''
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailPattern.test(email.value)|| !email.value.endsWith(".com")) {
+    email_errorMessage.value = 'Invalid email!'
+    return false
+  }
+  return true
+}
 </script>
 
 <template>
@@ -77,7 +115,7 @@ function validateBirthday(){
   <div class="vstack gap-3">
     <div>
       <label for="first-name" class="form-label">First Name</label>
-      <input if="first-name" class="form-control" />
+      <input id="first-name" class="form-control" />
     </div>
     <div>
       <label for="last-name" class="form-label">Last Name</label>
@@ -85,29 +123,35 @@ function validateBirthday(){
     </div>
     <div>
       <label for="email" class="form-label">Email</label>
-      <input id="email" class="form-control" type="email"/>
+      <input id="email" class="form-control" type="email" v-model="email"/>
+    </div>
+    <div v-if="email_errorMessage" class="alert alert-danger">
+      <p>{{ email_errorMessage }}</p>
     </div>
     <div>
       <label for="password" class="form-label">Password</label>
-      <input id="password" class="form-control" type="password" v-model="password">
+      <input id="password" class="form-control" type="password" v-model="password"/>
     </div>
     <div>
       <label for="confirm-password" class="form-label">Confirm Password</label>
       <input id="confirm-password" class="form-control" type="password" v-model="confirmPassword"/>
     </div>
-    <div v-if="pass_errorMessage != ''"  style='background-color: #ff4444 ; border-radius: 8px; line-height:center;outline-color: #CC0000;padding-top:8px; padding-left:6px;'>
-      <p>{{pass_errorMessage}}</p>
+    <div v-if="pass_errorMessage" class="alert alert-danger">
+      <p>{{ pass_errorMessage }}</p>
     </div>
     <div>
-      <label for="phone-number" class="form-label" >Phone Number</label>
+      <label for="phone-number" class="form-label">Phone Number</label>
       <input id="phone-number" class="form-control" type="text" v-model="phoneNumberInput"/>
     </div>
-    <div v-if="phone_errorMessage != ''"  style='background-color: #ff4444 ; border-radius: 8px; line-height:center;outline-color: #CC0000;padding-top:8px; padding-left:6px;'>
-      <p>{{phone_errorMessage}}</p>
+    <div v-if="phone_errorMessage" class="alert alert-danger">
+      <p>{{ phone_errorMessage }}</p>
     </div>
     <div>
       <label for="birth-date" class="form-label">Birth Date</label>
       <input id="birth-date" class="form-control" type="date" v-model="birthDate" />
+    </div>
+    <div v-if="birthday_errorMessage" class="alert alert-danger">
+      <p>{{ birthday_errorMessage }}</p>
     </div>
     <div>
       <label for="experience" class="form-label">Years of Experience</label>
