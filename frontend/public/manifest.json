@@ -6,20 +6,20 @@
   "background_color": "#ffffff",
   "lang": "en",
   "scope": "/",
-  "description": "This is a test",
+  "description": "PowerPlay app",
   "theme_color": "#684191",
   "icons": [
     {
-      "src":"/icons/PowerPlay-Logo.png",
+      "src":"/icons/PowerPlay-Logo_200.png",
       "sizes": "200x200",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable any"
     },
     {
-      "src":"/icons/PowerPlay-Logo.png",
-      "sizes": "200x200",
+      "src":"/icons/PowerPlay-Logo_512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable any"
     }
   ],
   "screenshots": [
