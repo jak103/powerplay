@@ -13,12 +13,14 @@ paths:
     $ref: "./auth/auth.yml#/paths/auth"
   /shotsongoal:
     $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"   
-  /user:
-    $ref: "./users/users.yml#/paths/user"
   /penaltyTypes:
     $ref: "./stats/penalties.yml#/paths/penaltyTypes"
+  /leagues:
+    $ref: "./leagues/leagues.yaml#/paths/leagues"
   /penalties:
     $ref: "./stats/penalties.yml#/paths/penalties"
+  /user:
+    $ref: "./users/users.yml#/paths/user"
 
   # /[URL path]
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"

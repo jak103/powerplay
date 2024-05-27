@@ -12,6 +12,7 @@ import (
 	// Blank imports for apis to cause init functions to run
 	_ "github.com/jak103/powerplay/internal/server/apis/auth"
 	_ "github.com/jak103/powerplay/internal/server/apis/chat"
+	_ "github.com/jak103/powerplay/internal/server/apis/league"
 	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
 	_ "github.com/jak103/powerplay/internal/server/apis/stats"
 	_ "github.com/jak103/powerplay/internal/server/apis/user"
