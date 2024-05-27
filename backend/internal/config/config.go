@@ -19,7 +19,7 @@ type Config struct {
 	JwtSecret       string   `env:"JWT_SECRET"`
 	VapidPublicKey  string   `env:"VAPID_PUBLIC_KEY"  envDefault:"BMPQhGq2KuP92WTzRK7S5UgLk5v8H0ZoNXXJji0J5wO3ufLm24AgelUfpe0BvasoupYfSagpGFZvwRTSBS-KYzY"`
 	VapidPrivateKey string   `env:"VAPID_PRIVATE_KEY" envDefault:"ZcXYJyrk0kAeC0VkIcJWkwlPvC6CwrVsjTlys1Uu2P8"`
-	Port            string   `env:"PORT" envDefault:"9001"`
+	Port            string   `env:"PORT" envDefault:"9002"`
 	Db              Postgres `envPrefix:"DB_"`
 }
 
