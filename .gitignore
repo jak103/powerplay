@@ -154,3 +154,6 @@ go.work
 
 /.vscode
 /.idea
+
+# storybook
+storybook.log

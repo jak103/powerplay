@@ -11,7 +11,11 @@ const routes: RouteRecordRaw[] = [
       { path: 'schedule', component: () => import('pages/schedule/schedulePage.vue')},
     ],
   },
-
+  {
+    path: '/schedule-list',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/ScheduleListPage.vue') }],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

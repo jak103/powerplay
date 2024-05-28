@@ -9,7 +9,7 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
-          v-if="!$q.screen.lt.md" 
+          v-if="!$q.screen.lt.md"
         />
 
         <q-toolbar-title> Power Play </q-toolbar-title>
@@ -82,6 +82,14 @@ const navItems = [
     label: 'Profile',
     icon: 'person',
     to: '/profile',
+    flat: true,
+    dense: true,
+  },
+  {
+    label: 'Schedule List',
+    caption: 'Example Schedule List Component',
+    icon: 'view_list',
+    to: '/schedule-list'
     flat: true,
     dense: true,
   },
