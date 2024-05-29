@@ -13,7 +13,7 @@ services:
       NODE_ENV: development
     command: npm run dev
 
-  powerplay:
+  app:
     image: app:latest
     build: ./app
     container_name: app
