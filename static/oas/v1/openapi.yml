@@ -13,6 +13,8 @@ paths:
     $ref: "./auth/auth.yml#/paths/auth"
   /user:
     $ref: "./users/users.yml#/paths/user"
+  /team:
+    $ref: "./team/team.yml#/paths/team"
 
   # /[URL path]
     #$ref: "./[Relative path starting from v1]#/paths/[yml path]"

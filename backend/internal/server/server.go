@@ -7,6 +7,7 @@ import (
 	"github.com/jak103/powerplay/internal/utils/locals"
 
 	// Blank imports for apis to cause init functions to run
+	_ "github.com/jak103/powerplay/internal/server/apis/Team"
 	_ "github.com/jak103/powerplay/internal/server/apis/auth"
 	_ "github.com/jak103/powerplay/internal/server/apis/chat"
 	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
