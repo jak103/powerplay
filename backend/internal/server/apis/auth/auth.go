@@ -14,11 +14,6 @@ import (
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
-type request struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 type response struct {
 	Jwt        string    `json:"jwt"`
 	Expiration time.Time `json:"expiration"`
@@ -30,7 +25,13 @@ func init() {
 
 func postAuthHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
-	creds := request{}
+
+	creds := struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}{}
+
+	// creds := request{}
 	err := c.BodyParser(&creds)
 	if err != nil {
 		log.WithErr(err).Error("Failed to parse authentication credentials")
