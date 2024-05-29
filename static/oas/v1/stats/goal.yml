@@ -1,0 +1,135 @@
+paths:
+  goals:
+    get:
+      tags:
+        - Stats
+      summary: Get All Goals
+      description: |
+        Get all goals
+      responses:
+        200:
+          description: The response body should contain the list of goals
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetGoalsResponse"
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+    post:
+      tags:
+        - Stats
+      summary: Goal post request
+      description: |
+        **REQUIRED PERMISSIONS:** none:none  
+        **RATE LIMIT:** TBD
+      requestBody:
+        description: The request body should contain a user id, game id, team id, duration, period, assist1 id, assist2 id, powerplay, and penalty
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalRequest"
+      responses:
+        200:
+          description: Successfully posted goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoalResponse"
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+
+components:
+  schemas:
+    GetGoalsResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: object
+          properties:
+            goals:
+              type: array
+              description: All goals
+              example:
+                - id: 1
+                  created_at: "2009-11-10T23:00:00Z"
+                  updated_at: "2009-11-10T23:00:00Z"
+                  user_id: 55
+                  game_id: 42
+                  team_id: 1
+                  duration: 10
+                  period: 1
+                  assist1_id: 57
+                  assist2_id: 84
+                  playerdifferential: 0
+                  ispenaltyshot: false
+                - id: 2
+                  created_at: "2009-11-10T23:00:00Z"
+                  updated_at: "2009-11-10T23:00:00Z"
+                  user_id: 89
+                  game_id: 68
+                  team_id: 1
+                  duration: 10
+                  period: 1
+                  assist1_id: 48
+                  assist2_id: 5
+                  playerdifferential: 0
+                  ispenaltyshot: true
+
+    GoalRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: The user's id
+          example: 12
+        game_id:
+          type: integer
+          description: The game id
+          example: 13
+        team_id:
+          type: integer
+          description: The team id
+          example: 1
+        duration:
+          type: integer
+          description: The duration
+          example: 27
+        period:
+          type: integer
+          description: The period scored in
+          example: 3
+        assist1_id:
+          type: integer
+          description: The assist 1 id (player)
+          example: 57
+        assist2_id:
+          type: integer
+          description: The assist 2 id (player)
+          example: 84
+        playerdifferential:
+          type: integer
+          description: Powerplay information
+          example: -2
+        ispenaltyshot:
+          type: boolean
+          description: If a penalty happened
+          example: true
+
+    GoalResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: object
