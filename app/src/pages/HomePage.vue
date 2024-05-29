@@ -36,7 +36,7 @@
     <div class="text-h6">My Teams</div>
 
     <q-item v-for="team in teams" :key="team.id" class="q-mb-sm border-bottom">
-        <q-item clickable v-ripple @click="goToTeamInfo(team.id)">
+        <q-item clickable v-ripple @click="goToTeamInfo(team.name)">
             <q-avatar size="30px" class="q-mr-md">
                 <img src="team.logo" alt="Logo">
             </q-avatar>
@@ -97,8 +97,9 @@ const game = ref([
   },
 ]) 
 
-const goToTeamInfo = (teamId) => {
-  router.push({ name: 'TeamInfo', params: { id: teamId } });
+const goToTeamInfo = (teamName) => {
+  const encodedTeamName = encodeURIComponent(teamName);
+  router.push({ name: 'TeamInfo', params: { teamName: encodedTeamName } });
 };
 
 const goToLeagueInfo = (league) => {

@@ -3,7 +3,7 @@
     <q-card-section>
           <q-item>
             <q-avatar size="70px" class="q-mr-md">
-              <img src="team.logo" alt="Logo">
+              <img :src="team.value.logo" alt="Logo">
             </q-avatar>
             <q-item-section>
               <q-item-label>
@@ -31,9 +31,9 @@
 
 <script setup>
 import { ref } from 'vue';
-//import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
-//const router = useRouter();
+const route = useRoute();
 const teamId = route.params.id;
 
 const team = ref({

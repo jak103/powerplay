@@ -32,9 +32,9 @@
 
 <script setup>
 import { ref } from 'vue';
-//import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
-//const router = useRouter();
+const route = useRoute();
 const leagueName = route.params.id;
 
 // Replace this with actual league data retrieval logic
