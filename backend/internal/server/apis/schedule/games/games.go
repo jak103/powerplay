@@ -4,10 +4,11 @@ import (
 	"encoding/csv"
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 	"io"
@@ -31,6 +32,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	numberOfGamesPerTeam = 10
 	log.Info("Reading Body\n")
 
+
 	body, err := readBody(c)
 	if err != nil {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
@@ -39,9 +41,14 @@ func handleGenerate(c *fiber.Ctx) error {
 	algorithm := body.algorithm
 	iceTimes := body.iceTimes
 
-	// TODO read leagues from db
-
-	var leagues []structures.League
+	// Read leagues from db
+	log := locals.Logger(c)
+	db := db.GetSession(c)
+	leagues, err := db.GetLeaguesBySeason(seasonID)
+	if err != nil {
+		log.WithErr(err).Alert("Failed to get leagues for season %v the database", seasonID)
+		return err
+	}
 
 	var games []structures.Game
 	if algorithm == "round_robin" {

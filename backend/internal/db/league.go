@@ -8,3 +8,9 @@ func (s Session) GetLeagues() ([]models.League, error) {
 	err := s.Connection.Find(&leagues)
 	return resultsOrError(leagues, err)
 }
+
+func (s Session) GetLeaguesBySeason(seasonId uint) ([]models.League, error) {
+	leagues := make([]models.League, 0)
+	err := s.Connection.Where(&models.League{SeasonID: seasonId}).Find(&leagues)
+	return resultsOrError(leagues, err)
+}
