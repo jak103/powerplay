@@ -2,10 +2,11 @@ package games
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
@@ -23,10 +24,16 @@ func handleGenerate(c *fiber.Ctx) error {
 	// TODO read from the body
 	// seasonID, csvFile, algorithm
 	// TODO get ice times from csvFile
+	var seasonID uint
 
-	// TODO read leagues from db
-
-	var leagues []structures.League
+	// Read leagues from db
+	log := locals.Logger(c)
+	db := db.GetSession(c)
+	leagues, err := db.GetLeaguesBySeason(seasonID)
+	if err != nil {
+		log.WithErr(err).Alert("Failed to get leagues for season %v the database", seasonID)
+		return err
+	}
 
 	var iceTimes []string
 

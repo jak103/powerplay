@@ -2,14 +2,17 @@ package round_robin
 
 import (
 	"errors"
+	"strconv"
+	"time"
+
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
-	"time"
 )
 
-func RoundRobin(leagues []structures.League, iceTimes []string, numberOfGamesPerTeam int) ([]structures.Game, error) {
+func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam int) ([]structures.Game, error) {
 	season, err := generateGames(leagues, numberOfGamesPerTeam)
 	if err != nil {
 		return nil, err
@@ -52,7 +55,7 @@ func optimizeSchedule(games []structures.Game) {
 	}
 }
 
-func generateGames(leagues []structures.League, numberOfGamesPerTeam int) (structures.Season, error) {
+func generateGames(leagues []models.League, numberOfGamesPerTeam int) (structures.Season, error) {
 	if len(leagues) == 0 {
 		return structures.Season{}, errors.New("no leagues to generate games for")
 	}
@@ -67,7 +70,7 @@ func generateGames(leagues []structures.League, numberOfGamesPerTeam int) (struc
 		log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
 
 		if numTeams%2 == 1 {
-			league.Teams = append(league.Teams, structures.Team{Name: "Bye", Id: "-1"})
+			league.Teams = append(league.Teams, models.Team{Name: "Bye", CorrelationId: "-1"})
 			numTeams = len(league.Teams)
 		}
 
@@ -78,12 +81,12 @@ func generateGames(leagues []structures.League, numberOfGamesPerTeam int) (struc
 		for round := 0; round < numberOfRounds; round++ {
 			rounds[round].Games = make([]structures.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
-				team1 := league.Teams[i].Id
+				team1 := league.Teams[i].DbModel.ID
 				team1Name := league.Teams[i].Name
-				team2 := league.Teams[numTeams-1-i].Id
+				team2 := league.Teams[numTeams-1-i].DbModel.ID
 				team2Name := league.Teams[numTeams-1-i].Name
 
-				rounds[round].Games[i] = newGame(league.Name, team1, team1Name, team2, team2Name)
+				rounds[round].Games[i] = newGame(league.Name, strconv.FormatUint(uint64(team1), 10), team1Name, strconv.FormatUint(uint64(team2), 10), team2Name)
 			}
 
 			rotateTeams(&league)
@@ -146,7 +149,7 @@ func getBalanceCount(teamStats *map[string]structures.TeamStats) int {
 	return balanceCount
 }
 
-func rotateTeams(league *structures.League) {
+func rotateTeams(league *models.League) {
 	if len(league.Teams) <= 2 {
 		return
 	}
