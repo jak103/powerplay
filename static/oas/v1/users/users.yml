@@ -37,15 +37,12 @@ schemas:
       email:
         type: string
         example: john@email.com
-      phoneNumber:
+      phone:
         type: string
         example: '123-456-7890'
-      baseExperience: # will this match skill level? 
+      skillLevel: # will this match skill level? 
         type: integer
         example: 5
-      username:     # Not within Meeting notes
-        type: string
-        example: billybob
 
 # this is not an authentication response. This is a user creation response.
   UserCreationResponse:
@@ -60,17 +57,21 @@ schemas:
       response_data:
         type: object
         properties:
-          message:
-            type: string
-            example: User created successfully
-          user_id:
-            type: integer
-            example: 1
-          username:
-            type: string
-            example: billybob
           email:
             type: string
             example:
+          FirstName:
+            type: string
+            example:
+          LastName:
+            type: string
+            example: 
+          Phone:
+            type: string
+            example:
+          SkillLevel:
+            type: integer
+            example:
+
 
 
