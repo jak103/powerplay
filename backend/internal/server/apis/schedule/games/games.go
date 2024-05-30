@@ -7,6 +7,7 @@ import (
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
@@ -19,7 +20,7 @@ import (
 var numberOfGamesPerTeam int
 
 type Body struct {
-	seasonID  string
+	seasonID  uint
 	algorithm string
 	iceTimes  []string
 }
@@ -32,7 +33,6 @@ func handleGenerate(c *fiber.Ctx) error {
 	numberOfGamesPerTeam = 10
 	log.Info("Reading Body\n")
 
-
 	body, err := readBody(c)
 	if err != nil {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
@@ -42,11 +42,12 @@ func handleGenerate(c *fiber.Ctx) error {
 	iceTimes := body.iceTimes
 
 	// Read leagues from db
-	log := locals.Logger(c)
-	db := db.GetSession(c)
-	leagues, err := db.GetLeaguesBySeason(seasonID)
+	logger := locals.Logger(c)
+	session := db.GetSession(c)
+
+	leagues, err := session.GetLeaguesBySeason(seasonID)
 	if err != nil {
-		log.WithErr(err).Alert("Failed to get leagues for season %v the database", seasonID)
+		logger.WithErr(err).Alert("Failed to get leagues for season %v the database", seasonID)
 		return err
 	}
 
@@ -71,7 +72,7 @@ func handleGenerate(c *fiber.Ctx) error {
 func readBody(c *fiber.Ctx) (Body, error) {
 
 	type Dto struct {
-		SeasonID  string `json:"season_id"`
+		SeasonID  uint   `json:"season_id"`
 		Algorithm string `json:"algorithm"`
 	}
 
