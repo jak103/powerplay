@@ -1,7 +1,7 @@
 import type { TimeString } from './types/timeString'
 
 /**
- * This is not necessarily the base model, but it *is* used in several other models
+ * A base model. Most models extend this one.
  */
 export interface DbModel {
   id: number

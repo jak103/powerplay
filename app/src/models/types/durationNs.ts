@@ -1,4 +1,4 @@
-import type { Branded } from "@/ts_helpers/branding"
+import type { Branded } from "src/ts_helpers/branding"
 /**
  * `DurationNs` is the same as a number at runtime.
  * @see {@link Branded}
@@ -32,22 +32,22 @@ export const DurationNs = {
   fromDay(d: number): DurationNs {
     return d * TIME_FACTORS.NS_PER_DAY as DurationNs
   },
-  toNanos(ns: number): number {
+  toNanos(ns: DurationNs): number {
     return ns
   },
-  toMillis(ns: number): number {
+  toMillis(ns: DurationNs): number {
     return ns / TIME_FACTORS.NS_PER_MS
   },
-  toSec(ns: number): number {
+  toSec(ns: DurationNs): number {
     return ns / TIME_FACTORS.NS_PER_SEC
   },
-  toMin(ns: number): number {
+  toMin(ns: DurationNs): number {
     return ns / TIME_FACTORS.NS_PER_MIN
   },
-  toHour(ns: number): number {
+  toHour(ns: DurationNs): number {
     return ns / TIME_FACTORS.NS_PER_HOUR
   },
-  toDay(ns: number): number {
+  toDay(ns: DurationNs): number {
     return ns / TIME_FACTORS.NS_PER_DAY
   }
 }
