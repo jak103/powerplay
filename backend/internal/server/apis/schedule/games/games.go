@@ -3,7 +3,7 @@ package games
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/algorithms"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
@@ -31,7 +31,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	var iceTimes []string
 
 	// TODO Call the selected algorithm
-	games, err := algorithms.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
+	games, err := round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
 	if err != nil {
 		return responder.InternalServerError(c, fiber.StatusInternalServerError, err)
 	}
