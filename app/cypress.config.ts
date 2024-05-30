@@ -2,10 +2,10 @@ import { defineConfig } from "cypress";
 
 export default defineConfig({
   e2e: {
+    // TODO: Remove the eslint-ignore comment and implement node event listeners
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setupNodeEvents(on, config) {
-      console.log(on); // Temporarily prevents lint errors
-      console.log(config); // Temporarily prevents lint errors
-      // TODO: implement node event listeners here
+      // Implement node event listeners here
     },
   },
 });
