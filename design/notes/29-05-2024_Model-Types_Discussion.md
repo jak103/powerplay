@@ -162,6 +162,6 @@ Some changes were suggested:
 - [] Ethan: Make notes of meeting to remember our ideas
 - [] Skyler: Make branch (A) with changes to go models
 - [] Ethan: Make branch (B) with changes to ts models
-- [] Ethan: Pull request branch B into branch A
+- [] Ethan: Pull request branch B into ~~branch A~~ main
 - [] Skyler: Pull request branch A into main
 - [] (Anyone): Research having shared ts type definitions in a monorepo.
