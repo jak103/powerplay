@@ -12,7 +12,7 @@ import (
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
-    "github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
+        "github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"io"
 	"mime/multipart"
 	"strings"
@@ -70,11 +70,11 @@ func handleGenerate(c *fiber.Ctx) error {
 	// TODO save to db
 
 	// TODO generate analysis
-    _, ts := analysis.RunTimeAnalysis(games)
+        _, ts := analysis.RunTimeAnalysis(games)
 
-    data := response{
-        TeamStats: analysis.Serialize(ts),
-    }
+        data := response{
+            TeamStats: analysis.Serialize(ts),
+        }
 
 	return responder.OkWithData(c, data)
 }
