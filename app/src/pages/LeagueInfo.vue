@@ -1,16 +1,18 @@
 <template>
+  <q-layout>
+  <q-page-container>
   <q-page class="q-pa-md">
 
     <q-card-section>
           <q-item>
-            <q-avatar size="70px" class="q-mr-md">
-              <img src="league.logo" alt="Logo">
+            <q-avatar size="65px" class="q-mr-md">
+              <img src="path/to/logo.png" alt="Logo">
             </q-avatar>
             <q-item-section>
               <q-item-label>
-                <div class="text-h3">{{ league[0].name }}</div>
-                <div class="text-subtitle2">Team Manager:</div>
-                <div class="text-subtitle2"> {{ league[0].manager }}</div>
+                <div class="text-h4">{{ league.name }} League</div>
+                <div class="text-subtitle2">League Manager:</div>
+                <div class="text-subtitle2 text-weight-regular"> {{ league.manager }}</div>
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -27,6 +29,8 @@
       </div>
     </q-card-section>
   </q-page>
+  </q-page-container>
+  </q-layout>
 </template>
 
 

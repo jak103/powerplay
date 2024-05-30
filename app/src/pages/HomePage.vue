@@ -99,10 +99,12 @@ const game = ref([
 
 const goToTeamInfo = (teamName) => {
   const encodedTeamName = encodeURIComponent(teamName);
+  console.log("Going to team info");
   router.push({ name: 'TeamInfo', params: { teamName: encodedTeamName } });
 };
 
 const goToLeagueInfo = (league) => {
+    console.log("Going to league info");
   router.push({ name: 'LeagueInfo', params: { id: league } });
 };
 
