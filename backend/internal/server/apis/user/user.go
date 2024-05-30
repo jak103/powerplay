@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/db"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
@@ -93,7 +95,20 @@ func createUserAccount(c *fiber.Ctx) error {
 	}
 
 	// TODO: Implement user creation through the DATABASE here
-	id := 1
+	u := &models.User{
+		FirstName:  creds.FirstName,
+		LastName:   creds.LastName,
+		Email:      creds.Email,
+		Password:   creds.Password,
+		Phone:      creds.Phone,
+		SkillLevel: creds.SkillLevel,
+	}
+	db := db.GetSession(c)
+	log.Debug("Creating user %s", creds.Email)
+	_, result := db.CreateUser(u)
+	log.Debug("Result of user creation: %s", result)
+
+	id := int(u.ID)
 
 	createdUserResponse := createResponse{
 		Message:  "User created successfully",
