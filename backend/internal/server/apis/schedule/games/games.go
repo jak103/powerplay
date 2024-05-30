@@ -1,6 +1,8 @@
 package games
 
 import (
+	"encoding/csv"
+	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
@@ -9,9 +11,18 @@ import (
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"io"
+	"mime/multipart"
+	"strings"
 )
 
 var numberOfGamesPerTeam int
+
+type Body struct {
+	seasonID  string
+	algorithm string
+	iceTimes  []string
+}
 
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleGenerate)
@@ -19,12 +30,16 @@ func init() {
 
 func handleGenerate(c *fiber.Ctx) error {
 	numberOfGamesPerTeam = 10
-	log.Info("Reading body\n")
+	log.Info("Reading Body\n")
 
-	// TODO read from the body
-	// seasonID, csvFile, algorithm
-	// TODO get ice times from csvFile
-	var seasonID uint
+
+	body, err := readBody(c)
+	if err != nil {
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	seasonID := body.seasonID
+	algorithm := body.algorithm
+	iceTimes := body.iceTimes
 
 	// Read leagues from db
 	log := locals.Logger(c)
@@ -35,12 +50,15 @@ func handleGenerate(c *fiber.Ctx) error {
 		return err
 	}
 
-	var iceTimes []string
-
-	// TODO Call the selected algorithm
-	games, err := round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
+	var games []structures.Game
+	if algorithm == "round_robin" {
+		games, err = round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
+	} else {
+		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("invalid algorithm").Error())
+	}
+	// check for error after any of the algorithms is done
 	if err != nil {
-		return responder.InternalServerError(c, fiber.StatusInternalServerError, err)
+		return responder.InternalServerError(c, err)
 	}
 
 	// TODO save to db
@@ -48,4 +66,72 @@ func handleGenerate(c *fiber.Ctx) error {
 	// TODO generate analysis
 
 	return responder.Ok(c, games)
+}
+
+func readBody(c *fiber.Ctx) (Body, error) {
+
+	type Dto struct {
+		SeasonID  string `json:"season_id"`
+		Algorithm string `json:"algorithm"`
+	}
+
+	var dto Dto
+	if err := c.BodyParser(&dto); err != nil {
+		return Body{}, err
+	}
+	seasonID := dto.SeasonID
+	algorithm := dto.Algorithm
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		return Body{}, err
+	}
+	iceTimes, err := getIceTimes(*file)
+	if err != nil {
+		return Body{}, err
+	}
+
+	body := Body{
+		seasonID:  seasonID,
+		algorithm: algorithm,
+		iceTimes:  iceTimes,
+	}
+
+	return body, nil
+}
+
+func getIceTimes(file multipart.FileHeader) ([]string, error) {
+	var iceTimes []string
+	// Open the uploaded file
+	uploadedFile, err := file.Open()
+	if err != nil {
+		return iceTimes, err
+	}
+	defer func(uploadedFile multipart.File) {
+		err := uploadedFile.Close()
+		if err != nil {
+			log.Error("Error closing file: %v", err)
+		}
+	}(uploadedFile)
+
+	// Read the contents of the file
+	csvContent, err := io.ReadAll(uploadedFile)
+	if err != nil {
+		return iceTimes, err
+	}
+	reader := csv.NewReader(strings.NewReader(string(csvContent)))
+	records, err := reader.ReadAll()
+	if err != nil {
+		return iceTimes, err
+	}
+	// get the headers
+	headers := records[0]
+	if headers[0] != "date" || headers[1] != "time" {
+		return iceTimes, errors.New("invalid CSV file")
+	}
+	records = records[1:] // Skip the header
+	for _, record := range records {
+		iceTimes = append(iceTimes, record[0]+" "+record[1])
+	}
+	return iceTimes, nil
 }
