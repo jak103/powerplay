@@ -52,6 +52,25 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 	return seasonStats, teamStats
 }
 
+func Serialize(ts map[string]structures.TeamStats) []structures.TeamStats {
+    var stats []structures.TeamStats
+    for _, v := range ts {
+        td := structures.TeamStats{
+            Name:                    v.Name,
+            League:                  v.League,
+            EarlyGames:              v.EarlyGames,
+            LateGames:               v.LateGames,
+            DaysOfTheWeek:           v.DaysOfTheWeek,
+            DaysBetweenGames:        v.DaysBetweenGames,
+            AverageDaysBetweenGames: v.AverageDaysBetweenGames,
+            Games:                   v.Games,
+            Balanced:                v.Balanced,
+        }
+        stats = append(stats, td)
+    }
+    return stats
+}
+
 func newStats(league, team string) structures.TeamStats {
 	return structures.TeamStats{
 		League:        league,

@@ -60,14 +60,14 @@ type LeagueIceTimes struct {
 
 type TeamStats struct {
     Name                    string                  `json:"name"`
-	League                  string                  `json:"league"`
-	EarlyGames              int                     `json:"earlyGame"`
-	LateGames               int                     `json:"lateGame"`
-	DaysOfTheWeek           map[time.Weekday]int    `json:"daysOfTheWeek"`
-	DaysBetweenGames        []int                   `json:"daysBetweenGames"`
-	AverageDaysBetweenGames float32                 `json:"averageDaysBetweenGames"`
-	Games                   []Game                  `json:"games"`
-	Balanced                bool                    `json:"balanced"`
+    League                  string                  `json:"league"`
+    EarlyGames              int                     `json:"earlyGame"`
+    LateGames               int                     `json:"lateGame"`
+    DaysOfTheWeek           map[time.Weekday]int    `json:"daysOfTheWeek"`
+    DaysBetweenGames        []int                   `json:"daysBetweenGames"`
+    AverageDaysBetweenGames float32                 `json:"averageDaysBetweenGames"`
+    Games                   []Game                  `json:"games"`
+    Balanced                bool                    `json:"balanced"`
 }
 
 type SeasonStats struct {
