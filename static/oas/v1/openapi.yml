@@ -8,16 +8,25 @@ info:
     url: https://opensource.org/license/mit
 
 paths:
-# http://localhost:9001/docs#post-/
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
+  /shotsongoal:
+    $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"   
+  /penaltyTypes:
+    $ref: "./stats/penalties.yml#/paths/penaltyTypes"
+  /leagues:
+    $ref: "./leagues/leagues.yaml#/paths/leagues"
+  /penalties:
+    $ref: "./stats/penalties.yml#/paths/penalties"
   /user:
     $ref: "./users/users.yml#/paths/user"
   /schedule/analysis/{seasonId}:
     $ref: "./schedule/schedule.yml#/paths/analysis"
 
   # /[URL path]
-    #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
+  #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
+  /goals:
+    $ref: "./stats/goal.yml#/paths/goals"
 
 components:
   securitySchemes:
