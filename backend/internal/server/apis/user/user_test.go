@@ -24,12 +24,12 @@ func TestValidateUser(t *testing.T) {
 	}
 	// The execution loop
 	for _, tt := range tests {
+
 		t.Run(tt.name, func(t *testing.T) {
 			err := validateUser(&tt.input)
-			if err == nil && tt.want != "" {
-				t.Errorf("got nil, want %s", tt.want)
-			} else if err.Error() != tt.want {
-				t.Errorf("got %s, want %s", err.Error(), tt.want)
+			println("validateUser(&tt.input): ", err)
+			if (err == nil && tt.want != "") || (err != nil && err.Error() != tt.want) {
+				t.Errorf("validateUser(%v) = %v, want %v", tt.input, err, tt.want)
 			}
 		})
 	}
