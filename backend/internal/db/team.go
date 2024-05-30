@@ -36,10 +36,3 @@ func (s *session) CreateTeam(team *models.Team) error {
 	err := s.connection.Create(team).Error
 	return err
 }
-
-// GetTeam todo: investigate: Struct session has methods on both value and pointer receivers. Such usage is not recommended by the Go Documentation.
-func (s session) GetTeam() ([]models.Team, error) {
-	Team := make([]models.Team, 0)
-	err := s.connection.Find(&Team)
-	return resultsOrError(Team, err)
-}

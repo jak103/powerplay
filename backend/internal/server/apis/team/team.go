@@ -6,11 +6,12 @@ import (
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
-	"github.com/jak103/powerplay/internal/utils/log"
+	"github.com/jak103/powerplay/internal/utils/locals"
+	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
 func init() {
-
+	apis.RegisterHandler(fiber.MethodGet, "/Team", auth.Public, getTeams)
 	apis.RegisterHandler(fiber.MethodGet, "/Team/:teamId", auth.Public, getTeam)
 	apis.RegisterHandler(fiber.MethodPut, "/Team/:teamId", auth.Public, updateTeam)
 	apis.RegisterHandler(fiber.MethodPost, "/Team", auth.Public, createTeam)
@@ -18,54 +19,58 @@ func init() {
 
 // Handler to get all Team
 func getTeams(c *fiber.Ctx) error {
+	log := locals.Logger(c)
 	db := db.GetSession(c)
-	Team, err := db.GetTeam()
+	teams, err := db.GetTeams()
 	if err != nil {
-		log.WithErr(err).Alert("Failed to get all Team from the database")
-		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		log.WithErr(err).Alert("Failed to get all Teams from the database")
+		return responder.InternalServerError(c)
 	}
-	return c.JSON(Team)
+	return responder.OkWithData(c, teams)
 }
 
 // Handler to get team details by ID
 func getTeam(c *fiber.Ctx) error {
 	teamID := c.Params("teamId")
+	log := locals.Logger(c)
 	db := db.GetSession(c)
 	team, err := db.GetTeamByID(teamID)
 	if err != nil {
-		log.WithErr(err).Alert("Failed to get Team from the database")
-		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		log.WithErr(err).Alert("Failed to get the Team from the database")
+		return responder.InternalServerError(c)
 	}
-	return c.JSON(team)
+	return responder.OkWithData(c, team)
 }
 
 // Handler to update team details by ID
 func updateTeam(c *fiber.Ctx) error {
 	teamID := c.Params("teamId")
+	log := locals.Logger(c)
 	db := db.GetSession(c)
 	var team models.Team
 	if err := c.BodyParser(&team); err != nil {
 		log.WithErr(err).Alert("Failed to parse team data")
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+		return responder.BadRequest(c, "Failed to parse team data")
 	}
 	if err := db.UpdateTeam(teamID, team); err != nil {
 		log.WithErr(err).Alert("Failed to update Team in the database")
-		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		return responder.InternalServerError(c)
 	}
-	return c.SendStatus(fiber.StatusOK)
+	return responder.Ok(c)
 }
 
 // Handler to create a new team
 func createTeam(c *fiber.Ctx) error {
 	db := db.GetSession(c)
+	log := locals.Logger(c)
 	var team models.Team
 	if err := c.BodyParser(&team); err != nil {
 		log.WithErr(err).Alert("Failed to parse team data")
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+		return responder.BadRequest(c, "Failed to parse team data")
 	}
 	if err := db.CreateTeam(&team); err != nil {
 		log.WithErr(err).Alert("Failed to create Team in the database")
-		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		return responder.InternalServerError(c)
 	}
-	return c.SendStatus(fiber.StatusCreated)
+	return responder.Ok(c)
 }
