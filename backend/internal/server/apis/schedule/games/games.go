@@ -46,9 +46,6 @@ func handleGenerate(c *fiber.Ctx) error {
 	log.Info("Optimizing schedule\n")
 	optimizeSchedule(games)
 
-	log.Info("Writing csv\n")
-	// TODO read from request
-
 	// TODO save to db
 
 	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
