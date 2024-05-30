@@ -72,8 +72,6 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	if err := c.BodyParser(&dto); err != nil {
 		return Body{}, err
 	}
-	seasonID := dto.SeasonID
-	algorithm := dto.Algorithm
 
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -85,8 +83,8 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	}
 
 	body := Body{
-		seasonID:  seasonID,
-		algorithm: algorithm,
+		seasonID:  dto.SeasonID,
+		algorithm: dto.Algorithm,
 		iceTimes:  iceTimes,
 	}
 
