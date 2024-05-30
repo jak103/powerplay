@@ -50,6 +50,33 @@ module.exports = configure(function (/* ctx */) {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node20'
       },
+      pwa: {
+        workboxMode: 'generateSW', // or 'injectManifest'
+        injectPwaMetaTags: true,
+        swFilename: 'sw.js',
+        manifest: false,
+        manifestFilename: 'manifest.json',
+        useCredentialsForManifestTag: false,
+        workboxOptions: {
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/localhost:9001\/app/, // TODO change this for production
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'api-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24, // 1 day
+                },
+              },
+            },
+          ],
+        },
+        // extendGenerateSWOptions (cfg) {}
+        // extendInjectManifestOptions (cfg) {},
+        // extendManifestJson (json) {}
+        // extendPWACustomSWConf (esbuildConf) {}
+      },
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,

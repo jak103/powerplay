@@ -1,6 +1,6 @@
 self.addEventListener('push', (e) => {
-  console.log("Received push", e)
-  console.log("Showing notitification");
+  console.log('Received push', e);
+  console.log('Showing notitification');
   var options = {
     body: 'This notification was generate from a push.',
     vibrate: [100, 50, 100],
@@ -9,18 +9,14 @@ self.addEventListener('push', (e) => {
       primaryKey: '2'
     },
     actions: [
-      {
-        action: 'explore',
-        title: 'Explore this new world',
-      },
-      {
-        action: 'close',
-        title: 'Close',
-      }
+      {action: 'explore', title: 'Go to the site',
+        icon: 'images/checkmark.png'},
+      {action: 'close', title: 'Close the notification',
+        icon: 'images/xmark.png'},
     ]
   };
-  e.waitUntil(self.registration.showNotification('Hello World'));
-  console.log("Done showing notification");
+  e.waitUntil(self.registration.showNotification('Hello World', options));
+  console.log('Done showing notification');
 })
 
 
@@ -66,8 +62,8 @@ self.addEventListener('fetch', (event) => {
 });
 
 
-self.addEventListener("load", () => { // TESTING
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
+self.addEventListener('load', () => { // TESTING
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
   }
 });
