@@ -8,7 +8,7 @@ info:
     url: https://opensource.org/license/mit
 
 paths:
-  # http://localhost:9001/docs#post-/
+  
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
   /shotsongoal:
@@ -19,6 +19,8 @@ paths:
     $ref: "./leagues/leagues.yaml#/paths/leagues"
   /penalties:
     $ref: "./stats/penalties.yml#/paths/penalties"
+  /venues:
+    $ref: "./stats/venues.yml#/paths/venues"
   /user:
     $ref: "./users/users.yml#/paths/user"
 
