@@ -29,9 +29,8 @@ func ToDb(c *fiber.Ctx, games []scheduleModels.Game) error {
 
 func mapScheduleGameToDbGame(game scheduleModels.Game) dbModels.Game {
 	return dbModels.Game{
-		Teams: []dbModels.Team{
-			{Name: game.Team1Name},
-			{Name: game.Team2Name},
+		HomeTeam: []dbModels.Team{
+			Name: game.Team1Name
 		},
 		Start: game.Start,
 		End:   game.End,
