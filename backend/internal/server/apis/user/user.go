@@ -94,27 +94,29 @@ func createUserAccount(c *fiber.Ctx) error {
 		return responder.BadRequest(c, err.Error())
 	}
 
-	// TODO: Implement user creation through the DATABASE here
-	u := &models.User{
-		FirstName:  creds.FirstName,
-		LastName:   creds.LastName,
-		Email:      creds.Email,
-		Password:   creds.Password,
-		Phone:      creds.Phone,
-		SkillLevel: creds.SkillLevel,
+	// parse actual user object
+	u := &models.User{}
+	err = c.BodyParser(&u)
+	if err != nil {
+		log.WithErr(err).Error(err.Error())
+		return responder.BadRequest(c, err.Error())
 	}
+
+	// write to database
 	db := db.GetSession(c)
 	log.Debug("Creating user %s", creds.Email)
-	_, result := db.CreateUser(u)
-	log.Debug("Result of user creation: %s", result)
+	u, result := db.CreateUser(u)
+	if result != nil {
+		log.WithErr(err).Error(result.Error())
+		return responder.BadRequest(c, result.Error())
+	}
 
-	id := int(u.ID)
-
+	// response
 	createdUserResponse := createResponse{
 		Message:  "User created successfully",
 		Username: creds.Username,
 		Email:    creds.Email,
-		UserId:   id,
+		UserId:   int(u.ID),
 	}
 
 	return responder.OkWithData(c, createdUserResponse)
