@@ -11,6 +11,7 @@ import (
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db/migrations"
 
+	ppseeders "github.com/jak103/powerplay/internal/db/seeders"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"gorm.io/driver/postgres"
@@ -83,6 +84,15 @@ func GetSession(c *fiber.Ctx) session {
 		}),
 	}
 	return s
+}
+
+func RunSeeders(seeders []ppseeders.Seeder) error {
+	for _, seeder := range seeders {
+		if err := seeder.Seed(db); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func resultOrError[T any](t *T, result *gorm.DB) (*T, error) {
