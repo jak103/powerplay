@@ -1,12 +1,12 @@
-package models
+package structures
 
 import (
 	"fmt"
 	"time"
 )
 
-// TODO need to move these into the models package in the internal directory
-// TODO need to update the models I created based off of these
+// TODO need to move these into the structures package in the internal directory
+// TODO need to update the structures I created based off of these
 
 type Season struct {
 	LeagueRounds map[string][]Round
@@ -41,12 +41,6 @@ func (g Game) String() string {
 	return fmt.Sprintf("%s %s v %s", g.Start.Format("01-02-2006 03:04"), g.Team1Name, g.Team2Name)
 	// DateOnly   = "2006-01-02"
 	// TimeOnly   = "15:04:05"
-}
-
-// Config
-type SeasonConfig struct {
-	Leagues  []League `yaml:"leagues"`
-	IceTimes []string `yaml:"ice_time"`
 }
 
 type League struct {

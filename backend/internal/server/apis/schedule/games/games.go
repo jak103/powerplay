@@ -1,55 +1,43 @@
 package games
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/analysis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/csv"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/optimize"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/parser"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/optimize"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 	"time"
 )
 
+var numberOfGamesPerTeam int
+
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleGenerate)
 }
 
 func handleGenerate(c *fiber.Ctx) error {
+	numberOfGamesPerTeam = 10
 	log.Info("Reading body\n")
-	seasonName, numberOfGamesPerTeam, err := readBody(c)
-	if err != nil {
-		log.Error("Error reading body: %v\n", err)
-		return err
-	}
 
-	if seasonName == "" {
-		log.Error("Season file name is empty\n")
-		return responder.BadRequest(c, "Season file name is empty")
-	}
+	// TODO read from the body
+	// seasonID, csvFile
+	// TODO get ice times from csvFile
 
-	if numberOfGamesPerTeam == 0 {
-		log.Error("Number of games per team is 0\n")
-		return responder.BadRequest(c, "Number of games per team is 0")
-	}
+	// TODO read leagues from db
 
-	log.Info("Reading config file for season\n")
-	seasonConfig, err := parser.SeasonConfig(seasonName)
-	if err != nil {
-		log.Error("Error reading file: %v\n", err)
-		return responder.BadRequest(c, "Error reading file")
-	}
+	var leagues []structures.League
+
+	var iceTimes []string
 
 	log.Info("Generating games\n")
-	season, err := generateGames(seasonConfig.Leagues, numberOfGamesPerTeam)
+	season, err := generateGames(leagues, numberOfGamesPerTeam)
 
 	log.Info("Assigning ice times\n")
-	games, err := assignTimes(seasonConfig.IceTimes, season, numberOfGamesPerTeam)
+	games, err := assignTimes(iceTimes, season, numberOfGamesPerTeam)
 	if err != nil {
 		log.Error("Error assigning ice times: %v\n", err)
 		return responder.BadRequest(c, "Error assigning ice times")
@@ -59,38 +47,14 @@ func handleGenerate(c *fiber.Ctx) error {
 	optimizeSchedule(games)
 
 	log.Info("Writing csv\n")
-	err = csv.GenerateCsv(games, "schedule.csv")
-	if err != nil {
-		log.Error("Error writing csv: %v\n", err)
-		return responder.InternalServerError(c)
-	}
+	// TODO read from request
 
-	//log.Info("Saving to database\n")
-	//err = save.ToDb(c, games)
-	//if err != nil {
-	//	log.Error("Error saving to database: %v\n", err)
-	//	return responder.InternalServerError(c)
-	//}
+	// TODO save to db
 
 	return responder.Ok(c, "Schedule generated at schedule.csv and saved to database")
 }
 
-func readBody(c *fiber.Ctx) (string, int, error) {
-	type BodyDto struct {
-		SeasonName           string `json:"seasonName"`
-		NumberOfGamesPerTeam int    `json:"numberOfGamesPerTeam"`
-	}
-	body := c.Body()
-	var bodyDto BodyDto
-	err := json.Unmarshal(body, &bodyDto)
-	if err != nil {
-		return "", 0, responder.BadRequest(c, "Error reading body")
-	}
-
-	return bodyDto.SeasonName, bodyDto.NumberOfGamesPerTeam, nil
-}
-
-func optimizeSchedule(games []models.Game) {
+func optimizeSchedule(games []structures.Game) {
 	if len(games) == 0 {
 		log.Info("No games to optimize")
 		return
@@ -117,11 +81,11 @@ func optimizeSchedule(games []models.Game) {
 	}
 }
 
-func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Season, error) {
+func generateGames(leagues []structures.League, numberOfGamesPerTeam int) (structures.Season, error) {
 	if len(leagues) == 0 {
-		return models.Season{}, errors.New("no leagues to generate games for")
+		return structures.Season{}, errors.New("no leagues to generate games for")
 	}
-	season := models.Season{LeagueRounds: make(map[string][]models.Round)}
+	season := structures.Season{LeagueRounds: make(map[string][]structures.Round)}
 
 	for _, league := range leagues {
 		numTeams := len(league.Teams)
@@ -132,16 +96,16 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Se
 		log.Info("League %v games per round: %v\n", league.Name, numberOfGamesPerTeam)
 
 		if numTeams%2 == 1 {
-			league.Teams = append(league.Teams, models.Team{Name: "Bye", Id: "-1"})
+			league.Teams = append(league.Teams, structures.Team{Name: "Bye", Id: "-1"})
 			numTeams = len(league.Teams)
 		}
 
 		numberOfRounds := numberOfGamesPerTeam
 
-		rounds := make([]models.Round, numberOfRounds)
+		rounds := make([]structures.Round, numberOfRounds)
 
 		for round := 0; round < numberOfRounds; round++ {
-			rounds[round].Games = make([]models.Game, numTeams/2)
+			rounds[round].Games = make([]structures.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
 				team1 := league.Teams[i].Id
 				team1Name := league.Teams[i].Name
@@ -159,7 +123,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (models.Se
 	return season, nil
 }
 
-func assignTimes(times []string, season models.Season, numberOfGamesPerTeam int) ([]models.Game, error) {
+func assignTimes(times []string, season structures.Season, numberOfGamesPerTeam int) ([]structures.Game, error) {
 	if len(times) == 0 {
 		return nil, errors.New("no times to assign")
 	}
@@ -198,7 +162,7 @@ func assignTimes(times []string, season models.Season, numberOfGamesPerTeam int)
 	return games, nil
 }
 
-func getBalanceCount(teamStats *map[string]models.TeamStats) int {
+func getBalanceCount(teamStats *map[string]structures.TeamStats) int {
 	if teamStats == nil {
 		return 0
 	}
@@ -211,7 +175,7 @@ func getBalanceCount(teamStats *map[string]models.TeamStats) int {
 	return balanceCount
 }
 
-func rotateTeams(league *models.League) {
+func rotateTeams(league *structures.League) {
 	if len(league.Teams) <= 2 {
 		return
 	}
@@ -221,9 +185,9 @@ func rotateTeams(league *models.League) {
 	league.Teams[1] = lastTeam
 }
 
-func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
+func newGame(league, team1, team1Name, team2, team2Name string) structures.Game {
 	if team1 == "-1" || team2 == "-1" {
-		return models.Game{
+		return structures.Game{
 			Team1Id:     team1,
 			Team1Name:   team1Name,
 			Team2Id:     team2,
@@ -234,7 +198,7 @@ func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
 			EventType:   "Bye",
 		}
 	}
-	return models.Game{
+	return structures.Game{
 		Team1Id:     team1,
 		Team1Name:   team1Name,
 		Team2Id:     team2,
@@ -246,14 +210,14 @@ func newGame(league, team1, team1Name, team2, team2Name string) models.Game {
 	}
 }
 
-func newGames(season *models.Season, numberOfGamesPerTeam int) ([]models.Game, error) {
+func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]structures.Game, error) {
 	if season == nil {
 		return nil, errors.New("no season to get games from")
 	}
 	if season.LeagueRounds == nil || len(season.LeagueRounds) == 0 {
 		return nil, errors.New("no rounds to get games from")
 	}
-	games := make([]models.Game, 0)
+	games := make([]structures.Game, 0)
 	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {

@@ -1,12 +1,12 @@
 package optimize
 
 import (
-	"github.com/jak103/powerplay/internal/server/apis/schedule/pkg/models"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"sort"
 )
 
-func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map[string]models.TeamStats) {
+func Schedule(games []structures.Game, seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {
 	resetOptimized(games)
 	log.Info("OPT: Early games percent: %v%%\n", seasonStats.EarlyPercentage()*100)
 	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games
@@ -144,7 +144,7 @@ func Schedule(games []models.Game, seasonStats models.SeasonStats, teamStats map
 	}
 }
 
-func updateStats(teamStats map[string]models.TeamStats, games []models.Game, i, j int) {
+func updateStats(teamStats map[string]structures.TeamStats, games []structures.Game, i, j int) {
 	game1Team1Stats := teamStats[games[i].Team1Name]
 	game1Team2Stats := teamStats[games[i].Team2Name]
 	game2Team1Stats := teamStats[games[j].Team1Name]
@@ -181,7 +181,7 @@ func updateStats(teamStats map[string]models.TeamStats, games []models.Game, i, 
 	log.Info("Now %v (%v-%v) v %v (%v-%v)\n", game2Team1Stats.Name, game2Team1Stats.EarlyGames, game2Team1Stats.LateGames, game2Team2Stats.Name, game2Team2Stats.EarlyGames, game2Team2Stats.LateGames)
 }
 
-func swapGames(games []models.Game, i, j int) {
+func swapGames(games []structures.Game, i, j int) {
 	team1Name := games[i].Team1Name
 	team1Id := games[i].Team1Id
 	team2Name := games[i].Team2Name
@@ -205,7 +205,7 @@ func swapGames(games []models.Game, i, j int) {
 	games[i].Optimized = true
 }
 
-func correctBalanceDirection(teamStats map[string]models.TeamStats, seasonEarlyHigh, seasonEarlyLow int, team1, team2 string, tooManyEarly bool) bool {
+func correctBalanceDirection(teamStats map[string]structures.TeamStats, seasonEarlyHigh, seasonEarlyLow int, team1, team2 string, tooManyEarly bool) bool {
 	// tooManyEarly means the team trying to swap has too many early games
 	team1Stats := teamStats[team1]
 	team2Stats := teamStats[team2]
@@ -225,7 +225,7 @@ func correctBalanceDirection(teamStats map[string]models.TeamStats, seasonEarlyH
 	return false
 }
 
-func needsToBeBalanced(stats models.TeamStats, seasonEarlyHigh, seasonEarlyLow int) (bool, bool) {
+func needsToBeBalanced(stats structures.TeamStats, seasonEarlyHigh, seasonEarlyLow int) (bool, bool) {
 	if stats.EarlyGames > seasonEarlyHigh {
 		return true, true // needs to be balanced, and has too many early games
 	} else if stats.EarlyGames < seasonEarlyLow {
@@ -236,7 +236,7 @@ func needsToBeBalanced(stats models.TeamStats, seasonEarlyHigh, seasonEarlyLow i
 	return false, false
 }
 
-func resetOptimized(games []models.Game) {
+func resetOptimized(games []structures.Game) {
 	for i := range games {
 		games[i].Optimized = false
 	}
