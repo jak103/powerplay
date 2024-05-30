@@ -13,6 +13,16 @@ import (
 )
 
 func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam int) ([]structures.Game, error) {
+	if len(leagues) == 0 {
+		return nil, errors.New("no leagues to generate games for")
+	}
+	if len(iceTimes) == 0 {
+		return nil, errors.New("no ice times to assign")
+	}
+	if numberOfGamesPerTeam <= 0 {
+		return nil, errors.New("no games per team to generate")
+	}
+
 	season, err := generateGames(leagues, numberOfGamesPerTeam)
 	if err != nil {
 		return nil, err
