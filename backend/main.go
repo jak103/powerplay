@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/jak103/powerplay/internal/db/seeders/fake_data"
 
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db"
@@ -32,8 +33,20 @@ func runSeeds() {
 	log.Info("Successfully seeded database")
 }
 
+func runFakeDataSeeds() {
+	seeders := []ppseeders.Seeder{
+		fake_data.SeasonSeeder{},
+	}
+	// Seed the database
+	if err := db.RunSeeders(seeders); err != nil {
+		log.WithErr(err).Alert("Failed to seed database with test data: %v", err)
+	}
+	log.Info("Successfully seeded database with test data")
+}
+
 func main() {
 	migrateFlag := flag.Bool("migrate", false, "Run database migrations and exit")
+	seedTestData := flag.Bool("seed-test", false, "Seed test data and exit")
 	flag.Parse()
 
 	err := log.Init("DEBUG", false)
@@ -65,6 +78,11 @@ func main() {
 
 	if *migrateFlag {
 		runMigrations()
+		return
+	}
+
+	if *seedTestData {
+		runFakeDataSeeds()
 		return
 	}
 

@@ -20,6 +20,12 @@ production_debug:
 run_local_image:
 	docker run -p 127.0.0.1:9001:9001/tcp powerplay:latest
 
+seed_test_data:
+	@echo "🌱 Running backend in detached mode and seeding test data"
+	@docker-compose -f docker-compose.yml up -d
+	@docker-compose -f docker-compose.yml exec backend bash -c "cd /powerplay/backend && go run . -seed-test" || (echo "Seeding failed, halting" && exit 1)
+
+
 test:
 	@echo "🚀 Testing code: Running go test inside the backend container"
 	@docker-compose -f docker-compose.yml exec -T backend bash -c "cd /powerplay/backend && go test -v ./..."

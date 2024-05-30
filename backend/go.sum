@@ -9,6 +9,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fatih/color v1.16.0 h1:zmkK9Ngbjj+K0yRhTVONQh1p/HknKYSlNT+vZCzyokM=
 github.com/fatih/color v1.16.0/go.mod h1:fL2Sau1YI5c0pdGEVCbKQbLXB6edEj1ZgiY4NijnWvE=
+github.com/go-faker/faker/v4 v4.4.1 h1:LY1jDgjVkBZWIhATCt+gkl0x9i/7wC61gZx73GTFb+Q=
+github.com/go-faker/faker/v4 v4.4.1/go.mod h1:HRLrjis+tYsbFtIHufEPTAIzcZiRu0rS9EYl2Ccwme4=
 github.com/go-gormigrate/gormigrate/v2 v2.1.1 h1:eGS0WTFRV30r103lU8JNXY27KbviRnqqIDobW3EV3iY=
 github.com/go-gormigrate/gormigrate/v2 v2.1.1/go.mod h1:L7nJ620PFDKei9QOhJzqA8kRCk+E3UbV2f5gv+1ndLc=
 github.com/gofiber/fiber/v2 v2.52.0 h1:S+qXi7y+/Pgvqq4DrSmREGiFwtB7Bu6+QFLuIHYw/UE=
