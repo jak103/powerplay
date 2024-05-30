@@ -28,14 +28,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VenueRequest"
+              $ref: "#/components/schemas/AddVenueRequest"
       responses:
         200:
           description: Successfully posted venue
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VenueResponse"
+                $ref: "#/components/schemas/AddVenueResponse"
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
 
@@ -53,7 +53,7 @@ components:
         response_data:
           type: object
           properties:
-            goals:
+            venues:
               type: array
               description: All venues
               example:
@@ -88,7 +88,7 @@ components:
           example: ["left", "right"]
         
 
-    GoalResponse:
+    AddVenueResponse:
       type: object
       properties:
         status_code:

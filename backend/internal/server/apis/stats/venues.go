@@ -12,6 +12,7 @@ import (
 
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/venues", auth.Public, postVenueHandler)
+	apis.RegisterHandler(fiber.MethodGet, "/venues", auth.Public, getVenuesHandler)
 }
 
 func postVenueHandler (c *fiber.Ctx) error {
