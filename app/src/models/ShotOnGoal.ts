@@ -1,5 +1,5 @@
-import type { DbModel } from "./index"
-import type { GameId, TeamRecordId, UserId } from "./ids"
+import type { DbModel } from './index'
+import type { GameId, TeamRecordId, UserId } from './ids'
 
 export interface ShotOnGoal extends DbModel {
   game_id: GameId

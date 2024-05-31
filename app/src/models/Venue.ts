@@ -1,4 +1,4 @@
-import type { DbModel } from "./index"
+import type { DbModel } from './index'
 
 export interface Venue extends DbModel{
   name: string

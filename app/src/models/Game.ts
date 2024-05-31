@@ -4,9 +4,9 @@ import { TimeString } from './types/timeString'
 
 
 export enum GameStatus {
-  SCHEDULED = "Scheduled",
-  IN_PROGRESS = "In Progress",
-  FINAL = "Final"
+  SCHEDULED = 'Scheduled',
+  IN_PROGRESS = 'In Progress',
+  FINAL = 'Final'
 }
 
 export interface Game extends DbModel {

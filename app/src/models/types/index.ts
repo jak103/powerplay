@@ -1,2 +1,2 @@
-export { DurationNs } from "./durationNs"
-export { TimeString } from "./timeString"
+export { DurationNs } from './durationNs'
+export { TimeString } from './timeString'

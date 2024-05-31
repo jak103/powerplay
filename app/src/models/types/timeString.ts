@@ -1,4 +1,4 @@
-import type { Branded } from "src/ts_helpers/branding"
+import type { Branded } from 'src/ts_helpers/branding'
 
 /**
  * `TimeString` is the same as a string at runtime.

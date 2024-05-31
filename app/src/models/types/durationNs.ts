@@ -1,4 +1,4 @@
-import type { Branded } from "src/ts_helpers/branding"
+import type { Branded } from 'src/ts_helpers/branding'
 /**
  * `DurationNs` is the same as a number at runtime.
  * @see {@link Branded}

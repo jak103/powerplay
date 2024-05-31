@@ -1,5 +1,5 @@
-import type { DbModel } from "./DbModel"
-import type { User } from "./index"
+import type { DbModel } from './DbModel'
+import type { User } from './index'
 
 /**
  * @unused We could use this if we need an admin frontend.
