@@ -1,14 +1,28 @@
 services:
-  frontend:
-    image: frontend:latest
-    build: ./frontend
-    container_name: frontend
-    working_dir: /app/frontend
+  site:
+    image: site:latest
+    build: ./site
+    container_name: site
+    working_dir: /powerplay/site
     volumes:
-      - /app/frontend/node_modules
-      - ./frontend:/app/frontend
+      - /powerplay/site/node_modules
+      - ./site:/powerplay/site
     ports:
-      - 3000:3000
+      - 9000:9000
+    environment:
+      NODE_ENV: development
+    command: npm run dev
+
+  app:
+    image: app:latest
+    build: ./app
+    container_name: app
+    working_dir: /powerplay/app
+    volumes:
+      - /powerplay/app/node_modules
+      - ./app:/powerplay/app
+    ports:
+      - 9001:9000
     environment:
       NODE_ENV: development
     command: npm run dev
@@ -17,14 +31,14 @@ services:
     image: backend:latest
     build: ./backend
     container_name: backend
-    working_dir: /app/backend
+    working_dir: /powerplay/backend
     volumes:
-      - /app/tmp # Anonymous mount for air temp directory
-      - ./backend:/app/backend
-      - ./static:/app/static
-      - ./config:/app/config
+      - /powerplay/tmp # Anonymous mount for air temp directory
+      - ./backend:/powerplay/backend
+      - ./static:/powerplay/static
+      - ./config:/powerplay/config
     ports:
-      - 9001:9001
+      - 9002:9002
     depends_on:
       database:
         condition: service_healthy
