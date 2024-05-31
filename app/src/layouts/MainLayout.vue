@@ -23,6 +23,16 @@
         />
 
         <q-toolbar-title class="text-center"> Power Play </q-toolbar-title>
+
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          style="margin-left: auto;"
+        />
+
       </q-toolbar>
     </q-header>
 
@@ -113,6 +123,6 @@ function goBack() {
 
 const canGoBack = computed(() => {
   // Only show the back button if the user can go back
-  return window.history.length > 1 && route.path !== '/';
+  return window.history.length > 1;
 });
 </script>
