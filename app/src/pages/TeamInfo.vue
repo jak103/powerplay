@@ -19,12 +19,18 @@
 
     <q-card-section>
       <div class="row justify-between">
-        <q-card v-for="item in items" :key="item.label" class="q-ma-sm card-square">
+        <router-link
+              v-for="item in items"
+              :key="item.label"
+              :to="{ name: routesMapping[item.label] }"
+              class="q-ma-sm card-square"
+              style="text-decoration: none; color: inherit;"
+            >
           <q-card-section class="text-center">
             <q-icon :name="item.icon" size="40px" class="q-mb-sm" />
             <div class="text-subtitle2">{{ item.label }}</div>
           </q-card-section>
-        </q-card>
+        </router-link>
       </div>
     </q-card-section>
 
@@ -54,6 +60,14 @@ const items = ref([
   { icon: 'assessment', label: 'Standings' },
   { icon: 'insights', label: 'Statistics' },
 ]);
+
+const routesMapping = {
+  'Schedule': 'SchedulePage',
+  'Chat': 'ChatPage',
+  'Roster': 'ChatPage', /* change to RosterPage when we have */
+  'Standings': 'ChatPage', /* change to StandingsPage when we have */
+  'Statistics': 'ChatPage', /* change to StatisticsPage when we have */
+};
 </script>
 
 <style scoped>

@@ -8,9 +8,9 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'teaminfo/:teamName', name: 'TeamInfo', component: () => import('pages/TeamInfo.vue') },
       { path: 'leagueinfo/:id', name: 'LeagueInfo', component: () => import('pages/LeagueInfo.vue') },
-      { path: 'chat', component: () => import('pages/chat/chatPage.vue')},
-      { path: 'profile', component: () => import('pages/profile/profilePage.vue')},
-      { path: 'schedule', component: () => import('pages/schedule/schedulePage.vue')},
+      { path: 'chat', name: 'ChatPage', component: () => import('pages/chat/chatPage.vue')},
+      { path: 'profile', name: 'ProfilePage', component: () => import('pages/profile/profilePage.vue')},
+      { path: 'schedule', name: 'SchedulePage', component: () => import('pages/schedule/schedulePage.vue')},
     ],
   },
 

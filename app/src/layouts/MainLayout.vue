@@ -12,7 +12,7 @@
           v-if="!$q.screen.lt.md" 
         />
 
-        <q-toolbar-title> Power Play </q-toolbar-title>
+        <q-toolbar-title class="text-center"> Power Play </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
