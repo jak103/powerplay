@@ -19,7 +19,7 @@ type Round struct {
 // https://help.sportsengine.com/en/articles/6380725-schedule-upload-tutorial
 // https://intercom.help/SportsEngine/en/articles/6310600-schedule-upload-fields-reference-guide
 type Game struct {
-        Start       time.Time `json:"start"`
+           Start       time.Time `json:"start"`
 	    StartDate   string    `json:"startDate"`
 	    StartTime   string    `json:"startTime"`
 	    EndDate     string    `json:"endDate"`
