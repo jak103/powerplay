@@ -4,14 +4,19 @@ definePageMeta({
 });
 
 // user inputs
+const firstName =ref('')
+const lastName =ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const birthDate = ref('')
 const phoneNumberInput = ref('')
 const phoneNumber = ref('')
 const email = ref('')
+const yearsOfExp = 0
 
 // error messages if needed
+const first_errorMessage = ref('')
+const last_errorMessage = ref('')
 const pass_errorMessage = ref('')
 const birthday_errorMessage = ref('')
 const phone_errorMessage = ref('')
@@ -23,6 +28,8 @@ const createAccount = () => {
   phone_errorMessage.value = ''
   email_errorMessage.value = ''
 
+  const isFirstValid = validateFirst()
+  const isLastValid = validateLast()
   const isPasswordValid = validatePassword()
   const isPhoneValid = validatePhone()
   const isBirthdayValid = validateBirthday()
@@ -30,8 +37,21 @@ const createAccount = () => {
 
   if (isPasswordValid && isPhoneValid && isBirthdayValid && isEmailValid) {
     // All validations passed
+
+    //TODO: figure out backend post requests and reroute user to login page
     // useRouter().push('/app')
   }
+}
+function validateFirst(){
+if(firstName.value == ''){
+  first_errorMessage.value = 'Please enter your first name!'
+}
+  
+}
+function validateLast(){
+  if(lastName.value == ''){
+  first_errorMessage.value = 'Please enter your last name!'
+}
 }
 
 function validatePassword() {
@@ -95,7 +115,31 @@ function validateBirthday() {
     return false
   }
 
+  if(isUnderage()){
+    birthday_errorMessage.value = 'Sorry! You must be 18 years or older to play!'
+  }
+
   return true
+}
+
+function isUnderage() {
+  const [year, month, day] = birthDate.value.split('-').map(part => parseInt(part, 10))
+  const currentDate = new Date()
+  const birthDateObj = new Date(year, month - 1, day)
+  const age = currentDate.getFullYear() - birthDateObj.getFullYear()
+  const monthDiff = currentDate.getMonth() - birthDateObj.getMonth()
+  const dayDiff = currentDate.getDate() - birthDateObj.getDate()
+
+  if(age > 18){ 
+    return false
+  }
+
+  console.log(age+" "+monthDiff+" "+dayDiff)
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    return age - 1 < 18
+  }
+
+  return false
 }
 
 function validateEmail() {
@@ -107,6 +151,24 @@ function validateEmail() {
   }
   return true
 }
+
+function validateIsAlphaOnly() {
+    first_errorMessage.value = ''
+    last_errorMessage.value = ''
+    
+      const regex = /^[A-Za-z]+$/
+      if (!regex.test(firstName.value)&& firstName.value != '') {
+        first_errorMessage.value= 'Name can only contain letters!'
+      }
+      if (!regex.test(lastName.value) && lastName.value != '') {
+        last_errorMessage.value= 'Name can only contain letters!'
+      }
+    }
+
+function validateYearsOfExp(){
+  //TODO: Validate Years of experience ei) not negative or decimal numbers
+
+}
 </script>
 
 <template>
@@ -115,11 +177,17 @@ function validateEmail() {
   <div class="vstack gap-3">
     <div>
       <label for="first-name" class="form-label">First Name</label>
-      <input id="first-name" class="form-control" />
+      <input id="first-name" class="form-control" @input="validateIsAlphaOnly" v-model="firstName" />
+    </div>
+    <div v-if="first_errorMessage" class="alert alert-danger">
+      <p>{{ first_errorMessage }}</p>
     </div>
     <div>
       <label for="last-name" class="form-label">Last Name</label>
-      <input id="last-name" class="form-control" />
+      <input id="last-name" class="form-control" @input="validateIsAlphaOnly" v-model="lastName"/>
+    </div>
+    <div v-if="last_errorMessage" class="alert alert-danger">
+      <p>{{ last_errorMessage }}</p>
     </div>
     <div>
       <label for="email" class="form-label">Email</label>
