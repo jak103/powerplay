@@ -23,7 +23,7 @@
               v-for="item in items"
               :key="item.label"
               :to="{ name: routesMapping[item.label] }"
-              class="q-ma-sm card-square"
+              class="q-ma-sm card-square shadow-2 rounded-borders"
               style="text-decoration: none; color: inherit;"
             >
           <q-card-section class="text-center">
