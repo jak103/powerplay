@@ -18,8 +18,9 @@ paths:
   /penalties:
     $ref: "./stats/penalties.yml#/paths/penalties"
   /games:
-    $ref: "./game/games.yml#/paths/games"
-
+    $ref: "./game/games.yml#/paths/~1games"
+  /games/{gameId}:
+    $ref: "./game/games.yml#/paths/~1games~1{gameId}"
   # /[URL path]
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
   /goals:
