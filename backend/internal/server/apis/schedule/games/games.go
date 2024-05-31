@@ -3,6 +3,10 @@ package games
 import (
 	"encoding/csv"
 	"errors"
+	"io"
+	"mime/multipart"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
@@ -13,9 +17,6 @@ import (
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
         "github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
-	"io"
-	"mime/multipart"
-	"strings"
 )
 
 var numberOfGamesPerTeam int
@@ -52,8 +53,12 @@ func handleGenerate(c *fiber.Ctx) error {
 
 	leagues, err := session.GetLeaguesBySeason(seasonID)
 	if err != nil {
-		logger.WithErr(err).Alert("Failed to get leagues for season %v the database", seasonID)
-		return err
+		logger.WithErr(err).Error("Failed to get leagues for season %v the database", seasonID)
+		return responder.InternalServerError(c, err)
+	}
+
+	if leagues == nil {
+		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("No league for the season").Error())
 	}
 
 	var games []structures.Game

@@ -1,5 +1,5 @@
 paths:
-    analysis:
+    schedule:
       get:
         parameters:
           - in: path
@@ -8,22 +8,22 @@ paths:
             schema:
               type: integer
         tags:
-          - analysis
-        summary: Request analysis of schedule corresponding to seasonId
+          - Schedule
+        summary: Generate schedule and get analysis corresponding to seasonId
         description: |
           **REQUIRED PERMISSIONS:** admin
         responses:
           200:
-            description: Successfully analyzed
+            description: Successfully generated schedule
             content:
               application/json:
                 schema:
-                  $ref: '#/schemas/AnalysisResponse'
+                  $ref: '#/schemas/ScheduleResponse'
           400:
             $ref: "../common/errors.yml#/responses/BadRequest"
 
 schemas:
-  AnalysisResponse:
+  ScheduleResponse:
     type: object
     properties:
       status_code:
