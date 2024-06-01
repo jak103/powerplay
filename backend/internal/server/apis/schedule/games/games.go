@@ -74,7 +74,13 @@ func handleGenerate(c *fiber.Ctx) error {
 
 	assignLockerRooms(games)
 
-	// TODO save to db
+	// TODO convert structures.Game to models.Game
+	//session = db.GetSession(c)
+	//_, err = session.SaveGames(games)
+	//if err != nil {
+	//	logger.WithErr(err).Error("Failed to save games to the database")
+	//	return responder.InternalServerError(c, err)
+	//}
 
 	_, ts := analysis.RunTimeAnalysis(games)
 
