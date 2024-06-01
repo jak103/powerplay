@@ -16,6 +16,7 @@ import (
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
+        "github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 )
 
 var numberOfGamesPerTeam int
@@ -24,6 +25,10 @@ type Body struct {
 	seasonID  uint
 	algorithm string
 	iceTimes  []string
+}
+
+type response struct {
+        TeamStats []structures.TeamStats
 }
 
 func init() {
@@ -70,8 +75,13 @@ func handleGenerate(c *fiber.Ctx) error {
 	// TODO save to db
 
 	// TODO generate analysis
+        _, ts := analysis.RunTimeAnalysis(games)
 
-	return responder.Ok(c, games)
+        data := response{
+            TeamStats: analysis.Serialize(ts),
+        }
+
+	return responder.OkWithData(c, data)
 }
 
 func readBody(c *fiber.Ctx) (Body, error) {

@@ -11,7 +11,7 @@ paths:
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
   /shotsongoal:
-    $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"   
+    $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"
   /penaltyTypes:
     $ref: "./stats/penalties.yml#/paths/penaltyTypes"
   /leagues:
@@ -20,6 +20,8 @@ paths:
     $ref: "./stats/penalties.yml#/paths/penalties"
   /user:
     $ref: "./users/users.yml#/paths/user"
+  /schedule/{seasonId}:
+    $ref: "./schedule/schedule.yml#/paths/schedule"
 
   # /[URL path]
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
