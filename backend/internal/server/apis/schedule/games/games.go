@@ -11,12 +11,12 @@ import (
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
-        "github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 )
 
 var numberOfGamesPerTeam int
@@ -28,7 +28,7 @@ type Body struct {
 }
 
 type response struct {
-        TeamStats []structures.TeamStats
+	TeamStats []structures.TeamStats
 }
 
 func init() {
@@ -72,14 +72,15 @@ func handleGenerate(c *fiber.Ctx) error {
 		return responder.InternalServerError(c, err)
 	}
 
+	assignLockerRooms(games)
+
 	// TODO save to db
 
-	// TODO generate analysis
-        _, ts := analysis.RunTimeAnalysis(games)
+	_, ts := analysis.RunTimeAnalysis(games)
 
-        data := response{
-            TeamStats: analysis.Serialize(ts),
-        }
+	data := response{
+		TeamStats: analysis.Serialize(ts),
+	}
 
 	return responder.OkWithData(c, data)
 }
@@ -148,4 +149,20 @@ func getIceTimes(file multipart.FileHeader) ([]string, error) {
 		iceTimes = append(iceTimes, record[0]+" "+record[1])
 	}
 	return iceTimes, nil
+}
+
+func assignLockerRooms(games []structures.Game) {
+	// The algorithm is pretty simple.
+	//For the early game, home team is locker room 3, and away is locker room 1.
+	//For the late game home team is locker room 5, and away team is locker room 2.
+
+	for i, game := range games {
+		if game.IsEarly {
+			games[i].Team1LockerRoom = "3"
+			games[i].Team2LockerRoom = "1"
+		} else {
+			games[i].Team1LockerRoom = "5"
+			games[i].Team2LockerRoom = "2"
+		}
+	}
 }

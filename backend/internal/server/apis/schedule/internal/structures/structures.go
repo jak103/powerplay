@@ -19,22 +19,24 @@ type Round struct {
 // https://help.sportsengine.com/en/articles/6380725-schedule-upload-tutorial
 // https://intercom.help/SportsEngine/en/articles/6310600-schedule-upload-fields-reference-guide
 type Game struct {
-	Start       time.Time `json:"start"`
-	StartDate   string    `json:"startDate"`
-	StartTime   string    `json:"startTime"`
-	End         time.Time `json:"end"`
-	EndDate     string    `json:"endDate"`
-	EndTime     string    `json:"endTime"`
-	Location    string    `json:"location"`
-	LocationUrl string    `json:"locationUrl"`
-	EventType   string    `json:"eventType"`
-	League      string    `json:"league"`
-	Team1Id     string    `json:"team1Id"`
-	Team2Id     string    `json:"team2Id"`
-	Team1Name   string    `json:"team1Name"`
-	Team2Name   string    `json:"team2Name"`
-	IsEarly     bool      `json:"isEarly"`
-	Optimized   bool      `json:"optimized"`
+	Start           time.Time `json:"start"`
+	StartDate       string    `json:"startDate"`
+	StartTime       string    `json:"startTime"`
+	End             time.Time `json:"end"`
+	EndDate         string    `json:"endDate"`
+	EndTime         string    `json:"endTime"`
+	Location        string    `json:"location"`
+	LocationUrl     string    `json:"locationUrl"`
+	EventType       string    `json:"eventType"`
+	League          string    `json:"league"`
+	Team1Id         string    `json:"team1Id"`
+	Team2Id         string    `json:"team2Id"`
+	Team1Name       string    `json:"team1Name"`
+	Team2Name       string    `json:"team2Name"`
+	IsEarly         bool      `json:"isEarly"`
+	Optimized       bool      `json:"optimized"`
+	Team1LockerRoom string    `json:"team1LockerRoom"`
+	Team2LockerRoom string    `json:"team2LockerRoom"`
 }
 
 func (g Game) String() string {
