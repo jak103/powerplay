@@ -19,21 +19,22 @@ type Round struct {
 // https://help.sportsengine.com/en/articles/6380725-schedule-upload-tutorial
 // https://intercom.help/SportsEngine/en/articles/6310600-schedule-upload-fields-reference-guide
 type Game struct {
-           Start       time.Time `json:"start"`
-	    StartDate   string    `json:"startDate"`
-	    StartTime   string    `json:"startTime"`
-	    EndDate     string    `json:"endDate"`
-	    EndTime     string    `json:"endTime"`
-	    Location    string    `json:"location"`
-	    LocationUrl string    `json:"locationUrl"`
-	    EventType   string    `json:"eventType"`
-	    League      string    `json:"league"`
-	    Team1Id     string    `json:"team1Id"`
-	    Team2Id     string    `json:"team2Id"`
-	    Team1Name   string    `json:"team1Name"`
-	    Team2Name   string    `json:"team2Name"`
-	    IsEarly     bool      `json:"isEarly"`
-	    Optimized   bool      `json:"optimized"`
+	Start       time.Time `json:"start"`
+	StartDate   string    `json:"startDate"`
+	StartTime   string    `json:"startTime"`
+	End         time.Time `json:"end"`
+	EndDate     string    `json:"endDate"`
+	EndTime     string    `json:"endTime"`
+	Location    string    `json:"location"`
+	LocationUrl string    `json:"locationUrl"`
+	EventType   string    `json:"eventType"`
+	League      string    `json:"league"`
+	Team1Id     string    `json:"team1Id"`
+	Team2Id     string    `json:"team2Id"`
+	Team1Name   string    `json:"team1Name"`
+	Team2Name   string    `json:"team2Name"`
+	IsEarly     bool      `json:"isEarly"`
+	Optimized   bool      `json:"optimized"`
 }
 
 func (g Game) String() string {
@@ -59,15 +60,15 @@ type LeagueIceTimes struct {
 }
 
 type TeamStats struct {
-        Name                    string                  `json:"name"`
-        League                  string                  `json:"league"`
-        EarlyGames              int                     `json:"earlyGame"`
-        LateGames               int                     `json:"lateGame"`
-        DaysOfTheWeek           map[time.Weekday]int    `json:"daysOfTheWeek"`
-        DaysBetweenGames        []int                   `json:"daysBetweenGames"`
-        AverageDaysBetweenGames float32                 `json:"averageDaysBetweenGames"`
-        Games                   []Game                  `json:"games"`
-        Balanced                bool                    `json:"balanced"`
+	Name                    string               `json:"name"`
+	League                  string               `json:"league"`
+	EarlyGames              int                  `json:"earlyGame"`
+	LateGames               int                  `json:"lateGame"`
+	DaysOfTheWeek           map[time.Weekday]int `json:"daysOfTheWeek"`
+	DaysBetweenGames        []int                `json:"daysBetweenGames"`
+	AverageDaysBetweenGames float32              `json:"averageDaysBetweenGames"`
+	Games                   []Game               `json:"games"`
+	Balanced                bool                 `json:"balanced"`
 }
 
 type SeasonStats struct {
