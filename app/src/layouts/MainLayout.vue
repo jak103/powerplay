@@ -18,6 +18,7 @@
           round
           icon="arrow_back"
           aria-label="Back"
+          class ="mobile-only"
           @click="goBack"
           v-if="canGoBack"
         />
