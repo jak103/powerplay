@@ -1,9 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <q-page class="row items-center justify-evenly">
-    <h1>Home Page</h1>
-=======
-  <script setup lang="ts">
   <q-page class="q-pa-md">
     
     <div class="text-h6">Upcoming Events</div>
@@ -63,10 +58,59 @@
             </q-item-section>
         </q-item>
     </q-item>
-
->>>>>>> d15b9cf (i don't know it just needs a commit)
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const teams = ref([
+  {
+    id: 1,
+    name: 'District 5',
+    logo: 'path/to/district5_logo.png',
+    league: 'B',
+    manager: 'Captain Hook',
+  },
+  {
+    id: 2,
+    name: 'Trash Pandas',
+    logo: 'path/to/trashpandas_logo.png',
+    league: 'C',
+    manager: 'Jacob Christensen',
+  }
+]) 
+
+const game = ref([
+  {
+    id: 1,
+    hometeam: 'Red Shift',
+    homelogo: 'path/to/redshift_logo.png',
+    awayteam: 'District 5',
+    awaylogo: 'path/to/redshift_logo.png',
+    date: 'Wed, January 31, 2024',
+    time: '9:00 – 10:15 PM',
+  },
+]) 
+
+const goToTeamInfo = (teamName: string) => {
+  const encodedTeamName = encodeURIComponent(teamName);
+  console.log("Going to team info");
+  router.push({ name: 'TeamInfo', params: { teamName: encodedTeamName } });
+};
+
+const goToLeagueInfo = (league: string) => {
+    console.log("Going to league info");
+  router.push({ name: 'LeagueInfo', params: { id: league } });
+};
+
 </script>
+
+<style scoped>
+.border-bottom {
+  border-bottom: 1px solid #ccc; /* Adjust the color and width as needed */
+}
+</style>

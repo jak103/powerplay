@@ -12,7 +12,28 @@
           v-if="!$q.screen.lt.md" 
         />
 
-        <q-toolbar-title> Power Play </q-toolbar-title>
+        <q-btn
+          flat
+          dense
+          round
+          icon="arrow_back"
+          aria-label="Back"
+          class ="mobile-only"
+          @click="goBack"
+          v-if="canGoBack"
+        />
+
+        <q-toolbar-title class="text-center"> Power Play </q-toolbar-title>
+
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          style="margin-left: auto;"
+        />
+
       </q-toolbar>
     </q-header>
 
@@ -50,11 +71,15 @@
 </style>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 defineOptions({
   name: 'MainLayout',
 });
+
+const router = useRouter();
+const route = useRoute();
 
 const navItems = [
   {
@@ -92,4 +117,13 @@ const leftDrawerOpen = ref(false);
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+function goBack() {
+  router.back();
+}
+
+const canGoBack = computed(() => {
+  // Only show the back button if the user can go back
+  return window.history.length > 1;
+});
 </script>
