@@ -16,9 +16,6 @@
         <div v-if="os === 'Windows' || os === 'MacOS'">
           To install this app on your computer, click on the install icon in the address bar or go to settings and select "Install".
         </div>
-        <div v-if="os === 'unknown'">
-          Installation instructions are not available for your operating system.
-        </div>
       </q-card-section>
       <q-card-actions align="right">
         <q-btn flat label="Close" @click="showPrompt = false" />
@@ -31,13 +28,20 @@
 defineOptions({
   name: 'App'
 });
+
+// Installation prompt below
 const showPrompt = ref(false);
 const os = ref('unknown');
 
 onMounted(() => {
   os.value = detectOS();
-  if (os.value !== 'unknown') {
-    showPrompt.value = true;
+
+  // Only show the install prompt once
+  if (localStorage.getItem('promptShown') !== 'true') {
+    if (os.value !== 'unknown') {
+      showPrompt.value = true;
+    }
+    localStorage.setItem('promptShown', 'true');
   }
 });
 </script>
