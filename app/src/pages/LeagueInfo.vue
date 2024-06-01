@@ -66,10 +66,10 @@ const items = ref([
 const routesMapping = {
   'Schedule': 'SchedulePage',
   'Chat': 'ChatPage',
-  'Roster': 'ChatPage', /* change to RosterPage when we have */
-  'Sub List': 'ChatPage', /* change to SubPage when we have */
-  'Standings': 'ChatPage', /* change to StandingsPage when we have */
-  'Statistics': 'ChatPage', /* change to StatisticsPage when we have */
+  'Roster': 'RosterPage', /* change to RosterPage when we have */
+  'Sub List': 'SubPage', /* change to SubPage when we have */
+  'Standings': 'StandingsPage', /* change to StandingsPage when we have */
+  'Statistics': 'StatsPage', /* change to StatisticsPage when we have */
 };
 </script>
 
