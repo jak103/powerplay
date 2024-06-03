@@ -18,6 +18,6 @@ export const Primary: Story = {
     template: '<ScheduleList v-bind="args" />',
   }),
   args: {
-    color: null
+    color: ''
   },
 };

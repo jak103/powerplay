@@ -89,7 +89,7 @@ const navItems = [
     label: 'Schedule List',
     caption: 'Example Schedule List Component',
     icon: 'view_list',
-    to: '/schedule-list'
+    to: '/schedule-list',
     flat: true,
     dense: true,
   },

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import ScheduleList from 'components/schedule-list/ScheduleList.vue';
 </script>
 

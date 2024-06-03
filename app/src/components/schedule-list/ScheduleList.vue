@@ -2,15 +2,31 @@
 import {
   QIcon, QImg, QTable
 } from 'quasar'
+import {ref} from 'vue';
+/* eslint-disable */
 const props = defineProps({color: { type: String, default: 'bg-teal-5 text-black'}})
-const columns = [
+
+interface Column {
+  name: string;
+  label: string;
+  field: string | ((row: any) => any);
+  required?: boolean;
+  align?: "left" | "center" | "right";
+  sortable?: boolean;
+  sort?: (a: any, b: any, rowA: any, rowB: any) => number;
+  format?: (val: any, row: any) => any;
+  style?: string | ((row: any) => any);
+  classes?: string | ((row: any) => any);
+  headerStyle?: string;
+  headerClasses?: string;
+}
+const columns: Column[] = [
   {
     name: 'opponent',
     required: true,
     label: 'opponent',
     align: 'left',
     field: 'opponent',
-    format: val => `${val}`,
     sortable: false
   },
   { name: 'outcome', align: 'center', label: 'Win / Loss', field: 'outcome', sortable: false },
@@ -20,7 +36,7 @@ const columns = [
   { name: 'venue', label: 'venue', field: 'venue' },
 ]
 
-const rows = [
+const rows = ref([
   {
     outcome: 'L',
     score: '6-4',
@@ -50,7 +66,7 @@ const rows = [
     game_start: '10:15PM MDT',
     venue: 'George S. Eccles Ice Center - Sheet 1',
   }
-]
+]);
 
 </script>
 
