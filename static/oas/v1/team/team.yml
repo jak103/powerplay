@@ -88,31 +88,31 @@ components:
       type: object
       properties:
         player_id:
-          type: int
+          type: integer
           description: The player's ID
           example: 1
         team_id: 
-          type: int 
+          type: integer
           description: The team's ID that the player is associated with
           example: 1 
         game_id: 
-          type: int 
+          type: integer
           description: The game's ID
           example: 1
         period: 
-          type: int 
+          type: integer
           description: The period in the game that the team occurred
           example: 1 
         duration: 
-          type: int 
+          type: integer
           description: The duration the player is benched in seconds
           example: 1
         created_by: 
-          type: int 
+          type: integer
           description: The ID of the user that creates the team
           example: 2
         teams_type_id: 
-          type: int 
+          type: integer
           description: The ID of the teams Type
           example: 1
     PostTeamsResponse:
