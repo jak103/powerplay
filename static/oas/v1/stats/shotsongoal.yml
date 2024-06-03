@@ -1,6 +1,6 @@
 
 paths:
-  shotsOnGoal:
+  /shotsOnGoal:
     post:
       tags:
         - Stats

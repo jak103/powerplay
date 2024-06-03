@@ -1,5 +1,5 @@
 paths:
-  goals:
+  /goals:
     post:
       tags:
         - Stats

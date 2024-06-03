@@ -28,4 +28,8 @@ type Game struct {
 	Start               time.Time `json:"start"`
 	Venue               Venue     `json:"venue"`
 	VenueID             uint
+	HomeTeamRosterID    uint   `json:"home_team_roster_id"`
+	AwayTeamGoals       uint   `json:"away_team_goals"`
+	AwayTeamRosterID    uint   `json:"away_team_roster_id"`
+	AwayTeamRoster      Roster `json:"away_team_roster"`
 }
