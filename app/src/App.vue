@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: 'App'
+  name: 'App',
 });
 
 // Installation prompt below
