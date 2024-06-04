@@ -168,9 +168,9 @@ components:
         players:
           type: array
           items:
-            type: integer #TODO: get users object
+            $ref: '../users/users.yml#schemas/User'
         captain:
-          type: integer #TODO: get users object
+            $ref: '../users/users.yml#schemas/User'
         captain_id:
           type: integer
     League:
