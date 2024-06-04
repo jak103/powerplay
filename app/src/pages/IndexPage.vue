@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    
+
     <div class="text-h6">Upcoming Events</div>
 
     <div class="q-pa-md">
@@ -82,7 +82,7 @@ const teams = ref([
     league: 'C',
     manager: 'Jacob Christensen',
   }
-]) 
+])
 
 const game = ref([
   {
@@ -94,16 +94,16 @@ const game = ref([
     date: 'Wed, January 31, 2024',
     time: '9:00 – 10:15 PM',
   },
-]) 
+])
 
 const goToTeamInfo = (teamName: string) => {
   const encodedTeamName = encodeURIComponent(teamName);
-  console.log("Going to team info");
+  console.log('Going to team info');
   router.push({ name: 'TeamInfo', params: { teamName: encodedTeamName } });
 };
 
 const goToLeagueInfo = (league: string) => {
-    console.log("Going to league info");
+    console.log('Going to league info');
   router.push({ name: 'LeagueInfo', params: { id: league } });
 };
 
