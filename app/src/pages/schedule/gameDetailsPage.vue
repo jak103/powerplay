@@ -144,102 +144,85 @@
   </q-card>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from 'vue';
 import GameInfo from 'components/GameInfo.vue';
 
-export default {
-  components: {
-    GameInfo,
-  },
-  data() {
-    return {
-      selectedItems: 'four', // setting default value to 'four' for 'No response'
-      options: [
-        { label: 'I am going', value: 'one' },
-        { label: 'I am not going', value: 'two' },
-        { label: 'Maybe', value: 'three' },
-        { label: 'No response', value: 'four' },
-      ],
-      playersGoing: [
-        { name: 'Player 1', image: 'https://via.placeholder.com/32' },
-        { name: 'Player 2', image: 'https://via.placeholder.com/32' },
-        { name: 'Player 3', image: 'https://via.placeholder.com/32' },
-        { name: 'Player 4', image: 'https://via.placeholder.com/32' },
-      ],
-      playersNotGoing: [
-        { name: 'Player 5', image: 'https://via.placeholder.com/32' },
-        { name: 'Player 6', image: 'https://via.placeholder.com/32' },
-        { name: 'Player 7', image: 'https://via.placeholder.com/32' },
-      ],
-      playersMaybe: [
-        { name: 'Player 8', image: 'https://via.placeholder.com/32' },
-        { name: 'Player 9', image: 'https://via.placeholder.com/32' },
-      ],
-      playersNoResponse: [
-        { name: 'Player 10', image: 'https://via.placeholder.com/32' },
-        { name: 'Player 11', image: 'https://via.placeholder.com/32' },
-      ],
-      subs: [],
-      officials: [],
-      availableUsers: [
-        { label: 'User 1', value: 'user1' },
-        { label: 'User 2', value: 'user2' },
-        { label: 'User 3', value: 'user3' },
-      ],
-    };
-  },
-  props: {
-    homeTeam: {
-      type: String,
-      default: 'The Homeys',
-    },
-    awayTeam: {
-      type: String,
-      default: 'A Way Good Team',
-    },
-    date: {
-      type: String,
-      default: 'Wed, Jan 25, 2024',
-    },
-    time: {
-      type: String,
-      default: '9:00 - 10:15 PM',
-    },
-    hasRsvped: {
-      type: Boolean,
-      default: false,
-    },
-    homeScore: {
-      type: Number,
-      default: 0,
-    },
-    awayScore: {
-      type: Number,
-      default: 0,
-    },
-    homeTeamLogo: {
-      type: String,
-      default: 'src/assets/homeys.png',
-    },
-    awayTeamLogo: {
-      type: String,
-      default: 'src/assets/awaygoodteam.png',
-    },
-  },
-  methods: {
-    addSub() {
-      this.subs.push({ selectedUser: null });
-    },
-    removeSub(index) {
-      this.subs.splice(index, 1);
-    },
-    addOfficial() {
-      this.officials.push({ selectedUser: null });
-    },
-    removeOfficial(index) {
-      this.officials.splice(index, 1);
-    },
-  },
+const props = defineProps<{
+  homeTeam: string;
+  awayTeam: string;
+  date: string;
+  time: string;
+  hasRsvped: boolean;
+  homeScore: number;
+  awayScore: number;
+  homeTeamLogo: string;
+  awayTeamLogo: string;
+}>();
+
+const {
+  homeTeam = 'The Homeys',
+  awayTeam = 'A Way Good Team',
+  date = 'Wed, Jan 25, 2024',
+  time = '9:00 - 10:15 PM',
+  hasRsvped = false,
+  homeScore = 0,
+  awayScore = 0,
+} = props;
+
+const selectedItems = ref('four');
+const options = ref([
+  { label: 'I am going', value: 'one' },
+  { label: 'I am not going', value: 'two' },
+  { label: 'Maybe', value: 'three' },
+  { label: 'No response', value: 'four' },
+]);
+
+const playersGoing = ref([
+  { name: 'Player 1', image: 'https://via.placeholder.com/32' },
+  { name: 'Player 2', image: 'https://via.placeholder.com/32' },
+  { name: 'Player 3', image: 'https://via.placeholder.com/32' },
+  { name: 'Player 4', image: 'https://via.placeholder.com/32' },
+]);
+
+const playersNotGoing = ref([
+  { name: 'Player 5', image: 'https://via.placeholder.com/32' },
+  { name: 'Player 6', image: 'https://via.placeholder.com/32' },
+  { name: 'Player 7', image: 'https://via.placeholder.com/32' },
+]);
+
+const playersMaybe = ref([
+  { name: 'Player 8', image: 'https://via.placeholder.com/32' },
+  { name: 'Player 9', image: 'https://via.placeholder.com/32' },
+]);
+
+const playersNoResponse = ref([
+  { name: 'Player 10', image: 'https://via.placeholder.com/32' },
+  { name: 'Player 11', image: 'https://via.placeholder.com/32' },
+]);
+
+const subs = ref<{ selectedUser: string | null }[]>([]);
+const officials = ref<{ selectedUser: string | null }[]>([]);
+const availableUsers = ref([
+  { label: 'User 1', value: 'user1' },
+  { label: 'User 2', value: 'user2' },
+  { label: 'User 3', value: 'user3' },
+]);
+
+const addSub = () => {
+  subs.value.push({ selectedUser: null });
+};
+
+const removeSub = (index: number) => {
+  subs.value.splice(index, 1);
+};
+
+const addOfficial = () => {
+  officials.value.push({ selectedUser: null });
+};
+
+const removeOfficial = (index: number) => {
+  officials.value.splice(index, 1);
 };
 </script>
 
@@ -256,6 +239,6 @@ export default {
   align-items: center;
 }
 .wide-dropdown {
-  width: 200px; /* Adjust this value as needed */
+  width: 200px;
 }
 </style>
