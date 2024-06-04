@@ -34,6 +34,50 @@ type response struct {
 
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleGenerate)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/save", auth.Authenticated, handleSave)
+	apis.RegisterHandler(fiber.MethodPut, "/schedule/optimize", auth.Authenticated, handleOptimize)
+}
+
+func handleOptimize(c *fiber.Ctx) error {
+	type Dto struct {
+		Games []structures.Game `json:"games"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	games := dto.Games
+	round_robin.OptimizeSchedule(games)
+	_, ts := analysis.RunTimeAnalysis(games)
+
+	data := response{
+		TeamStats: analysis.Serialize(ts),
+	}
+
+	return responder.OkWithData(c, data)
+}
+
+func handleSave(c *fiber.Ctx) error {
+	type Dto struct {
+		Games []structures.Game `json:"games"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	games := dto.Games
+
+	session := db.GetSession(c)
+	dbGames := mapGameStructToGameModel(games)
+	_, err = session.SaveGames(dbGames)
+	if err != nil {
+		log.Error("Failed to save games to the database")
+		return responder.InternalServerError(c, err)
+
+	}
+	return responder.Ok(c)
 }
 
 func handleGenerate(c *fiber.Ctx) error {
@@ -59,7 +103,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	}
 
 	if leagues == nil {
-		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("No league for the season").Error())
+		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("no league for the season").Error())
 	}
 
 	var games []structures.Game
@@ -74,14 +118,6 @@ func handleGenerate(c *fiber.Ctx) error {
 	}
 
 	assignLockerRooms(games)
-
-	//dbGames := mapGameStructToGameModel(games, seasonID)
-	//session = db.GetSession(c)
-	//_, err = session.SaveGames(dbGames)
-	//if err != nil {
-	//	logger.WithErr(err).Error("Failed to save games to the database")
-	//	return responder.InternalServerError(c, err)
-	//}
 
 	_, ts := analysis.RunTimeAnalysis(games)
 
@@ -169,50 +205,54 @@ func assignLockerRooms(games []structures.Game) {
 	//For the late game home team is locker room 5, and away team is locker room 2.
 
 	for i, game := range games {
-		if game.IsEarly {
-			games[i].Team1LockerRoom = "3"
-			games[i].Team2LockerRoom = "1"
+		if round_robin.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
+			games[i].HomeTeamLockerRoom = "3"
+			games[i].AwayTeamLockerRoom = "1"
 		} else {
-			games[i].Team1LockerRoom = "5"
-			games[i].Team2LockerRoom = "2"
+			games[i].HomeTeamLockerRoom = "5"
+			games[i].AwayTeamLockerRoom = "2"
 		}
 	}
 }
 
-func mapGameStructToGameModel(games []structures.Game, seasonID uint) []models.Game {
+func mapGameStructToGameModel(games []structures.Game) []models.Game {
 	var gameModels []models.Game
-
-	for _, game := range games {
-		gameModels = append(gameModels, teamToGame(seasonID, game))
-	}
-	return gameModels
-}
-
-func teamToGame(seasonID uint, game structures.Game) models.Game {
-	// TODO deal with the Venue
+	// TODO deal with the VenueID
 	// TODO deal with the correlationId
 	// TODO deal with roster
-	return models.Game{
-		SeasonID: seasonID,
-		Start:    game.Start,
-		Venue: models.Venue{
-			Name:        game.Location,
-			Address:     "2825 N 200 E North Logan, UT 84341 United States",
-			LockerRooms: []string{"1", "2", "3", "4", "5"},
-		},
-		VenueID: 0,
-		Status:  models.SCHEDULED,
-
-		HomeTeam:           game.Team1,
-		HomeTeamID:         game.Team1.ID,
-		HomeTeamLockerRoom: game.Team1LockerRoom,
-		HomeTeamRoster:     game.Team1.Roster,
-		HomeTeamRosterID:   game.Team1.RosterID,
-
-		AwayTeam:           game.Team2,
-		AwayTeamID:         game.Team2.ID,
-		AwayTeamLockerRoom: game.Team2LockerRoom,
-		AwayTeamRoster:     game.Team2.Roster,
-		AwayTeamRosterID:   game.Team2.RosterID,
+	for _, game := range games {
+		gameModels = append(gameModels, models.Game{
+			DbModel:  game.DbModel,
+			SeasonID: game.SeasonID,
+			Start:    game.Start,
+			Venue: models.Venue{
+				Name:        "George S. Eccles Ice Center",
+				Address:     "2825 N 200 E North Logan, UT 84341 United States",
+				LockerRooms: []string{"1", "2", "3", "4", "5"},
+			},
+			VenueID:             0,
+			Status:              models.SCHEDULED,
+			HomeTeam:            game.HomeTeam,
+			HomeTeamID:          game.HomeTeamID,
+			HomeTeamRoster:      game.HomeTeamRoster,
+			HomeTeamRosterID:    game.HomeTeamRosterID,
+			HomeTeamLockerRoom:  game.HomeTeamLockerRoom,
+			HomeTeamShotsOnGoal: game.HomeTeamShotsOnGoal,
+			HomeTeamScore:       game.HomeTeamScore,
+			AwayTeam:            game.AwayTeam,
+			AwayTeamID:          game.AwayTeamID,
+			AwayTeamRoster:      game.AwayTeamRoster,
+			AwayTeamRosterID:    game.AwayTeamRosterID,
+			AwayTeamLockerRoom:  game.AwayTeamLockerRoom,
+			AwayTeamShotsOnGoal: game.AwayTeamShotsOnGoal,
+			AwayTeamScore:       game.AwayTeamScore,
+			ScoreKeeper:         game.ScoreKeeper,
+			ScoreKeeperID:       game.ScoreKeeperID,
+			PrimaryReferee:      game.PrimaryReferee,
+			PrimaryRefereeID:    game.PrimaryRefereeID,
+			SecondaryReferee:    game.SecondaryReferee,
+			SecondaryRefereeID:  game.SecondaryRefereeID,
+		})
 	}
+	return gameModels
 }

@@ -32,12 +32,10 @@ func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam
 		return nil, err
 	}
 
-	optimizeSchedule(games)
-
 	return games, nil
 }
 
-func optimizeSchedule(games []structures.Game) {
+func OptimizeSchedule(games []structures.Game) {
 	if len(games) == 0 {
 		log.Info("No games to optimize")
 		return
@@ -90,7 +88,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (structure
 		for round := 0; round < numberOfRounds; round++ {
 			rounds[round].Games = make([]structures.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
-				rounds[round].Games[i] = newGame(league.Name, league.Teams[i], league.Teams[numTeams-1-i])
+				rounds[round].Games[i] = newGame(league.Teams[i], league.Teams[numTeams-1-i])
 			}
 
 			rotateTeams(&league)
@@ -124,17 +122,8 @@ func assignTimes(times []string, season structures.Season, numberOfGamesPerTeam 
 		if err != nil {
 			log.Error("Failed to parse start time: %v\n", err)
 		}
-		endTime := startTime.Add(75 * time.Minute)
 
 		games[i].Start = startTime
-		games[i].StartDate = startTime.Format("01/02/2006")
-		games[i].StartTime = startTime.Format("15:04")
-
-		games[i].End = endTime
-		games[i].EndDate = endTime.Format("01/02/2006")
-		games[i].EndTime = endTime.Format("15:04")
-
-		games[i].IsEarly = isEarlyGame(games[i].Start.Hour(), games[i].Start.Minute())
 	}
 
 	return games, nil
@@ -163,14 +152,13 @@ func rotateTeams(league *models.League) {
 	league.Teams[1] = lastTeam
 }
 
-func newGame(league string, team1 models.Team, team2 models.Team) structures.Game {
+func newGame(team1, team2 models.Team) structures.Game {
 	return structures.Game{
-		Team1:       team1,
-		Team2:       team2,
-		League:      league,
-		Location:    "George S. Eccles Ice Center --- Surface 1",
-		LocationUrl: "https://www.google.com/maps?cid=12548177465055817450",
-		EventType:   "Game",
+		Game: models.Game{
+			HomeTeam: team1,
+			AwayTeam: team2,
+		},
+		Optimized: false,
 	}
 }
 
@@ -196,7 +184,7 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]structures
 	return games, nil
 }
 
-func isEarlyGame(hour, minute int) bool {
+func IsEarlyGame(hour, minute int) bool {
 	if hour < 20 {
 		return true
 	}

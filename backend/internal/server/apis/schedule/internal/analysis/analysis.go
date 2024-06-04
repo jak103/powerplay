@@ -2,6 +2,7 @@ package analysis
 
 import (
 	"fmt"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"sort"
@@ -19,12 +20,12 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 		var team2Stats structures.TeamStats
 		var ok bool
 
-		if team1Stats, ok = teamStats[game.Team1.Name]; !ok {
-			team1Stats = newStats(game.League, game.Team1.Name)
+		if team1Stats, ok = teamStats[game.HomeTeam.Name]; !ok {
+			team1Stats = newStats(game.HomeTeam.League.Name, game.HomeTeam.Name)
 		}
 
-		if team2Stats, ok = teamStats[game.Team2.Name]; !ok {
-			team2Stats = newStats(game.League, game.Team2.Name)
+		if team2Stats, ok = teamStats[game.AwayTeam.Name]; !ok {
+			team2Stats = newStats(game.AwayTeam.League.Name, game.AwayTeam.Name)
 		}
 
 		team1Stats.Games = append(team1Stats.Games, game)
@@ -34,8 +35,8 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 
 		daysOfTheWeek(game, &team1Stats, &team2Stats)
 
-		teamStats[game.Team1.Name] = team1Stats
-		teamStats[game.Team2.Name] = team2Stats
+		teamStats[game.HomeTeam.Name] = team1Stats
+		teamStats[game.AwayTeam.Name] = team2Stats
 	}
 
 	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games
@@ -81,7 +82,7 @@ func newStats(league, team string) structures.TeamStats {
 }
 
 func earlyLateGames(game structures.Game, season *structures.SeasonStats, team1, team2 *structures.TeamStats) {
-	if game.IsEarly {
+	if round_robin.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
 		team1.EarlyGames += 1
 		team2.EarlyGames += 1
 		season.EarlyGames += 1
