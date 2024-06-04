@@ -19,10 +19,10 @@ import (
 	gorm_logger "gorm.io/gorm/logger"
 )
 
-var db *gorm.DB
+var dbConnection *gorm.DB
 
 type session struct {
-	connection *gorm.DB
+	*gorm.DB
 }
 
 func Init() error {
@@ -55,7 +55,7 @@ func Init() error {
 		},
 	)
 
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
+	dbConnection, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		log.WithErr(err).Alert("Failed to connect to DB")
 		return err
@@ -66,8 +66,15 @@ func Init() error {
 }
 
 func Migrate() error {
-	s := GetSession(nil)
-	return migrations.Run(s.connection)
+	logger := log.TheLogger
+
+	s := dbConnection.Session(&gorm.Session{
+		Logger: &dbLogger{
+			theLogger: &logger,
+		},
+	})
+
+	return migrations.Run(s)
 }
 
 func GetSession(c *fiber.Ctx) session {
@@ -77,7 +84,7 @@ func GetSession(c *fiber.Ctx) session {
 	}
 
 	s := session{
-		connection: db.Session(&gorm.Session{
+		dbConnection.Session(&gorm.Session{
 			Logger: &dbLogger{
 				theLogger: &logger,
 			},
@@ -88,7 +95,7 @@ func GetSession(c *fiber.Ctx) session {
 
 func RunSeeders(seeders []ppseeders.Seeder) error {
 	for _, seeder := range seeders {
-		if err := seeder.Seed(db); err != nil {
+		if err := seeder.Seed(dbConnection); err != nil {
 			return err
 		}
 	}
