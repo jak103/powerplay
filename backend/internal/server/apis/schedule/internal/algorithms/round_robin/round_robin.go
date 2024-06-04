@@ -49,7 +49,7 @@ func OptimizeSchedule(games []structures.Game) {
 	balanceCount := getBalanceCount(&teamStats)
 	lastBalanceCount := -1
 
-	for count := 0; balanceCount != lastBalanceCount && count < 25; count++ {
+	for count := 0; balanceCount != lastBalanceCount && count < 3; count++ {
 		optimize.Schedule(games, seasonStats, teamStats)
 
 		log.Info("Post-optimization analysis")
