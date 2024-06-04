@@ -1,7 +1,7 @@
 package structures
 
 import (
-	"fmt"
+	"github.com/jak103/powerplay/internal/models"
 	"time"
 )
 
@@ -29,31 +29,20 @@ type Game struct {
 	LocationUrl     string    `json:"locationUrl"`
 	EventType       string    `json:"eventType"`
 	League          string    `json:"league"`
-	Team1Id         string    `json:"team1Id"`
-	Team2Id         string    `json:"team2Id"`
-	Team1Name       string    `json:"team1Name"`
-	Team2Name       string    `json:"team2Name"`
-	IsEarly         bool      `json:"isEarly"`
-	Optimized       bool      `json:"optimized"`
-	Team1LockerRoom string    `json:"team1LockerRoom"`
-	Team2LockerRoom string    `json:"team2LockerRoom"`
+	Team1           models.Team
+	Team2           models.Team
+	IsEarly         bool   `json:"isEarly"`
+	Optimized       bool   `json:"optimized"`
+	Team1LockerRoom string `json:"team1LockerRoom"`
+	Team2LockerRoom string `json:"team2LockerRoom"`
+	// TODO embed models.Game
 }
 
-func (g Game) String() string {
-	return fmt.Sprintf("%s %s v %s", g.Start.Format("01-02-2006 03:04"), g.Team1Name, g.Team2Name)
-	// DateOnly   = "2006-01-02"
-	// TimeOnly   = "15:04:05"
-}
-
-type League struct {
-	Name  string `yaml:"league"`
-	Teams []Team `yaml:"teams"`
-}
-
-type Team struct {
-	Name string `yaml:"name"`
-	Id   string `yaml:"id"`
-}
+//func (g Game) String() string {
+//	return fmt.Sprintf("%s %s v %s", g.Start.Format("01-02-2006 03:04"), g.Team1Name, g.Team2Name)
+//	// DateOnly   = "2006-01-02"
+//	// TimeOnly   = "15:04:05"
+//}
 
 type LeagueIceTimes struct {
 	Name  string   `yaml:"league"`
@@ -80,5 +69,5 @@ type SeasonStats struct {
 }
 
 func (ss SeasonStats) EarlyPercentage() float32 {
-	return (float32(ss.EarlyGames) / float32(ss.TotalGames))
+	return float32(ss.EarlyGames) / float32(ss.TotalGames)
 }

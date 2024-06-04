@@ -3,6 +3,7 @@ package games
 import (
 	"encoding/csv"
 	"errors"
+	"github.com/jak103/powerplay/internal/models"
 	"io"
 	"mime/multipart"
 	"strings"
@@ -74,9 +75,9 @@ func handleGenerate(c *fiber.Ctx) error {
 
 	assignLockerRooms(games)
 
-	// TODO convert structures.Game to models.Game
+	//dbGames := mapGameStructToGameModel(games, seasonID)
 	//session = db.GetSession(c)
-	//_, err = session.SaveGames(games)
+	//_, err = session.SaveGames(dbGames)
 	//if err != nil {
 	//	logger.WithErr(err).Error("Failed to save games to the database")
 	//	return responder.InternalServerError(c, err)
@@ -92,6 +93,11 @@ func handleGenerate(c *fiber.Ctx) error {
 }
 
 func readBody(c *fiber.Ctx) (Body, error) {
+
+	// keys
+	// season_id
+	// algorithm
+	// file
 
 	type Dto struct {
 		SeasonID  uint   `json:"season_id"`
@@ -170,5 +176,43 @@ func assignLockerRooms(games []structures.Game) {
 			games[i].Team1LockerRoom = "5"
 			games[i].Team2LockerRoom = "2"
 		}
+	}
+}
+
+func mapGameStructToGameModel(games []structures.Game, seasonID uint) []models.Game {
+	var gameModels []models.Game
+
+	for _, game := range games {
+		gameModels = append(gameModels, teamToGame(seasonID, game))
+	}
+	return gameModels
+}
+
+func teamToGame(seasonID uint, game structures.Game) models.Game {
+	// TODO deal with the Venue
+	// TODO deal with the correlationId
+	// TODO deal with roster
+	return models.Game{
+		SeasonID: seasonID,
+		Start:    game.Start,
+		Venue: models.Venue{
+			Name:        game.Location,
+			Address:     "2825 N 200 E North Logan, UT 84341 United States",
+			LockerRooms: []string{"1", "2", "3", "4", "5"},
+		},
+		VenueID: 0,
+		Status:  models.SCHEDULED,
+
+		HomeTeam:           game.Team1,
+		HomeTeamID:         game.Team1.ID,
+		HomeTeamLockerRoom: game.Team1LockerRoom,
+		HomeTeamRoster:     game.Team1.Roster,
+		HomeTeamRosterID:   game.Team1.RosterID,
+
+		AwayTeam:           game.Team2,
+		AwayTeamID:         game.Team2.ID,
+		AwayTeamLockerRoom: game.Team2LockerRoom,
+		AwayTeamRoster:     game.Team2.Roster,
+		AwayTeamRosterID:   game.Team2.RosterID,
 	}
 }

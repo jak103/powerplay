@@ -2,7 +2,6 @@ package round_robin
 
 import (
 	"errors"
-	"strconv"
 	"time"
 
 	"github.com/jak103/powerplay/internal/models"
@@ -91,12 +90,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (structure
 		for round := 0; round < numberOfRounds; round++ {
 			rounds[round].Games = make([]structures.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
-				team1 := league.Teams[i].DbModel.ID
-				team1Name := league.Teams[i].Name
-				team2 := league.Teams[numTeams-1-i].DbModel.ID
-				team2Name := league.Teams[numTeams-1-i].Name
-
-				rounds[round].Games[i] = newGame(league.Name, strconv.FormatUint(uint64(team1), 10), team1Name, strconv.FormatUint(uint64(team2), 10), team2Name)
+				rounds[round].Games[i] = newGame(league.Name, league.Teams[i], league.Teams[numTeams-1-i])
 			}
 
 			rotateTeams(&league)
@@ -169,24 +163,10 @@ func rotateTeams(league *models.League) {
 	league.Teams[1] = lastTeam
 }
 
-func newGame(league, team1, team1Name, team2, team2Name string) structures.Game {
-	if team1 == "-1" || team2 == "-1" {
-		return structures.Game{
-			Team1Id:     team1,
-			Team1Name:   team1Name,
-			Team2Id:     team2,
-			Team2Name:   team2Name,
-			League:      league,
-			Location:    "Bye",
-			LocationUrl: "",
-			EventType:   "Bye",
-		}
-	}
+func newGame(league string, team1 models.Team, team2 models.Team) structures.Game {
 	return structures.Game{
-		Team1Id:     team1,
-		Team1Name:   team1Name,
-		Team2Id:     team2,
-		Team2Name:   team2Name,
+		Team1:       team1,
+		Team2:       team2,
 		League:      league,
 		Location:    "George S. Eccles Ice Center --- Surface 1",
 		LocationUrl: "https://www.google.com/maps?cid=12548177465055817450",
@@ -207,10 +187,9 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]structures
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
 				continue
 			}
-			for j, game := range season.LeagueRounds[league][i].Games {
-				if game.Team1Id != "-1" && game.Team2Id != "-1" {
-					games = append(games, season.LeagueRounds[league][i].Games[j])
-				}
+			for j := range season.LeagueRounds[league][i].Games {
+				games = append(games, season.LeagueRounds[league][i].Games[j])
+
 			}
 		}
 	}

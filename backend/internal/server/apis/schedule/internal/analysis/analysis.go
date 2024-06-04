@@ -19,12 +19,12 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 		var team2Stats structures.TeamStats
 		var ok bool
 
-		if team1Stats, ok = teamStats[game.Team1Name]; !ok {
-			team1Stats = newStats(game.League, game.Team1Name)
+		if team1Stats, ok = teamStats[game.Team1.Name]; !ok {
+			team1Stats = newStats(game.League, game.Team1.Name)
 		}
 
-		if team2Stats, ok = teamStats[game.Team2Name]; !ok {
-			team2Stats = newStats(game.League, game.Team2Name)
+		if team2Stats, ok = teamStats[game.Team2.Name]; !ok {
+			team2Stats = newStats(game.League, game.Team2.Name)
 		}
 
 		team1Stats.Games = append(team1Stats.Games, game)
@@ -34,8 +34,8 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 
 		daysOfTheWeek(game, &team1Stats, &team2Stats)
 
-		teamStats[game.Team1Name] = team1Stats
-		teamStats[game.Team2Name] = team2Stats
+		teamStats[game.Team1.Name] = team1Stats
+		teamStats[game.Team2.Name] = team2Stats
 	}
 
 	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games
@@ -53,22 +53,22 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 }
 
 func Serialize(ts map[string]structures.TeamStats) []structures.TeamStats {
-        var stats []structures.TeamStats
-        for _, v := range ts {
-            td := structures.TeamStats{
-                Name:                    v.Name,
-                League:                  v.League,
-                EarlyGames:              v.EarlyGames,
-                LateGames:               v.LateGames,
-                DaysOfTheWeek:           v.DaysOfTheWeek,
-                DaysBetweenGames:        v.DaysBetweenGames,
-                AverageDaysBetweenGames: v.AverageDaysBetweenGames,
-                Games:                   v.Games,
-                Balanced:                v.Balanced,
-            }
-            stats = append(stats, td)
-        }
-        return stats
+	var stats []structures.TeamStats
+	for _, v := range ts {
+		td := structures.TeamStats{
+			Name:                    v.Name,
+			League:                  v.League,
+			EarlyGames:              v.EarlyGames,
+			LateGames:               v.LateGames,
+			DaysOfTheWeek:           v.DaysOfTheWeek,
+			DaysBetweenGames:        v.DaysBetweenGames,
+			AverageDaysBetweenGames: v.AverageDaysBetweenGames,
+			Games:                   v.Games,
+			Balanced:                v.Balanced,
+		}
+		stats = append(stats, td)
+	}
+	return stats
 }
 
 func newStats(league, team string) structures.TeamStats {
