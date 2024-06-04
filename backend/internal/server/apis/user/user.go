@@ -18,20 +18,17 @@ import (
 )
 
 type createRequest struct {
-	Username   string `json:"username"`
 	FirstName  string `json:"firstName"`
 	LastName   string `json:"lastName"`
 	Email      string `json:"email"`
 	Password   string `json:"password"`
-	Phone      string `json:"phoneNumber"`
+	Phone      string `json:"phone"`
 	SkillLevel int    `json:"skillLevel"`
 }
 
 type createResponse struct {
-	Message  string `json:"message"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	UserId   int    `json:"user_id"`
+	Email  string `json:"email"`
+	UserId int    `json:"user_id"`
 }
 
 func init() {
@@ -113,10 +110,8 @@ func createUserAccount(c *fiber.Ctx) error {
 
 	// response
 	createdUserResponse := createResponse{
-		Message:  "User created successfully",
-		Username: creds.Username,
-		Email:    creds.Email,
-		UserId:   int(u.ID),
+		Email:  creds.Email,
+		UserId: int(u.ID),
 	}
 
 	return responder.OkWithData(c, createdUserResponse)
