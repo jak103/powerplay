@@ -12,7 +12,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/schemas/GetLeaguesResponse'
+                $ref: '#/components/schemas/GetLeaguesResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
     post:
@@ -26,14 +26,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/schemas/PostLeagueRequest"
+              $ref: "#/components/schemas/PostLeagueRequest"
       responses:
         200:
           description: Successfully created a new league
           content:
             application/json:
               schema:
-                $ref: '#/schemas/PostLeagueResponse'
+                $ref: '#/components/schemas/PostLeagueResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
 
@@ -79,15 +79,15 @@ components:
           description: name of the league
           example: "B League"
         teams:
-          type: object
+          type: array
           description: all teams associated with the league
-          example: 
+          example:  []
     PostLeagueResponse:
       type: object
-        properties:
-          status_code:
-            $ref: "../common/schemas.yml#/schemas/StatusCode200"
-          status_string:
-            $ref: "../common/schemas.yml#/schemas/StatusString200"
-          request_id:
-            $ref: "../common/schemas.yml#/schemas/RequestId"
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
