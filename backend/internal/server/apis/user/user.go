@@ -14,7 +14,6 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
-	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
@@ -40,7 +39,6 @@ func validateUser(u *models.User) error {
 	values := reflect.ValueOf(*u)
 	for i := 0; i < values.NumField(); i++ {
 		v := values.Field(i).String()
-		log.Info(v)
 		if v == "" {
 			return errors.New("data field is empty")
 		}
