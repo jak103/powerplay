@@ -18,6 +18,8 @@ useHead({
   titleTemplate: (title) =>
     title ? `${title} | Eccles Ice Hockey` : "Eccles Ice Hockey",
 });
+
+
 </script>
 
 <template>
