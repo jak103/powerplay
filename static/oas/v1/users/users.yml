@@ -60,16 +60,7 @@ schemas:
           email:
             type: string
             example:
-          FirstName:
-            type: string
-            example:
-          LastName:
-            type: string
-            example: 
-          Phone:
-            type: string
-            example:
-          SkillLevel:
+          user_id:
             type: integer
             example:
 
