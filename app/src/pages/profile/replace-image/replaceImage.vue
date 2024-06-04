@@ -1,25 +1,10 @@
 <script setup lang="ts">
 import {ref, computed} from 'vue';
-// const userInfo = {
-//   'name': 'Ricky Bobby',
-//   'phone-number': '901-123-4567',
-//   'email': 'RickyBobby@gmail.com',
-//   'birthday': '12/12/1998',
-//   'teams': [{
-//     name: 'Trash Pandas',
-//     logo: '/src/assets/trash-panda.webp'
-//   }, 
-//   {
-//     name: 'District 5',
-//     logo: '/src/assets/District-5.webp'
-//   }],
-//   'leagues': ['C', 'D']
-// }
+
 const model = null;
 const sliderValue = ref<number>(30);
     const imageSize = computed(() => {
-      // Adjust this calculation based on your needs
-      return sliderValue.value * 5; // For example, multiplying by 5 for demonstration
+      return sliderValue.value * 5; 
     });
 </script>
 
@@ -84,14 +69,5 @@ const sliderValue = ref<number>(30);
     margin-bottom: 25px;
     overflow: hidden;
 }
-
-/* .container{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100vw;
-} */
-
 
 </style>

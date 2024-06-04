@@ -79,7 +79,7 @@ const userInfo = {
 
 <style>
 .custom-list {
-  width: 70vw; /* Specify the width of the list */
+  width: 70vw;
   margin-bottom: 30px;
 }
 .list-item{
