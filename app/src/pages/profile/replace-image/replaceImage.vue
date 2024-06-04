@@ -16,8 +16,8 @@ const sliderValue = ref<number>(30);
               </div>
               <q-slider v-model="sliderValue" :min="10" :max="44" style="width: 40vw; position: absolute; top: 300px;" color="primary" track-size="6px"/>              
               <q-btn class="delete-button" color="red">Delete Image</q-btn>
-              <div>Select Image</div>
-    <q-file color="grey-3" outlined label-color="primary" v-model="model" label="Label" class="q-ma-md" style="width:70vw;">
+              <div style="font-size: 18px;">Select Image</div>
+    <q-file color="grey-3" outlined label-color="primary" v-model="model" label="Label" class="q-ma-md" style="width:60vw;">
         <template v-slot:append>
           <q-icon name="attachment" color="primary" />
         </template>

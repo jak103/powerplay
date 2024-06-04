@@ -19,7 +19,7 @@
         <div>{{ userInfo["birthday"] }}</div>
         <q-list class="custom-list" >
           <div style="font-weight: 500; font-size: 20px;">Teams</div>
-      <q-item v-for="team in userInfo['teams']" :key="team.name" class="list-item">
+      <q-item v-for="team in userInfo['teams']" :key="team.name" class="list-item" @click="goToTeamInfo(team.name)">
           <q-img 
           :src="team.logo"
            width="45px"
@@ -60,6 +60,9 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
 const userInfo = {
   'name': 'Ricky Bobby',
   'phone-number': '901-123-4567',
@@ -75,6 +78,13 @@ const userInfo = {
   }],
   'leagues': ['C', 'D']
 }
+
+const goToTeamInfo = (teamName: string) => {
+  const encodedTeamName = encodeURIComponent(teamName);
+  console.log('Going to team info');
+  router.push({ name: 'TeamInfo', params: { teamName: encodedTeamName } });
+};
+
 </script>
 
 <style>
@@ -90,7 +100,7 @@ const userInfo = {
 }
 .button-container{
   margin-top: 10px;
-  width: 70vw;
+  width: 80vw;
   justify-content: space-around;
   align-items: center;
 }
