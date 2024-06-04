@@ -25,10 +25,10 @@ schemas:
   User:
     type: object
     properties:
-      firstName:
+      first_name:
         type: string
         example: John
-      lastName:
+      last_name:
         type: string
         example: James
       password:
@@ -40,7 +40,7 @@ schemas:
       phone:
         type: string
         example: '123-456-7890'
-      skillLevel: # will this match skill level? 
+      skill_level: # will this match skill level? 
         type: integer
         example: 5
 
