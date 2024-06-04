@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated style="background-color: #343333;">
+    <q-header elevated style="background-color: #343333">
       <q-toolbar>
         <q-btn
           flat
@@ -18,7 +18,7 @@
           round
           icon="arrow_back"
           aria-label="Back"
-          class ="mobile-only"
+          class="mobile-only"
           @click="goBack"
           v-if="canGoBack"
         />
@@ -31,9 +31,8 @@
           round
           icon="menu"
           aria-label="Menu"
-          style="margin-left: auto;"
+          style="margin-left: auto"
         />
-
       </q-toolbar>
     </q-header>
 
@@ -44,17 +43,11 @@
           :key="item.label"
           v-bind="item"
           class="q-mt-md q-pt-md q-pb-md"
-          style="display: flex; align-items: start; width: 90%;"
+          style="display: flex; align-items: start; width: 90%"
           color="black"
         />
       </div>
     </q-drawer>
-
-    <q-footer class="q-pa-md bg-white" elevated v-if="$q.screen.lt.md">
-        <div class="row justify-evenly">
-          <q-btn v-for="item in navItems" :key="item.label" v-bind="item" color="black" label=""/>
-        </div>
-    </q-footer>
 
     <q-page-container>
       <router-view />
@@ -63,54 +56,23 @@
 </template>
 
 <style scoped>
-  .column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 </style>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useRouter, /*useRoute*/ } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 defineOptions({
   name: 'MainLayout',
 });
 
 const router = useRouter();
-// const route = useRoute();
-
-const navItems = [
-  {
-    label: 'Home',
-    icon: 'home',
-    to: '/',
-    flat: true,
-    dense: true,
-  },
-  {
-    label: 'Schedule',
-    icon: 'event',
-    to: '/schedule',
-    flat: true,
-    dense: true,
-  },
-  {
-    label: 'Chat',
-    icon: 'chat_bubble_outline',
-    to: '/chat',
-    flat: true,
-    dense: true,
-  },
-  {
-    label: 'Profile',
-    icon: 'person',
-    to: '/profile',
-    flat: true,
-    dense: true,
-  },
-];
+const route = useRoute();
 
 const leftDrawerOpen = ref(false);
 
