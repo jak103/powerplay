@@ -1,8 +1,6 @@
 <template>
   <q-page class='q-pa-md'>
-    
     <div class='text-h6'>Upcoming Events</div>
-
     <div class='q-pa-md'>
       <q-card class='q-mb-md'>
         <q-card-section>
@@ -82,7 +80,7 @@ const teams = ref([
     league: 'C',
     manager: 'Jacob Christensen',
   }
-]) 
+])
 
 const game = ref([
   {
@@ -94,7 +92,7 @@ const game = ref([
     date: 'Wed, January 31, 2024',
     time: '9:00 – 10:15 PM',
   },
-]) 
+])
 
 const goToTeamInfo = (teamName: string) => {
   const encodedTeamName = encodeURIComponent(teamName);

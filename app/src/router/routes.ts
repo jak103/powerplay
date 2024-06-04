@@ -17,6 +17,13 @@ const routes: RouteRecordRaw[] = [
       { path: 'schedule', name: 'SchedulePage', component: () => import('pages/schedule/schedulePage.vue'), meta: { title: 'Schedule' } },
     ],
   },
+  {
+  path: '/chat/chatId',
+  component: () => import('layouts/ChatLayout.vue'),
+    children: [
+      { path: '', name: 'Chat', component: () => import('pages/chat/ChatUi.vue')},
+    ]
+  },
 
   // Always leave this as last one,
   // but you can also remove it
