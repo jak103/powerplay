@@ -6,34 +6,22 @@
           flat
           dense
           round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-          v-if="!$q.screen.lt.md"
-        />
-
-        <q-btn
-          flat
-          dense
-          round
           icon="arrow_back"
           aria-label="Back"
           class ="mobile-only"
           @click="goBack"
           v-if="canGoBack"
         />
-
-        <q-toolbar-title class="text-center"> Power Play </q-toolbar-title>
-
         <q-btn
           flat
           dense
           round
           icon="menu"
           aria-label="Menu"
-          style="margin-left: auto;"
+          @click="toggleLeftDrawer"
+          v-if="!$q.screen.lt.md" 
         />
-
+        <q-toolbar-title class="text-center">{{ pageTitle }}</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -79,7 +67,8 @@ defineOptions({
 });
 
 const router = useRouter();
-// const route = useRoute();
+const route = useRoute(); // used to display the title of the page
+const pageTitle = computed(() => route.meta.title || 'Power Play');
 
 const navItems = [
   {
