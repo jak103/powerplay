@@ -116,7 +116,7 @@ func createUserAccount(c *fiber.Ctx) error {
 	u, result := db.CreateUser(u)
 	if result != nil {
 		log.WithErr(err).Error(result.Error())
-		return responder.BadRequest(c, result.Error())
+		return responder.InternalServerError(c, result.Error())
 	}
 
 	// response
