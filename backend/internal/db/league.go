@@ -8,3 +8,8 @@ func (s session) GetLeagues() ([]models.League, error) {
 	err := s.connection.Find(&leagues)
 	return resultsOrError(leagues, err)
 }
+
+func (s session) CreateLeague(request *models.League) error {
+	result := s.connection.Create(request)
+	return result.Error
+}
