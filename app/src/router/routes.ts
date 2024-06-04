@@ -13,9 +13,17 @@ const routes: RouteRecordRaw[] = [
       { path: 'statistics', name: 'StatsPage', component: () => import('pages/StatsPage.vue') },
       { path: 'substitues', name: 'SubPage', component: () => import('pages/SubPage.vue') },
       { path: 'chat', name: 'ChatPage', component: () => import('pages/chat/chatPage.vue')},
+      { path: 'chat/createchannel', name: 'CreateChannel', component: () => import('pages/chat/CreateChannel.vue')},
       { path: 'profile', name: 'ProfilePage', component: () => import('pages/profile/profilePage.vue')},
       { path: 'schedule', name: 'SchedulePage', component: () => import('pages/schedule/schedulePage.vue')},
     ],
+  },
+  {
+  path: '/chat/chatId',
+  component: () => import('layouts/ChatLayout.vue'),
+    children: [
+      { path: '', name: 'Chat', component: () => import('pages/chat/ChatUi.vue')},
+    ]
   },
 
   // Always leave this as last one,
