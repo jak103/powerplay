@@ -12,7 +12,7 @@
           v-if="!$q.screen.lt.md" 
         />
 
-        <q-toolbar-title> Power Play </q-toolbar-title>
+        <q-toolbar-title> {{ getCurrentPageTitle() }} </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -51,6 +51,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+function getCurrentPageTitle(): string {
+  return (route.meta.title as string) || 'Power Play';
+}
 
 defineOptions({
   name: 'MainLayout',
