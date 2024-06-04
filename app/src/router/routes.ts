@@ -16,6 +16,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'chat/createchannel', name: 'CreateChannel', component: () => import('pages/chat/CreateChannel.vue')},
       { path: 'profile', name: 'ProfilePage', component: () => import('pages/profile/profilePage.vue')},
       { path: 'schedule', name: 'SchedulePage', component: () => import('pages/schedule/schedulePage.vue')},
+      { path: 'game-details', name: 'GameDetailsPage', component: () => import('pages/schedule/gameDetailsPage.vue')},
     ],
   },
   {

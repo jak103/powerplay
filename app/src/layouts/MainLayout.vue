@@ -9,7 +9,7 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
-          v-if="!$q.screen.lt.md" 
+          v-if="!$q.screen.lt.md"
         />
 
         <q-btn
@@ -72,14 +72,14 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter, /*useRoute*/ } from 'vue-router';
 
 defineOptions({
   name: 'MainLayout',
 });
 
 const router = useRouter();
-const route = useRoute();
+// const route = useRoute();
 
 const navItems = [
   {
