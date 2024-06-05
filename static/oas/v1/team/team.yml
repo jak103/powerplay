@@ -1,7 +1,9 @@
 paths:
   teams:
     get:
-      summary: Get All teams
+      tags:
+        - teams
+      summary: Get All Teams
       description: Retrieve a list of all teams
       responses:
         200:
@@ -13,7 +15,9 @@ paths:
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
     post:
-      summary: Create a New team
+      tags:
+        - teams
+      summary: Create a New Team
       description: Creates a new team
       requestBody:
         description: A JSON object with a valid team
