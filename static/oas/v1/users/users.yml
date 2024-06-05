@@ -43,6 +43,9 @@ schemas:
       skill_level: # will this match skill level? 
         type: integer
         example: 5
+      date_of_birth:
+        type: time.Time
+        example: 2009-11-10
 
 # this is not an authentication response. This is a user creation response.
   UserCreationResponse:
