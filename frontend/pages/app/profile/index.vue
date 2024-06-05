@@ -30,16 +30,16 @@ export default {
   <link rel="stylesheet" 
 href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <div class="top-banner">
-      <div @click="() => this.$router.go(-1)" >Back</div>
+      <div @click="() => this.$router.go(-1)" ><</div>
       <div class="heading-container">
         <div class="top-profile">Profile</div>
         <div class="top-username">{{ user }}</div>
       </div>
-      <div>Menu</div>
+      <div></div>
     </div>
-  <img src="../../../assets/ProfilePic.webp" width="100" height="100" 
+  <img src="/_nuxt/assets/ProfilePic.webp" width="100" height="100" 
 class="profile-image-container">
-  <NuxtLink class="btn btn-primary" to="/app/sign-in" id="btn-image" 
+  <NuxtLink class="btn btn-primary" to="/app/profile/replace-image" id="btn-image" 
 style="font-size: 0px;">
     <i class="material-icons icon">photo_camera</i>
   </NuxtLink>
@@ -71,14 +71,14 @@ height="25" class="team-logo"> {{ league }}-League
   <h5>Emergency Contact Info</h5>
   <div>Contact Name: Reese Bobby</div>
   <div>Contact Number: 801-123-1234</div>
-  <NuxtLink class="btn btn-primary" to="/app/sign-in">Edit</NuxtLink>
+  <NuxtLink class="btn btn-primary" to="/app/profile/replace-image">Edit</NuxtLink>
     </div>
   </div>
   <div class="bottom-buttons">
     <div class="vstack d-inline-flex gap-2" >
       <NuxtLink class="btn btn-primary" to="/app/sign-in">Sign 
 Out</NuxtLink>
-      <NuxtLink class="btn btn-primary" to="/app/sign-in">Edit 
+      <NuxtLink class="btn btn-primary" to="/app/profile/edit-profile">Edit 
 Profile</NuxtLink>
     </div>
   </div>
@@ -126,6 +126,9 @@ Profile</NuxtLink>
 .top-username{
   font-size: 10px;
   margin-bottom: 5px;
+}
+.bottom-buttons{
+  margin-bottom: 20px;
 }
 .bottom-buttons div{
   display: flex;

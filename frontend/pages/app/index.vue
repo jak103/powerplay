@@ -1,21 +1,8 @@
 
 
-
-
 <template>
   <div>
-    <!-- Header -->
-    <header class="header">
-      <div class="back-arrow">
-        <!-- Add back arrow icon or text as needed -->
-        &lt; 
-      </div>
-      <div class="title">Home</div>
-      <div class="options">
-        <!-- Add three dots icon or menu options as needed -->
-        <span>...</span>
-      </div>
-    </header>
+    <AppHeader :name="Home"/>
 
     <!-- Upcoming Events Section -->
     <div class="section">
@@ -51,31 +38,32 @@
     <div class="section">
       <h2 class="section-header">My Teams</h2>
       <!-- List of teams -->
-      <div v-for="team in myTeams" :key="team.id" class="team-box" @click="handleTeamClick(league)">
+      <NuxtLink v-for="team in myTeams" :key="team.id" :to='"/app/team-info"' class="team-box" @click="handleTeamClick(league)">
         <div class="line"></div> <!-- Line above team box -->
         <div class="logo-name-container">
-          <img :src="team.logo" alt="Team Logo" class="team-logo">
+          <img :src="team.logo" class="team-logo">
           <div class="league-name">{{ team.name }}</div>
         </div>
-      </div>
+      </NuxtLink>
     </div>
 
     <!-- My Leagues Section -->
     <div class="section">
       <h2 class="section-header">My Leagues</h2>
       <!-- List of leagues -->
-      <div v-for="team in myTeams" :key="team.id" class="team-box" @click="handleTeamClick(league)">
+      <NuxtLink v-for="team in myTeams" :key="team.id" :to='"/app/league-info"' class="team-box" @click="handleTeamClick(league)">
         <div class="line"></div> <!-- Line above league box -->
         <div class="logo-name-container">
-          <img :src="team.logo" alt="League Logo" class="team-logo">
+          <img :src="team.logo"  class="team-logo">
           <div class="league-name">{{ team.division }}</div>
         </div>
-      </div>
+      </NuxtLink>
     </div>
   </div>
 </template>
 
 <script>
+import AppHeader from '~/components/AppHeader.vue';
 export default {
   data() {
     return {
@@ -171,6 +159,8 @@ export default {
   flex-direction: column;
   align-items: left;
   position: relative; /* For positioning the lines */
+  text-decoration: none;
+  color: inherit;
 }
 
 .line {
