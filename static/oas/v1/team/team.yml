@@ -12,25 +12,25 @@ paths:
                 $ref: '#/components/schemas/GetTeamsResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
-    post:
-      summary: Create a New team
-      description: Creates a new team
-      requestBody:
-        description: A JSON object with a valid team
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PostTeamsRequest"
-      responses:
-        200:
-          description: Successfully created a new team
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostTeamsResponse'
-        400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+    # post:
+    #   summary: Create a New team
+    #   description: Creates a new team
+    #   requestBody:
+    #     description: A JSON object with a valid team
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: "#/components/schemas/PostTeamsRequest"
+    #   responses:
+    #     200:
+    #       description: Successfully created a new team
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/PostTeamsResponse'
+    #     400:
+    #       $ref: "../common/errors.yml#/responses/BadRequest"
 
 components:
   schemas:
@@ -76,40 +76,40 @@ components:
                 roster:
                   id: 16
                 roster_id: 16
-    PostTeamsRequest:
-      type: object
-      properties:
-        correlation_id:
-          type: integer
-          description: The correlation id
-          example: 1
-        name: 
-          type: string 
-          description: The team's name
-          example: "captains" 
-        logo_id: 
-          type: integer
-          description: The team's logo ID
-          example: 2
-        color: 
-          type: string 
-          description: The team's color
-          example: "purple" 
-        league_id: 
-          type: integer 
-          description: The id of the league
-          example: 3
-        roster_id: 
-          type: integer 
-          description: The ID of the roster
-          example: 4
-    PostTeamsResponse:
-      type: object
-      properties:
-        status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
-        status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
-        request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+    # PostTeamsRequest:
+    #   type: object
+    #   properties:
+    #     correlation_id:
+    #       type: integer
+    #       description: The correlation id
+    #       example: 1
+    #     name: 
+    #       type: string 
+    #       description: The team's name
+    #       example: "captains" 
+    #     logo_id: 
+    #       type: integer
+    #       description: The team's logo ID
+    #       example: 2
+    #     color: 
+    #       type: string 
+    #       description: The team's color
+    #       example: "purple" 
+    #     league_id: 
+    #       type: integer 
+    #       description: The id of the league
+    #       example: 3
+    #     roster_id: 
+    #       type: integer 
+    #       description: The ID of the roster
+    #       example: 4
+    # PostTeamsResponse:
+    #   type: object
+    #   properties:
+    #     status_code:
+    #       $ref: "../common/schemas.yml#/schemas/StatusCode200"
+    #     status_string:
+    #       $ref: "../common/schemas.yml#/schemas/StatusString200"
+    #     request_id:
+    #       $ref: "../common/schemas.yml#/schemas/RequestId"
     
