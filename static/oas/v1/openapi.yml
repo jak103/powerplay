@@ -20,8 +20,8 @@ paths:
     $ref: "./stats/penalties.yml#/paths/penalties"
   /user:
     $ref: "./users/users.yml#/paths/user"
-  /schedule/{seasonId}:
-    $ref: "./schedule/schedule.yml#/paths/schedule"
+  /schedule/games:
+    $ref: "./schedule/schedule.yml#/paths/games"
 
   # /[URL path]
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
