@@ -11,10 +11,10 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodGet, "/Team", auth.Public, getTeams)
-	apis.RegisterHandler(fiber.MethodGet, "/Team/:teamId", auth.Public, getTeam)
-	apis.RegisterHandler(fiber.MethodPut, "/Team/:teamId", auth.Public, updateTeam)
-	apis.RegisterHandler(fiber.MethodPost, "/Team", auth.Public, createTeam)
+	apis.RegisterHandler(fiber.MethodGet, "/teams", auth.Public, getTeams)
+	apis.RegisterHandler(fiber.MethodGet, "/teams/:teamId<int>", auth.Public, getTeam)
+	apis.RegisterHandler(fiber.MethodPut, "/teams/:teamId<int>", auth.Public, updateTeam)
+	apis.RegisterHandler(fiber.MethodPost, "/teams", auth.Public, createTeam)
 }
 
 // Handler to get all Team
