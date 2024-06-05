@@ -1,4 +1,4 @@
-package games
+package manual
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -12,5 +12,4 @@ func TestGenerate(t *testing.T) {
 	t.Run("Test handleCreateGames", func(t *testing.T) {
 		// TODO implement
 	})
-
 }
