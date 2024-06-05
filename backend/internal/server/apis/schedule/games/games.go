@@ -33,12 +33,56 @@ type response struct {
 }
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleGenerate)
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/save", auth.Authenticated, handleSave)
-	apis.RegisterHandler(fiber.MethodPut, "/schedule/optimize", auth.Authenticated, handleOptimize)
+	// basic CRUD operations
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/games/create", auth.Authenticated, handleCreateGame)
+	apis.RegisterHandler(fiber.MethodGet, "/schedule/games", auth.Authenticated, handleGetGames)
+	apis.RegisterHandler(fiber.MethodGet, "/schedule/games/:id", auth.Authenticated, handleGetGame)
+	apis.RegisterHandler(fiber.MethodPut, "/schedule/games/:id", auth.Authenticated, handleUpdateGame)
+	apis.RegisterHandler(fiber.MethodPut, "/schedule/games", auth.Authenticated, handleUpdateGames)
+	apis.RegisterHandler(fiber.MethodDelete, "/schedule/games/:id", auth.Authenticated, handleDeleteGame)
+	apis.RegisterHandler(fiber.MethodGet, "/schedule/games/season/:id", auth.Authenticated, handleDeleteGames)
+
+	// schedule creation more information bellow
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleCreateGames)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/save", auth.Authenticated, handleSaveGames)
+	apis.RegisterHandler(fiber.MethodPut, "/schedule/optimize", auth.Authenticated, handleOptimizeGames)
 }
 
-func handleOptimize(c *fiber.Ctx) error {
+// basic CRUD operations
+// - the caller is allowed to fine tune the schedule by updating the games
+func handleGetGames(c *fiber.Ctx) error {
+
+}
+
+func handleGetGame(c *fiber.Ctx) error {
+
+}
+
+func handleUpdateGame(c *fiber.Ctx) error {
+
+}
+
+func handleUpdateGames(c *fiber.Ctx) error {
+
+}
+
+func handleDeleteGame(c *fiber.Ctx) error {
+
+}
+
+func handleDeleteGames(c *fiber.Ctx) error {
+
+}
+
+func handleCreateGame(c *fiber.Ctx) error {
+
+}
+
+// The following endpoints are for the schedule creation
+// - first the caller will call handleCreateGames to create the games
+// - then the caller can call handleOptimizeGames to optimize the schedule as many times as they want
+// - then the caller will call handleSaveGames to save the games to the database
+func handleOptimizeGames(c *fiber.Ctx) error {
 	type Dto struct {
 		Games []structures.Game `json:"games"`
 	}
@@ -58,7 +102,7 @@ func handleOptimize(c *fiber.Ctx) error {
 	return responder.OkWithData(c, data)
 }
 
-func handleSave(c *fiber.Ctx) error {
+func handleSaveGames(c *fiber.Ctx) error {
 	type Dto struct {
 		Games []structures.Game `json:"games"`
 	}
@@ -80,7 +124,7 @@ func handleSave(c *fiber.Ctx) error {
 	return responder.Ok(c)
 }
 
-func handleGenerate(c *fiber.Ctx) error {
+func handleCreateGames(c *fiber.Ctx) error {
 	numberOfGamesPerTeam = 10
 	log.Info("Reading Body\n")
 
