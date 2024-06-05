@@ -32,13 +32,13 @@ type response struct {
 
 func init() {
 	// basic CRUD operations
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/games/create", auth.Authenticated, handleCreateGame)
-	apis.RegisterHandler(fiber.MethodGet, "/schedule/games", auth.Authenticated, handleGetGames)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/game", auth.Authenticated, handleCreateGame)
 	apis.RegisterHandler(fiber.MethodGet, "/schedule/games/:id", auth.Authenticated, handleGetGame)
+	apis.RegisterHandler(fiber.MethodGet, "/schedule/games", auth.Authenticated, handleGetGames)
 	apis.RegisterHandler(fiber.MethodPut, "/schedule/games/:id", auth.Authenticated, handleUpdateGame)
 	apis.RegisterHandler(fiber.MethodPut, "/schedule/games", auth.Authenticated, handleUpdateGames)
 	apis.RegisterHandler(fiber.MethodDelete, "/schedule/games/:id", auth.Authenticated, handleDeleteGame)
-	apis.RegisterHandler(fiber.MethodGet, "/schedule/games/season/:id", auth.Authenticated, handleDeleteGames)
+	apis.RegisterHandler(fiber.MethodDelete, "/schedule/games", auth.Authenticated, handleDeleteGames)
 
 	// schedule creation more information bellow
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleCreateGames)
