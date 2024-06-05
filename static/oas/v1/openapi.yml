@@ -27,6 +27,8 @@ paths:
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
   /goals:
     $ref: "./stats/goal.yml#/paths/goals"
+  /seasons:
+    $ref: "./season/season.yml#/paths/seasons"
 
 components:
   securitySchemes:
