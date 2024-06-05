@@ -1,7 +1,9 @@
 paths:
   teams:
     get:
-      summary: Get All teams
+      tags:
+        - teams
+      summary: Get All Teams
       description: Retrieve a list of all teams
       responses:
         200:
@@ -12,25 +14,27 @@ paths:
                 $ref: '#/components/schemas/GetTeamsResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
-    # post:
-    #   summary: Create a New team
-    #   description: Creates a new team
-    #   requestBody:
-    #     description: A JSON object with a valid team
-    #     required: true
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: "#/components/schemas/PostTeamsRequest"
-    #   responses:
-    #     200:
-    #       description: Successfully created a new team
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/PostTeamsResponse'
-    #     400:
-    #       $ref: "../common/errors.yml#/responses/BadRequest"
+    post:
+      tags:
+        - teams
+      summary: Create a New Team
+      description: Creates a new team
+      requestBody:
+        description: A JSON object with a valid team
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostTeamsRequest"
+      responses:
+        200:
+          description: Successfully created a new team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTeamsResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
 
 components:
   schemas:
