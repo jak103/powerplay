@@ -9,12 +9,18 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
+
+type createResponse struct {
+	Email  string `json:"email"`
+	UserId int    `json:"user_id"`
+}
 
 func init() {
 	apis.RegisterHandler(fiber.MethodGet, "/user", auth.Authenticated, getCurrentUser)
@@ -65,12 +71,12 @@ func createUserAccount(c *fiber.Ctx) error {
 
 	// anonymous struct to hold the request data
 	creds := struct {
-		FirstName  string `json:"firstName"`
-		LastName   string `json:"lastName"`
+		FirstName  string `json:"first_name"`
+		LastName   string `json:"last_name"`
 		Email      string `json:"email"`
 		Password   string `json:"password"`
 		Phone      string `json:"phone"`
-		SkillLevel int    `json:"skillLevel"`
+		SkillLevel int    `json:"skill_level"`
 	}{}
 
 	err := c.BodyParser(&creds)
@@ -96,8 +102,29 @@ func createUserAccount(c *fiber.Ctx) error {
 		return responder.BadRequest(c, err.Error())
 	}
 
-	// TODO: Implement user creation through the DATABASE here
+	// parse actual user object
+	u := &models.User{}
+	err = c.BodyParser(&u)
+	if err != nil {
+		log.WithErr(err).Error(err.Error())
+		return responder.BadRequest(c, err.Error())
+	}
 
-	return responder.OkWithData(c, user)
+	// write to database
+	db := db.GetSession(c)
+	log.Debug("Creating user %s", user.Email)
+	u, result := db.CreateUser(u)
+	if result != nil {
+		log.WithErr(err).Error(result.Error())
+		return responder.InternalServerError(c, result.Error())
+	}
+
+	// response
+	createdUserResponse := createResponse{
+		Email:  user.Email,
+		UserId: int(u.ID),
+	}
+
+	return responder.OkWithData(c, createdUserResponse)
 
 }
