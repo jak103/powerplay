@@ -217,9 +217,7 @@ func assignLockerRooms(games []structures.Game) {
 
 func mapGameStructToGameModel(games []structures.Game) []models.Game {
 	var gameModels []models.Game
-	// TODO deal with the VenueID
-	// TODO deal with the correlationId
-	// TODO deal with roster
+	// We had to strip out Optimize
 	for _, game := range games {
 		gameModels = append(gameModels, models.Game{
 			DbModel:  game.DbModel,
