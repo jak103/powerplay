@@ -1,14 +1,15 @@
 paths:
-    schedule:
-      get:
-        parameters:
-          - in: path
-            name: seasonId
-            required: true
-            schema:
-              type: integer
+    games:
+      post:
         tags:
           - Schedule
+        requestBody:
+          description: The request body should contain a user id, game id, team id, duration, period, assist1 id, assist2 id, powerplay, and penalty
+          required: true
+          content:
+            multipart/form-data:
+              schema:
+                $ref: "#/schemas/ScheduleRequest"
         summary: Generate schedule and get analysis corresponding to seasonId
         description: |
           **REQUIRED PERMISSIONS:** admin
@@ -35,11 +36,24 @@ schemas:
       response_data:
         type: array
         items:
-          $ref: '#/components/schemas/Team'
+          $ref: '#/components/schemas/TeamStats'
+  ScheduleRequest:
+    type: object
+    properties:
+      seasonId:
+        type: int
+        description: The id of the season to generate a schedule for
+      algorithm:
+        type: string
+        description: The type of algorithm to use
+        example: round_robin
+      ice_times:
+        type: string
+        format: binary
 
 components:
   schemas:
-    Team:
+    TeamStats:
       type: object
       properties:
         name:
@@ -74,33 +88,101 @@ components:
     Game:
       type: object
       properties:
+        season_id:
+          type: integer
         start:
           type: string
-        startDate:
+        venue:
+          $ref: '#components/schemas/Venue'
+        venueId:
+          type: integer
+        status:
           type: string
-        startTime:
-          type: string
-        endDate:
-          type: string
-        endTime:
-          type: string
-        location:
-          type: string
-        locationUrl:
-          type: string
-        eventType:
-          type: string
-        league:
-          type: string
-        team1Id:
-          type: string
-        team2Id:
-          type: string
-        team1Name:
-          type: string
-        team2Name:
-          type: string
-        isEarly:
-          type: boolean
+        home_team:
+          $ref: '#components/schemas/Team'
+        home_team_id:
+          type: integer
+        home_team_roster:
+          $ref: '#components/schemas/Roster'
+        home_team_roster_id:
+          type: integer
+        home_team_locker_room:
+          type: integer
+        home_team_shots_on_goal:
+          type: integer
+        home_team_score:
+          type: integer
+        away_team:
+          $ref: '#components/schemas/Team'
+        away_team_id:
+          type: integer
+        away_team_roster:
+          $ref: '#components/schemas/Roster'
+        away_team_roster_id:
+          type: integer
+        away_team_locker_room:
+          type: integer
+        away_team_shots_on_goal:
+          type: integer
+        away_team_score:
+          type: integer
         optimized:
           type: boolean
+    Venue:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        locker_rooms:
+          type: array
+          items:
+            type: string
+    Team:
+      type: object
+      properties:
+        correlation_id:
+          type: integer
+        name:
+          type: string
+        logo_id:
+          type: string
+        color:
+          type: string
+        league_id:
+          type: integer
+        league:
+          $ref: '#components/schemas/League'
+        roster:
+          $ref: '#components/schemas/Roster'
+        roster_id:
+          type: integer
+        wins:
+          type: integer
+        losses:
+          type: integer
+    Roster:
+      type: onject
+      properties:
+        players:
+          type: array
+          items:
+            type: integer #TODO: get users object
+        captain:
+          type: integer #TODO: get users object
+        captain_id:
+          type: integer
+    League:
+      type: onject
+      properties:
+        correlation_id:
+          type: integer
+        season_id:
+          type: integer
+        name:
+          type: string
+        teams:
+          type: array
+          items:
+            $ref: '#components/schemas/Team'
