@@ -20,8 +20,6 @@ import (
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
-var numberOfGamesPerTeam int
-
 type Body struct {
 	seasonID  uint
 	algorithm string
@@ -50,32 +48,149 @@ func init() {
 
 // basic CRUD operations
 // - the caller is allowed to fine tune the schedule by updating the games
-func handleGetGames(c *fiber.Ctx) error {
-
+func handleGetGame(c *fiber.Ctx) error {
+	type Dto struct {
+		ID uint `json:"id"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		log.Error("Failed to parse request body")
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	id := dto.ID
+	session := db.GetSession(c)
+	dbGame, err := session.GetGame(id)
+	if err != nil {
+		log.Error("Failed to get game from the database")
+		return responder.InternalServerError(c, err)
+	}
+	game := mapGameModelToGameStruct([]models.Game{*dbGame})[0]
+	return responder.OkWithData(c, game)
 }
 
-func handleGetGame(c *fiber.Ctx) error {
-
+func handleGetGames(c *fiber.Ctx) error {
+	type Dto struct {
+		SeasonID uint `json:"season_id"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		log.Error("Failed to parse request body")
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	seasonID := dto.SeasonID
+	session := db.GetSession(c)
+	dbGames, err := session.GetGames(seasonID)
+	if err != nil {
+		log.Error("Failed to get games from the database")
+		return responder.InternalServerError(c, err)
+	}
+	games := mapGameModelToGameStruct(*dbGames)
+	return responder.OkWithData(c, games)
 }
 
 func handleUpdateGame(c *fiber.Ctx) error {
-
+	type Dto struct {
+		Game structures.Game `json:"game"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		log.Error("Failed to parse request body")
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	game := dto.Game
+	session := db.GetSession(c)
+	dbGame := mapGameStructToGameModel([]structures.Game{game})[0]
+	_, err = session.UpdateGame(dbGame)
+	if err != nil {
+		log.Error("Failed to update game in the database")
+		return responder.InternalServerError(c, err)
+	}
+	return responder.Ok(c, game)
 }
 
 func handleUpdateGames(c *fiber.Ctx) error {
-
+	type Dto struct {
+		Games []structures.Game `json:"games"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		log.Error("Failed to parse request body")
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	games := dto.Games
+	session := db.GetSession(c)
+	dbGames := mapGameStructToGameModel(games)
+	_, err = session.UpdateGames(dbGames)
+	if err != nil {
+		log.Error("Failed to update games in the database")
+		return responder.InternalServerError(c, err)
+	}
+	return responder.Ok(c, games)
 }
 
 func handleDeleteGame(c *fiber.Ctx) error {
-
+	type Dto struct {
+		ID uint `json:"id"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		log.Error("Failed to parse request body")
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	id := dto.ID
+	session := db.GetSession(c)
+	err = session.DeleteGame(id)
+	if err != nil {
+		log.Error("Failed to delete game from the database")
+		return responder.InternalServerError(c, err)
+	}
+	return responder.Ok(c)
 }
 
 func handleDeleteGames(c *fiber.Ctx) error {
-
+	type Dto struct {
+		SeasonID uint `json:"season_id"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		log.Error("Failed to parse request body")
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	seasonID := dto.SeasonID
+	session := db.GetSession(c)
+	err = session.DeleteGames(seasonID)
+	if err != nil {
+		log.Error("Failed to delete games from the database")
+		return responder.InternalServerError(c, err)
+	}
+	return responder.Ok(c)
 }
 
 func handleCreateGame(c *fiber.Ctx) error {
-
+	type Dto struct {
+		Game structures.Game `json:"game"`
+	}
+	var dto Dto
+	err := c.BodyParser(&dto)
+	if err != nil {
+		log.Error("Failed to parse request body")
+		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
+	}
+	game := dto.Game
+	session := db.GetSession(c)
+	dbGame := mapGameStructToGameModel([]structures.Game{game})[0]
+	_, err = session.SaveGame(dbGame)
+	if err != nil {
+		log.Error("Failed to save game to the database")
+		return responder.InternalServerError(c, err)
+	}
+	return responder.Ok(c, game)
 }
 
 // The following endpoints are for the schedule creation
@@ -125,7 +240,8 @@ func handleSaveGames(c *fiber.Ctx) error {
 }
 
 func handleCreateGames(c *fiber.Ctx) error {
-	numberOfGamesPerTeam = 10
+	// TODO need to add number of games per team to the request body and then pass it to the round robin algorithm
+	numberOfGamesPerTeam := 10
 	log.Info("Reading Body\n")
 
 	body, err := readBody(c)
@@ -175,9 +291,9 @@ func handleCreateGames(c *fiber.Ctx) error {
 func readBody(c *fiber.Ctx) (Body, error) {
 
 	// keys
-	// season_id
-	// algorithm
-	// file
+	// - season_id
+	// - algorithm
+	// - file
 
 	type Dto struct {
 		SeasonID  uint   `json:"season_id"`
@@ -257,6 +373,17 @@ func assignLockerRooms(games []structures.Game) {
 			games[i].AwayTeamLockerRoom = "2"
 		}
 	}
+}
+
+func mapGameModelToGameStruct(games []models.Game) []structures.Game {
+	var gameStructs []structures.Game
+	for _, game := range games {
+		gameStructs = append(gameStructs, structures.Game{
+			Game:      game,
+			Optimized: false,
+		})
+	}
+	return gameStructs
 }
 
 func mapGameStructToGameModel(games []structures.Game) []models.Game {
