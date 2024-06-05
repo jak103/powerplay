@@ -15,4 +15,9 @@ func (s *dbTestingSuite) TestSaveGoal() {
 	s.Nil(err)
 
 	s.Equal(uint(1), g.ID)
+
+	goals, err := s.session.GetGoals()
+	s.Nil(err)
+
+	s.Len(goals, 1)
 }

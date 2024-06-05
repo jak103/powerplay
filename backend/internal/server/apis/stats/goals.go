@@ -18,18 +18,18 @@ func init() {
 func postGoalsHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
 	log.Debug("body: %q", c.Request().Body())
-	goalPostRequest := new(models.Goal)
-	err := c.BodyParser(goalPostRequest)
+	goalPostRequest := models.Goal{}
+	err := c.BodyParser(&goalPostRequest)
 
 	// If valid structure in post request, continue on
 	if err != nil {
 		log.WithErr(err).Error("Failed to parse Goal POST request.")
-		return err
+		return responder.BadRequest(c)
 	}
 
 	// Connect to database and insert goal
 	db := database.newSession(c)
-	record, err := db.SaveGoal(goalPostRequest)
+	record, err := db.SaveGoal(&goalPostRequest)
 
 	if err != nil {
 		log.WithErr(err).Alert("Failed to parse goal request payload")

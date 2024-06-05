@@ -122,13 +122,7 @@ func (s *dbTestingSuite) startDb() *gorm.DB {
 	// exponential backoff-retry, because the application in the container might not be ready to accept connections yet
 	if err := s.pool.Retry(func() error {
 		dsn := fmt.Sprintf("host=localhost user=postgres password=password dbname=powerplay port=%s sslmode=disable", s.db.GetPort(("5432/tcp")))
-		// // dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
-		// 	"postgres",
-		// 	"password",
-		// 	"localhost",
-		// 	s.db.GetPort("5432/tcp"),
-		// 	"powerplay",
-		// )
+
 		log.Info("Trying to ping db at %s", dsn)
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Silent),
