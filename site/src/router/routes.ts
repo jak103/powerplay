@@ -10,8 +10,13 @@ const routes: RouteRecordRaw[] = [
     path: '/information',
     component: () => import('layouts/InformationLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/information/InformationPage.vue') }
-      // { path: 'how-to-join', component: () => import('pages/information/HowToJoin.vue') },
+      { path: '', component: () => import('pages/information/InformationPage.vue') },
+      { path: 'how-to-join', component: () => import('pages/information/HowToJoin.vue') },
+      { path: 'players', component: () => import('pages/information/ForPlayers.vue') },
+      { path: 'managers', component: () => import('pages/information/ForManagers.vue') },
+      { path: 'staff', component: () => import('pages/information/StaffPage.vue') },
+      { path: 'rink', component: () => import('pages/information/RinkPage.vue') },
+      { path: 'substitution', component: () => import('pages/information/SubstitutionPage.vue') },
     ],
   },
 
