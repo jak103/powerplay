@@ -5,8 +5,6 @@ import (
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/mapping"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
@@ -28,7 +26,7 @@ func init() {
 
 func handleCreateGame(c *fiber.Ctx) error {
 	type Dto struct {
-		Game structures.Game `json:"game"`
+		Game models.Game `json:"game"`
 	}
 	var dto Dto
 	err := c.BodyParser(&dto)
@@ -38,8 +36,7 @@ func handleCreateGame(c *fiber.Ctx) error {
 	}
 	game := dto.Game
 	session := db.GetSession(c)
-	dbGame := mapping.MapGameStructToGameModel([]structures.Game{game})[0]
-	_, err = session.SaveGame(dbGame)
+	_, err = session.SaveGame(game)
 	if err != nil {
 		log.Error("Failed to save game to the database")
 		return responder.InternalServerError(c, err)
@@ -49,7 +46,7 @@ func handleCreateGame(c *fiber.Ctx) error {
 
 func handleCreateGames(c *fiber.Ctx) error {
 	type Dto struct {
-		Games []structures.Game `json:"games"`
+		Games []models.Game `json:"games"`
 	}
 	var dto Dto
 	err := c.BodyParser(&dto)
@@ -59,8 +56,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 	}
 	games := dto.Games
 	session := db.GetSession(c)
-	dbGames := mapping.MapGameStructToGameModel(games)
-	_, err = session.SaveGames(dbGames)
+	_, err = session.SaveGames(games)
 	if err != nil {
 		log.Error("Failed to save games to the database")
 		return responder.InternalServerError(c, err)
@@ -80,12 +76,11 @@ func handleGetGame(c *fiber.Ctx) error {
 	}
 	id := dto.ID
 	session := db.GetSession(c)
-	dbGame, err := session.GetGame(id)
+	game, err := session.GetGame(id)
 	if err != nil {
 		log.Error("Failed to get game from the database")
 		return responder.InternalServerError(c, err)
 	}
-	game := mapping.MapGameModelToGameStruct([]models.Game{*dbGame})[0]
 	return responder.OkWithData(c, game)
 }
 
@@ -101,18 +96,17 @@ func handleGetGames(c *fiber.Ctx) error {
 	}
 	seasonID := dto.SeasonID
 	session := db.GetSession(c)
-	dbGames, err := session.GetGames(seasonID)
+	games, err := session.GetGames(seasonID)
 	if err != nil {
 		log.Error("Failed to get games from the database")
 		return responder.InternalServerError(c, err)
 	}
-	games := mapping.MapGameModelToGameStruct(*dbGames)
 	return responder.OkWithData(c, games)
 }
 
 func handleUpdateGame(c *fiber.Ctx) error {
 	type Dto struct {
-		Game structures.Game `json:"game"`
+		Game models.Game `json:"game"`
 	}
 	var dto Dto
 	err := c.BodyParser(&dto)
@@ -122,8 +116,7 @@ func handleUpdateGame(c *fiber.Ctx) error {
 	}
 	game := dto.Game
 	session := db.GetSession(c)
-	dbGame := mapping.MapGameStructToGameModel([]structures.Game{game})[0]
-	_, err = session.UpdateGame(dbGame)
+	_, err = session.UpdateGame(game)
 	if err != nil {
 		log.Error("Failed to update game in the database")
 		return responder.InternalServerError(c, err)
@@ -133,7 +126,7 @@ func handleUpdateGame(c *fiber.Ctx) error {
 
 func handleUpdateGames(c *fiber.Ctx) error {
 	type Dto struct {
-		Games []structures.Game `json:"games"`
+		Games []models.Game `json:"games"`
 	}
 	var dto Dto
 	err := c.BodyParser(&dto)
@@ -143,8 +136,7 @@ func handleUpdateGames(c *fiber.Ctx) error {
 	}
 	games := dto.Games
 	session := db.GetSession(c)
-	dbGames := mapping.MapGameStructToGameModel(games)
-	_, err = session.UpdateGames(dbGames)
+	_, err = session.UpdateGames(games)
 	if err != nil {
 		log.Error("Failed to update games in the database")
 		return responder.InternalServerError(c, err)
