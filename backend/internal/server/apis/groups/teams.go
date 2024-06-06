@@ -1,4 +1,4 @@
-package team
+package groups
 
 import (
 	"github.com/gofiber/fiber/v2"
