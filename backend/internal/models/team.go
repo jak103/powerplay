@@ -2,7 +2,7 @@ package models
 
 type Team struct {
 	DbModel
-	CorrelationId uint   `json:"correlation_id"`
+	CorrelationId string `json:"correlation_id"`
 	Name          string `json:"name"`
 	LogoId        uint   `json:"logo_id"`
 	Color         string `json:"color"`

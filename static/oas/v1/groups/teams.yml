@@ -107,7 +107,7 @@ components:
               - id: 1
                 created_at: "2009-11-10T23:00:00Z"
                 updated_at: "2009-11-10T23:00:00Z"
-                correlation_id: 55
+                correlation_id: "0101fef8-b5cc-46dd-80a4-98e84e71cf53"
                 name: "vikings"
                 logo_id: 42
                 color: "black"
@@ -118,7 +118,7 @@ components:
               - id: 2
                 created_at: "2009-11-10T23:00:00Z"
                 updated_at: "2009-11-10T23:00:00Z"
-                correlation_id: 56
+                correlation_id: "e6105478-0670-498b-8938-62187a056b96"
                 name: "dragons"
                 logo_id: 43
                 color: "blue"
@@ -130,9 +130,9 @@ components:
       type: object
       properties:
         correlation_id:
-          type: integer
-          description: The correlation id
-          example: 1
+          type: string
+          description: The correlation GUID
+          example: "d72bff07-8392-491b-98df-333b6b82e111"
         name: 
           type: string 
           description: The team's name
@@ -185,7 +185,7 @@ components:
             id: 1
             created_at: "2009-11-10T23:00:00Z"
             updated_at: "2009-11-10T23:00:00Z"
-            correlation_id: 55
+            correlation_id: "8a96294c-91ae-4e35-8009-441b62e79618"
             name: "vikings"
             logo_id: 42
             color: "black"
@@ -201,9 +201,9 @@ components:
           description: The team id
           example: 1
         correlation_id:
-          type: integer
-          description: The correlation id
-          example: 1
+          type: string
+          description: The correlation GUID
+          example: "a3b4a992-86f2-4766-a5aa-7018d69bdb68"
         name: 
           type: string 
           description: The team's name
