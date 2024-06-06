@@ -41,6 +41,8 @@ func init() {
 	apis.RegisterHandler(fiber.MethodPut, "/schedule/auto/optimize", auth.Authenticated, handleOptimizeGames)
 }
 
+// TODO - limit what we are sending and receiving from the client (save games to the database)
+
 func handleOptimizeGames(c *fiber.Ctx) error {
 	type Dto struct {
 		Games []structures.Game `json:"games"`
