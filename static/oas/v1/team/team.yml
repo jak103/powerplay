@@ -1,5 +1,5 @@
 paths:
-  teams:
+  /teams:
     get:
       tags:
         - teams
@@ -33,6 +33,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostTeamsResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+  /teams/{id}:
+    get:
+      tags:
+        - teams
+      summary: Get team by ID
+      description: Retrieve a team by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the team to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: The response body should contain the list of teams
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSingleTeam'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+    put:
+      tags:
+        - teams
+      summary: Update a team
+      description: Updates a team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the team to update
+          schema:
+            type: string
+      requestBody:
+        description: A JSON object with a valid team
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PutTeamsRequest"
+      responses:
+        200:
+          description: Successfully updated a team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PutTeamsResponse'
         400:
           $ref: "../common/errors.yml#/responses/BadRequest"
 
@@ -80,40 +130,104 @@ components:
                 roster:
                   id: 16
                 roster_id: 16
-    # PostTeamsRequest:
-    #   type: object
-    #   properties:
-    #     correlation_id:
-    #       type: integer
-    #       description: The correlation id
-    #       example: 1
-    #     name: 
-    #       type: string 
-    #       description: The team's name
-    #       example: "captains" 
-    #     logo_id: 
-    #       type: integer
-    #       description: The team's logo ID
-    #       example: 2
-    #     color: 
-    #       type: string 
-    #       description: The team's color
-    #       example: "purple" 
-    #     league_id: 
-    #       type: integer 
-    #       description: The id of the league
-    #       example: 3
-    #     roster_id: 
-    #       type: integer 
-    #       description: The ID of the roster
-    #       example: 4
-    # PostTeamsResponse:
-    #   type: object
-    #   properties:
-    #     status_code:
-    #       $ref: "../common/schemas.yml#/schemas/StatusCode200"
-    #     status_string:
-    #       $ref: "../common/schemas.yml#/schemas/StatusString200"
-    #     request_id:
-    #       $ref: "../common/schemas.yml#/schemas/RequestId"
-    
+    PostTeamsRequest:
+      type: object
+      properties:
+        correlation_id:
+          type: integer
+          description: The correlation id
+          example: 1
+        name: 
+          type: string 
+          description: The team's name
+          example: "captains" 
+        logo_id: 
+          type: integer
+          description: The team's logo ID
+          example: 2
+        color: 
+          type: string 
+          description: The team's color
+          example: "purple" 
+        league_id: 
+          type: integer 
+          description: The id of the league
+          example: 3
+        roster_id: 
+          type: integer 
+          description: The ID of the roster
+          example: 4
+    PostTeamsResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+    GetSingleTeam:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: object
+          properties:
+            id: 1
+            created_at: "2009-11-10T23:00:00Z"
+            updated_at: "2009-11-10T23:00:00Z"
+            correlation_id: 55
+            name: "vikings"
+            logo_id: 42
+            color: "black"
+            league_id: 10
+            league:
+              id: 10
+            roster:
+              id: 15
+            roster_id: 15
+    PutTeamsRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The team id
+          example: 1
+        correlation_id:
+          type: integer
+          description: The correlation id
+          example: 1
+        name: 
+          type: string 
+          description: The team's name
+          example: "captains" 
+        logo_id: 
+          type: integer
+          description: The team's logo ID
+          example: 2
+        color: 
+          type: string 
+          description: The team's color
+          example: "purple" 
+        league_id: 
+          type: integer 
+          description: The id of the league
+          example: 3
+        roster_id: 
+          type: integer 
+          description: The ID of the roster
+          example: 4
+    PutTeamsResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"

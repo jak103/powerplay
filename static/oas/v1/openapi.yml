@@ -21,7 +21,9 @@ paths:
   /user:
     $ref: "./users/users.yml#/paths/user"
   /teams:
-    $ref: "./team/team.yml#/paths/teams"
+    $ref: "./team/team.yml#/paths/~1teams"
+  /teams/{id}:
+    $ref: "./team/team.yml#/paths/~1teams~1%7Bid%7D"
   /goals:
     $ref: "./stats/goal.yml#/paths/goals"
 
