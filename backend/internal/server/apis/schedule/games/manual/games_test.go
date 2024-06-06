@@ -1,4 +1,4 @@
-package games
+package manual
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -7,10 +7,9 @@ import (
 
 func TestGenerate(t *testing.T) {
 	app := fiber.New()
-	app.Post("/schedule/games", handleGenerate)
+	app.Post("/schedule/games", handleCreateGames)
 
-	t.Run("Test handleGenerate", func(t *testing.T) {
+	t.Run("Test handleCreateGames", func(t *testing.T) {
 		// TODO implement
 	})
-
 }
