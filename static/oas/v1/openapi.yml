@@ -18,6 +18,8 @@ paths:
     $ref: "./leagues/leagues.yaml#/paths/leagues"
   /penalties:
     $ref: "./stats/penalties.yml#/paths/penalties"
+  /venues:
+    $ref: "./stats/venues.yml#/paths/venues"
   /user:
     $ref: "./users/users.yml#/paths/user"
 
