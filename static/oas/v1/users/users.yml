@@ -44,7 +44,7 @@ schemas:
         type: integer
         example: 5
       date_of_birth:
-        type: time.Time
+        type: Time
         example: "2009-11-10T23:00:00Z"
 
 # this is not an authentication response. This is a user creation response.
