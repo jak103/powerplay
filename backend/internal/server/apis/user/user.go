@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
@@ -71,12 +72,13 @@ func createUserAccount(c *fiber.Ctx) error {
 
 	// anonymous struct to hold the request data
 	creds := struct {
-		FirstName  string `json:"first_name"`
-		LastName   string `json:"last_name"`
-		Email      string `json:"email"`
-		Password   string `json:"password"`
-		Phone      string `json:"phone"`
-		SkillLevel int    `json:"skill_level"`
+		FirstName   string    `json:"first_name"`
+		LastName    string    `json:"last_name"`
+		Email       string    `json:"email"`
+		Password    string    `json:"password"`
+		Phone       string    `json:"phone"`
+		SkillLevel  int       `json:"skill_level"`
+		DateOfBirth time.Time `json:"date_of_birth"`
 	}{}
 
 	err := c.BodyParser(&creds)
@@ -87,12 +89,13 @@ func createUserAccount(c *fiber.Ctx) error {
 
 	// marshal the request data into a User struct
 	user := models.User{
-		FirstName:  creds.FirstName,
-		LastName:   creds.LastName,
-		Email:      creds.Email,
-		Password:   creds.Password,
-		Phone:      creds.Phone,
-		SkillLevel: creds.SkillLevel,
+		FirstName:   creds.FirstName,
+		LastName:    creds.LastName,
+		Email:       creds.Email,
+		Password:    creds.Password,
+		Phone:       creds.Phone,
+		SkillLevel:  creds.SkillLevel,
+		DateOfBirth: creds.DateOfBirth,
 	}
 
 	// validate the request
