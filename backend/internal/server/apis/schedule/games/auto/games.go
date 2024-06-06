@@ -1,31 +1,34 @@
-package games
+package auto
 
 import (
 	"encoding/csv"
 	"errors"
-	"github.com/jak103/powerplay/internal/models"
-	"io"
-	"mime/multipart"
-	"strings"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/mapping"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"io"
+	"mime/multipart"
+	"strings"
 )
 
-var numberOfGamesPerTeam int
+// The following endpoints are for the schedule creation
+// - first the caller will call handleCreateGames to create the games
+// - then the caller can call handleOptimizeGames to optimize the schedule as many times as they want
+// - then the caller will call handleSaveGames to save the games to the database
 
 type Body struct {
-	seasonID  uint
-	algorithm string
-	iceTimes  []string
+	seasonID             uint
+	algorithm            string
+	iceTimes             []string
+	numberOfGamesPerTeam int
 }
 
 type response struct {
@@ -33,12 +36,14 @@ type response struct {
 }
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/games", auth.Authenticated, handleGenerate)
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/save", auth.Authenticated, handleSave)
-	apis.RegisterHandler(fiber.MethodPut, "/schedule/optimize", auth.Authenticated, handleOptimize)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/auto/games", auth.Authenticated, handleCreateGames)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule/auto/save", auth.Authenticated, handleSaveGames)
+	apis.RegisterHandler(fiber.MethodPut, "/schedule/auto/optimize", auth.Authenticated, handleOptimizeGames)
 }
 
-func handleOptimize(c *fiber.Ctx) error {
+// TODO - limit what we are sending and receiving from the client (save games to the database)
+
+func handleOptimizeGames(c *fiber.Ctx) error {
 	type Dto struct {
 		Games []structures.Game `json:"games"`
 	}
@@ -58,7 +63,7 @@ func handleOptimize(c *fiber.Ctx) error {
 	return responder.OkWithData(c, data)
 }
 
-func handleSave(c *fiber.Ctx) error {
+func handleSaveGames(c *fiber.Ctx) error {
 	type Dto struct {
 		Games []structures.Game `json:"games"`
 	}
@@ -70,7 +75,7 @@ func handleSave(c *fiber.Ctx) error {
 	games := dto.Games
 
 	session := db.GetSession(c)
-	dbGames := mapGameStructToGameModel(games)
+	dbGames := mapping.MapGameStructToGameModel(games)
 	_, err = session.SaveGames(dbGames)
 	if err != nil {
 		log.Error("Failed to save games to the database")
@@ -80,8 +85,7 @@ func handleSave(c *fiber.Ctx) error {
 	return responder.Ok(c)
 }
 
-func handleGenerate(c *fiber.Ctx) error {
-	numberOfGamesPerTeam = 10
+func handleCreateGames(c *fiber.Ctx) error {
 	log.Info("Reading Body\n")
 
 	body, err := readBody(c)
@@ -91,6 +95,7 @@ func handleGenerate(c *fiber.Ctx) error {
 	seasonID := body.seasonID
 	algorithm := body.algorithm
 	iceTimes := body.iceTimes
+	numberOfGamesPerTeam := body.numberOfGamesPerTeam
 
 	// Read leagues from db
 	logger := locals.Logger(c)
@@ -131,13 +136,14 @@ func handleGenerate(c *fiber.Ctx) error {
 func readBody(c *fiber.Ctx) (Body, error) {
 
 	// keys
-	// season_id
-	// algorithm
-	// file
+	// - season_id
+	// - algorithm
+	// - file
 
 	type Dto struct {
-		SeasonID  uint   `json:"season_id"`
-		Algorithm string `json:"algorithm"`
+		SeasonID             uint   `json:"season_id"`
+		Algorithm            string `json:"algorithm"`
+		NumberOfGamesPerTeam int    `json:"number_of_games_per_team"`
 	}
 
 	var dto Dto
@@ -155,9 +161,10 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	}
 
 	body := Body{
-		seasonID:  dto.SeasonID,
-		algorithm: dto.Algorithm,
-		iceTimes:  iceTimes,
+		seasonID:             dto.SeasonID,
+		algorithm:            dto.Algorithm,
+		iceTimes:             iceTimes,
+		numberOfGamesPerTeam: dto.NumberOfGamesPerTeam,
 	}
 
 	return body, nil
@@ -213,43 +220,4 @@ func assignLockerRooms(games []structures.Game) {
 			games[i].AwayTeamLockerRoom = "2"
 		}
 	}
-}
-
-func mapGameStructToGameModel(games []structures.Game) []models.Game {
-	var gameModels []models.Game
-	for _, game := range games {
-		gameModels = append(gameModels, models.Game{
-			DbModel:  game.DbModel,
-			SeasonID: game.SeasonID,
-			Start:    game.Start,
-			Venue: models.Venue{
-				Name:        "George S. Eccles Ice Center",
-				Address:     "2825 N 200 E North Logan, UT 84341 United States",
-				LockerRooms: []string{"1", "2", "3", "4", "5"},
-			},
-			VenueID:             0,
-			Status:              models.SCHEDULED,
-			HomeTeam:            game.HomeTeam,
-			HomeTeamID:          game.HomeTeamID,
-			HomeTeamRoster:      game.HomeTeamRoster,
-			HomeTeamRosterID:    game.HomeTeamRosterID,
-			HomeTeamLockerRoom:  game.HomeTeamLockerRoom,
-			HomeTeamShotsOnGoal: game.HomeTeamShotsOnGoal,
-			HomeTeamScore:       game.HomeTeamScore,
-			AwayTeam:            game.AwayTeam,
-			AwayTeamID:          game.AwayTeamID,
-			AwayTeamRoster:      game.AwayTeamRoster,
-			AwayTeamRosterID:    game.AwayTeamRosterID,
-			AwayTeamLockerRoom:  game.AwayTeamLockerRoom,
-			AwayTeamShotsOnGoal: game.AwayTeamShotsOnGoal,
-			AwayTeamScore:       game.AwayTeamScore,
-			ScoreKeeper:         game.ScoreKeeper,
-			ScoreKeeperID:       game.ScoreKeeperID,
-			PrimaryReferee:      game.PrimaryReferee,
-			PrimaryRefereeID:    game.PrimaryRefereeID,
-			SecondaryReferee:    game.SecondaryReferee,
-			SecondaryRefereeID:  game.SecondaryRefereeID,
-		})
-	}
-	return gameModels
 }

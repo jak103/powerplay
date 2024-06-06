@@ -57,17 +57,16 @@ func NotYetImplemented(c *fiber.Ctx) error {
 }
 
 func respond(c *fiber.Ctx, statusCode int, data *json.RawMessage, message ...any) error {
-	var msg *string
+	var msg string
 	if len(message) > 0 {
 		format, args := message[0].(string), message[1:]
-		formattedMessage := fmt.Sprintf(format, args...)
-		msg = &formattedMessage
+		msg = fmt.Sprintf(format, args...)
 	}
 
 	res := response{
 		StatusCode:   statusCode,
 		StatusString: utils.StatusMessage(statusCode),
-		Message:      msg,
+		Message:      &msg,
 		RequestId:    locals.RequestId(c),
 		ResponseData: data,
 	}
