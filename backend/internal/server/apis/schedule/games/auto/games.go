@@ -25,9 +25,10 @@ import (
 // - then the caller will call handleSaveGames to save the games to the database
 
 type Body struct {
-	seasonID  uint
-	algorithm string
-	iceTimes  []string
+	seasonID             uint
+	algorithm            string
+	iceTimes             []string
+	numberOfGamesPerTeam int
 }
 
 type response struct {
@@ -83,8 +84,6 @@ func handleSaveGames(c *fiber.Ctx) error {
 }
 
 func handleCreateGames(c *fiber.Ctx) error {
-	// TODO need to add number of games per team to the request body and then pass it to the round robin algorithm
-	numberOfGamesPerTeam := 10
 	log.Info("Reading Body\n")
 
 	body, err := readBody(c)
@@ -94,6 +93,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 	seasonID := body.seasonID
 	algorithm := body.algorithm
 	iceTimes := body.iceTimes
+	numberOfGamesPerTeam := body.numberOfGamesPerTeam
 
 	// Read leagues from db
 	logger := locals.Logger(c)
@@ -139,8 +139,9 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	// - file
 
 	type Dto struct {
-		SeasonID  uint   `json:"season_id"`
-		Algorithm string `json:"algorithm"`
+		SeasonID             uint   `json:"season_id"`
+		Algorithm            string `json:"algorithm"`
+		NumberOfGamesPerTeam int    `json:"number_of_games_per_team"`
 	}
 
 	var dto Dto
@@ -158,9 +159,10 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	}
 
 	body := Body{
-		seasonID:  dto.SeasonID,
-		algorithm: dto.Algorithm,
-		iceTimes:  iceTimes,
+		seasonID:             dto.SeasonID,
+		algorithm:            dto.Algorithm,
+		iceTimes:             iceTimes,
+		numberOfGamesPerTeam: dto.NumberOfGamesPerTeam,
 	}
 
 	return body, nil
