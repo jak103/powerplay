@@ -1,4 +1,4 @@
-package season
+package groups
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -13,7 +13,6 @@ import (
 func init() {
 	apis.RegisterHandler(fiber.MethodGet, "/seasons", auth.Public, getSeasonsHandler)
 	apis.RegisterHandler(fiber.MethodPost, "/seasons", auth.Public, postSeasonsHandler)
-
 }
 
 func getSeasonsHandler(c *fiber.Ctx) error {
