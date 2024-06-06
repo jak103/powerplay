@@ -4,8 +4,8 @@ import (
 	"github.com/jak103/powerplay/internal/models"
 )
 
-func (s session) GetTeams() ([]models.League, error) {
-	team := make([]models.League, 0)
+func (s session) GetTeams() ([]models.Team, error) {
+	team := make([]models.Team, 0)
 	err := s.connection.Find(&team)
 	return resultsOrError(team, err)
 }

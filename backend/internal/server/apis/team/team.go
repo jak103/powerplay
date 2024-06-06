@@ -72,5 +72,5 @@ func createTeam(c *fiber.Ctx) error {
 		log.WithErr(err).Alert("Failed to create Team in the database")
 		return responder.InternalServerError(c)
 	}
-	return responder.Ok(c)
+	return responder.Ok(c) // TODO: 201 Created and return the team ID
 }
