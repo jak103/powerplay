@@ -30,6 +30,10 @@ paths:
     $ref: "./season/season.yml#/paths/seasons"
   /shotsongoal:
     $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"
+  /teams:
+    $ref: "./groups/teams.yml#/paths/~1teams"
+  /teams/{id}:
+    $ref: "./groups/teams.yml#/paths/~1teams~1%7Bid%7D"
   /user:
     $ref: "./users/users.yml#/paths/user"
   /venues:
