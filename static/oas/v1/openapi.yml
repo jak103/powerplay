@@ -8,24 +8,36 @@ info:
     url: https://opensource.org/license/mit
 
 paths:
+  # /[URL path]
+  #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
-  /shotsongoal:
-    $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"   
-  /penaltyTypes:
-    $ref: "./stats/penalties.yml#/paths/penaltyTypes"
+  /goals:
+    $ref: "./stats/goal.yml#/paths/goals"
   /leagues:
     $ref: "./leagues/leagues.yaml#/paths/leagues"
+  /logos:
+    $ref: "./groups/logos.yml#/paths/~1logos"
+  /logos/{id}:
+    $ref: "./groups/logos.yml#/paths/~1logos~1%7Bid%7D"
   /penalties:
     $ref: "./stats/penalties.yml#/paths/penalties"
-  /user:
-    $ref: "./users/users.yml#/paths/user"
+  /penaltyTypes:
+    $ref: "./stats/penalties.yml#/paths/penaltyTypes"
+  /rosters:
+    $ref: "./rosters/rosters.yml#/paths/rosters"
+  /seasons:
+    $ref: "./season/season.yml#/paths/seasons"
+  /shotsongoal:
+    $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"
   /teams:
     $ref: "./groups/teams.yml#/paths/~1teams"
   /teams/{id}:
     $ref: "./groups/teams.yml#/paths/~1teams~1%7Bid%7D"
-  /goals:
-    $ref: "./stats/goal.yml#/paths/goals"
+  /user:
+    $ref: "./users/users.yml#/paths/user"
+  /venues:
+    $ref: "./stats/venues.yml#/paths/venues"
 
 components:
   securitySchemes:

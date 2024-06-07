@@ -1,0 +1,63 @@
+paths:
+  /logos:
+    post:
+      tags:
+        - Groups
+      summary: Upload a Logo
+      description: Uploads a team's logo
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Successfully uploaded a team's logo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostLogoResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+  /logos/{id}:
+    get:
+      tags:
+        - Groups
+      summary: Get Logo By ID
+      description: Get a logo by Logo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the logo to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: The response body should contain the logo binary
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  image:
+                    type: string
+                    format: binary
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"
+
+components:
+  schemas:
+    PostLogoResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
