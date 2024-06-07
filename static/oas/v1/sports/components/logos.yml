@@ -2,7 +2,7 @@ paths:
   /logos:
     post:
       tags:
-        - Groups
+        - Logos
       summary: Upload a Logo
       description: Uploads a team's logo
       requestBody:
@@ -26,7 +26,7 @@ paths:
   /logos/{id}:
     get:
       tags:
-        - Groups
+        - Logos
       summary: Get Logo By ID
       description: Get a logo by Logo ID
       parameters:

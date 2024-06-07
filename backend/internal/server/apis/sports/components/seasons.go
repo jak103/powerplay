@@ -1,4 +1,4 @@
-package groups
+package components
 
 import (
 	"github.com/gofiber/fiber/v2"

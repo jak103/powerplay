@@ -13,31 +13,31 @@ paths:
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
   /goals:
-    $ref: "./stats/goal.yml#/paths/goals"
+    $ref: "./sports/stats/goals.yml#/paths/goals"
   /leagues:
-    $ref: "./leagues/leagues.yaml#/paths/leagues"
+    $ref: "./sports/components/leagues.yml#/paths/leagues"
   /logos:
-    $ref: "./groups/logos.yml#/paths/~1logos"
+    $ref: "./sports/components/logos.yml#/paths/~1logos"
   /logos/{id}:
-    $ref: "./groups/logos.yml#/paths/~1logos~1%7Bid%7D"
+    $ref: "./sports/components/logos.yml#/paths/~1logos~1%7Bid%7D"
   /penalties:
-    $ref: "./stats/penalties.yml#/paths/penalties"
+    $ref: "./sports/stats/penalties.yml#/paths/penalties"
   /penaltyTypes:
-    $ref: "./stats/penalties.yml#/paths/penaltyTypes"
+    $ref: "./sports/stats/penalties.yml#/paths/penaltyTypes"
   /rosters:
-    $ref: "./rosters/rosters.yml#/paths/rosters"
+    $ref: "./sports/components/rosters.yml#/paths/rosters"
   /seasons:
-    $ref: "./season/season.yml#/paths/seasons"
+    $ref: "./sports/components/seasons.yml#/paths/seasons"
   /shotsongoal:
-    $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"
+    $ref: "./sports/stats/shotsongoal.yml#/paths/shotsOnGoal"
   /teams:
-    $ref: "./groups/teams.yml#/paths/~1teams"
+    $ref: "./sports/components/teams.yml#/paths/~1teams"
   /teams/{id}:
-    $ref: "./groups/teams.yml#/paths/~1teams~1%7Bid%7D"
+    $ref: "./sports/components/teams.yml#/paths/~1teams~1%7Bid%7D"
   /user:
     $ref: "./users/users.yml#/paths/user"
   /venues:
-    $ref: "./stats/venues.yml#/paths/venues"
+    $ref: "./sports/stats/venues.yml#/paths/venues"
 
 components:
   securitySchemes:
