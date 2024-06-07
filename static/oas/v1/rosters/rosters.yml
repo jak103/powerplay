@@ -1,0 +1,85 @@
+paths:
+  rosters:
+    post: 
+      tags: 
+        - roster
+      summary: Create Roster  
+      requestBody:
+        description: A JSON object with a valid roster
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostRosterRequest"  
+      responses: 
+        200:
+          description: Successfully create a roster by captain
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/PostRosterResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest" 
+    get: 
+      tags:
+        - roster
+      summary: All rosters
+      responses:
+        200:
+          description: Successfully get all rosters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRostersResponse'
+        400:
+          $ref: "../common/errors.yml#/responses/BadRequest"                 
+
+components: 
+  schemas:
+    GetRostersResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+        response_data:
+          type: array
+          items: 
+            type: object
+            properties: 
+              captainId: 
+                type: integer
+                example: 1
+              captain: 
+                $ref: "../users/users.yml#/schemas/User"
+              players: 
+                type: array
+                items: 
+                  $ref: "../users/users.yml#/schemas/User"
+    PostRosterResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        status_string:
+          $ref: "../common/schemas.yml#/schemas/StatusString200"
+        request_id:
+          $ref: "../common/schemas.yml#/schemas/RequestId"
+    PostRosterRequest:
+      type: object
+      properties:
+        captain_email:
+          type: string
+          description: Email associated to the captain
+          example: test1@test.com
+        player_emails: 
+          type: array
+          items: 
+            type: string
+          description: User emails associated with the players
+          example: 
+            - test2@test.com
+            - test3@test.com

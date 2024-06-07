@@ -8,6 +8,8 @@ info:
     url: https://opensource.org/license/mit
 
 paths:
+  # /[URL path]
+  #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
   /goals:
@@ -22,6 +24,8 @@ paths:
     $ref: "./stats/penalties.yml#/paths/penalties"
   /penaltyTypes:
     $ref: "./stats/penalties.yml#/paths/penaltyTypes"
+  /rosters:
+    $ref: "./rosters/rosters.yml#/paths/rosters"
   /seasons:
     $ref: "./season/season.yml#/paths/seasons"
   /shotsongoal:
