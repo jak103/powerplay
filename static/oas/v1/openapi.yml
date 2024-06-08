@@ -12,6 +12,10 @@ paths:
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
   /auth:
     $ref: "./auth/auth.yml#/paths/auth"
+  /games:
+    $ref: "./sports/components/games.yml#/paths/~1games"
+  /games/{gameId}:
+    $ref: "./sports/components/games.yml#/paths/~1games~1{gameId}"
   /goals:
     $ref: "./sports/stats/goals.yml#/paths/goals"
   /leagues:
@@ -38,7 +42,7 @@ paths:
     $ref: "./users/users.yml#/paths/user"
   /venues:
     $ref: "./sports/stats/venues.yml#/paths/venues"
-
+  
 components:
   securitySchemes:
     BearerAuth:
