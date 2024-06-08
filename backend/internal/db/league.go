@@ -15,7 +15,7 @@ func (s Session) GetLeaguesBySeason(seasonId uint) ([]models.League, error) {
 	return resultsOrError(leagues, err)
 }
 
-func (s session) CreateLeague(request *models.League) error {
-	result := s.connection.Create(request)
+func (s Session) CreateLeague(request *models.League) error {
+	result := s.Connection.Create(request)
 	return result.Error
 }
