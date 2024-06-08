@@ -5,10 +5,10 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/mapping"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
@@ -33,56 +33,48 @@ type Body struct {
 
 type response struct {
 	TeamStats []structures.TeamStats
+	SeasonID  uint
 }
 
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/schedule/auto/games", auth.Authenticated, handleCreateGames)
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/auto/save", auth.Authenticated, handleSaveGames)
 	apis.RegisterHandler(fiber.MethodPut, "/schedule/auto/optimize", auth.Authenticated, handleOptimizeGames)
 }
 
-// TODO - limit what we are sending and receiving from the client (save games to the database)
-
 func handleOptimizeGames(c *fiber.Ctx) error {
 	type Dto struct {
-		Games []structures.Game `json:"games"`
+		SeasonID uint `json:"season_id"`
 	}
 	var dto Dto
 	err := c.BodyParser(&dto)
 	if err != nil {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
 	}
-	games := dto.Games
-	round_robin.OptimizeSchedule(games)
-	_, ts := analysis.RunTimeAnalysis(games)
+	seasonID := dto.SeasonID
+	// read from db
+	session := db.GetSession(c)
+	games, err := session.GetGames(seasonID)
+	if err != nil {
+		log.Info("Failed to get games from the database\n")
+		return responder.InternalServerError(c, err)
+	}
 
+	round_robin.OptimizeSchedule(*games)
+	// write to the db
+	assignLockerRooms(*games)
+	_, err = session.SaveGames(*games)
+	if err != nil {
+		log.Info("Failed to save games to the database\n")
+		return responder.InternalServerError(c, err)
+	}
+
+	_, ts := analysis.RunTimeAnalysis(*games)
 	data := response{
 		TeamStats: analysis.Serialize(ts),
+		SeasonID:  seasonID,
 	}
 
 	return responder.OkWithData(c, data)
-}
-
-func handleSaveGames(c *fiber.Ctx) error {
-	type Dto struct {
-		Games []structures.Game `json:"games"`
-	}
-	var dto Dto
-	err := c.BodyParser(&dto)
-	if err != nil {
-		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
-	}
-	games := dto.Games
-
-	session := db.GetSession(c)
-	dbGames := mapping.MapGameStructToGameModel(games)
-	_, err = session.SaveGames(dbGames)
-	if err != nil {
-		log.Error("Failed to save games to the database")
-		return responder.InternalServerError(c, err)
-
-	}
-	return responder.Ok(c)
 }
 
 func handleCreateGames(c *fiber.Ctx) error {
@@ -111,7 +103,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("no league for the season").Error())
 	}
 
-	var games []structures.Game
+	var games []models.Game
 	if algorithm == "round_robin" {
 		games, err = round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
 	} else {
@@ -124,10 +116,18 @@ func handleCreateGames(c *fiber.Ctx) error {
 
 	assignLockerRooms(games)
 
+	// save to db
+	_, err = session.SaveGames(games)
+	if err != nil {
+		log.Info("Failed to save games to the database\n")
+		return responder.InternalServerError(c, err)
+	}
+
 	_, ts := analysis.RunTimeAnalysis(games)
 
 	data := response{
 		TeamStats: analysis.Serialize(ts),
+		SeasonID:  seasonID,
 	}
 
 	return responder.OkWithData(c, data)
@@ -206,7 +206,7 @@ func getIceTimes(file multipart.FileHeader) ([]string, error) {
 	return iceTimes, nil
 }
 
-func assignLockerRooms(games []structures.Game) {
+func assignLockerRooms(games []models.Game) {
 	// The algorithm is pretty simple.
 	//For the early game, home team is locker room 3, and away is locker room 1.
 	//For the late game home team is locker room 5, and away team is locker room 2.

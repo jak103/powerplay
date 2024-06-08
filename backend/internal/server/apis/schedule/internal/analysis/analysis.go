@@ -2,6 +2,7 @@ package analysis
 
 import (
 	"fmt"
+	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
@@ -9,7 +10,7 @@ import (
 	"time"
 )
 
-func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[string]structures.TeamStats) {
+func RunTimeAnalysis(games []models.Game) (structures.SeasonStats, map[string]structures.TeamStats) {
 	seasonStats := structures.SeasonStats{
 		TotalGames: len(games),
 	}
@@ -28,9 +29,6 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 			team2Stats = newStats(game.AwayTeam.League.Name, game.AwayTeam.Name)
 		}
 
-		team1Stats.Games = append(team1Stats.Games, game)
-		team2Stats.Games = append(team2Stats.Games, game)
-
 		earlyLateGames(game, &seasonStats, &team1Stats, &team2Stats)
 
 		daysOfTheWeek(game, &team1Stats, &team2Stats)
@@ -46,7 +44,7 @@ func RunTimeAnalysis(games []structures.Game) (structures.SeasonStats, map[strin
 		teamStats[team.Name] = team
 	}
 
-	timeBetweenGames(teamStats)
+	timeBetweenGames(games, teamStats)
 
 	printStats(seasonStats, teamStats)
 
@@ -64,7 +62,6 @@ func Serialize(ts map[string]structures.TeamStats) []structures.TeamStats {
 			DaysOfTheWeek:           v.DaysOfTheWeek,
 			DaysBetweenGames:        v.DaysBetweenGames,
 			AverageDaysBetweenGames: v.AverageDaysBetweenGames,
-			Games:                   v.Games,
 			Balanced:                v.Balanced,
 		}
 		stats = append(stats, td)
@@ -77,11 +74,10 @@ func newStats(league, team string) structures.TeamStats {
 		League:        league,
 		Name:          team,
 		DaysOfTheWeek: make(map[time.Weekday]int),
-		Games:         make([]structures.Game, 0),
 	}
 }
 
-func earlyLateGames(game structures.Game, season *structures.SeasonStats, team1, team2 *structures.TeamStats) {
+func earlyLateGames(game models.Game, season *structures.SeasonStats, team1, team2 *structures.TeamStats) {
 	if round_robin.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
 		team1.EarlyGames += 1
 		team2.EarlyGames += 1
@@ -93,17 +89,17 @@ func earlyLateGames(game structures.Game, season *structures.SeasonStats, team1,
 	}
 }
 
-func daysOfTheWeek(game structures.Game, team1, team2 *structures.TeamStats) {
+func daysOfTheWeek(game models.Game, team1, team2 *structures.TeamStats) {
 	team1.DaysOfTheWeek[game.Start.Weekday()] += 1
 	team2.DaysOfTheWeek[game.Start.Weekday()] += 1
 }
 
-func timeBetweenGames(teamStats map[string]structures.TeamStats) {
+func timeBetweenGames(games []models.Game, teamStats map[string]structures.TeamStats) {
 	for team := range teamStats {
 		stats := teamStats[team]
-		for i := 1; i < len(stats.Games); i += 1 {
-			previousGame := stats.Games[i-1]
-			currentGame := stats.Games[i]
+		for i := 1; i < len(games); i += 1 {
+			previousGame := games[i-1]
+			currentGame := games[i]
 
 			betweenDuration := currentGame.Start.Sub(previousGame.Start)
 
