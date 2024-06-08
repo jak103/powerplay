@@ -3,7 +3,6 @@ package analysis
 import (
 	"fmt"
 	"github.com/jak103/powerplay/internal/models"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"sort"
@@ -78,7 +77,7 @@ func newStats(league, team string) structures.TeamStats {
 }
 
 func earlyLateGames(game models.Game, season *structures.SeasonStats, team1, team2 *structures.TeamStats) {
-	if round_robin.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
+	if IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
 		team1.EarlyGames += 1
 		team2.EarlyGames += 1
 		season.EarlyGames += 1
@@ -113,6 +112,21 @@ func timeBetweenGames(games []models.Game, teamStats map[string]structures.TeamS
 
 		teamStats[team] = stats
 	}
+}
+
+func IsEarlyGame(hour, minute int) bool {
+	if hour < 20 {
+		return true
+	}
+	switch hour {
+	case 20:
+		return true
+	case 21:
+		return minute <= 15
+	case 22, 23:
+		return false
+	}
+	return false
 }
 
 func printStats(seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {

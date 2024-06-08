@@ -89,6 +89,8 @@ func handleCreateGames(c *fiber.Ctx) error {
 	iceTimes := body.iceTimes
 	numberOfGamesPerTeam := body.numberOfGamesPerTeam
 
+    log.Info("%v", iceTimes)
+
 	// Read leagues from db
 	logger := locals.Logger(c)
 	session := db.GetSession(c)
@@ -212,7 +214,7 @@ func assignLockerRooms(games []models.Game) {
 	//For the late game home team is locker room 5, and away team is locker room 2.
 
 	for i, game := range games {
-		if round_robin.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
+		if analysis.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
 			games[i].HomeTeamLockerRoom = "3"
 			games[i].AwayTeamLockerRoom = "1"
 		} else {
