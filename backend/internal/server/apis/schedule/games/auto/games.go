@@ -33,7 +33,7 @@ type Body struct {
 
 type response struct {
 	TeamStats []structures.TeamStats
-	SeasonID  uint
+    SeasonID  uint                       `json:"seasonId"`
 }
 
 func init() {
