@@ -2,8 +2,10 @@ paths:
   rosters:
     post: 
       tags: 
-        - roster
-      summary: Create Roster  
+        - Rosters
+      summary: Create Roster
+      description: |
+        Create a Roster
       requestBody:
         description: A JSON object with a valid roster
         required: true
@@ -22,8 +24,10 @@ paths:
           $ref: "../common/errors.yml#/responses/BadRequest" 
     get: 
       tags:
-        - roster
-      summary: All rosters
+        - Rosters
+      summary: All Rosters
+      description: |
+        Get all Rosters
       responses:
         200:
           description: Successfully get all rosters

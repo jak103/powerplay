@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - Seasons
-      summary: Get All Seasons
+      summary: All Seasons
       description: |
         Get all seasons
       responses:
@@ -18,7 +18,7 @@ paths:
     post:
       tags:
         - Seasons
-      summary: Season post request
+      summary: Create Season
       description: |
         **REQUIRED PERMISSIONS:** none:none  
         **RATE LIMIT:** TBD

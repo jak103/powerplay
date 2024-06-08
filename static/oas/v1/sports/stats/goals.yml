@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - Stats
-      summary: Get All Goals
+      summary: All Goals
       description: |
         Get all goals
       responses:
@@ -18,7 +18,7 @@ paths:
     post:
       tags:
         - Stats
-      summary: Goal post request
+      summary: Add Goal
       description: |
         **REQUIRED PERMISSIONS:** none:none  
         **RATE LIMIT:** TBD

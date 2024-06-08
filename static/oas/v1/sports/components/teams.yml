@@ -2,8 +2,8 @@ paths:
   /teams:
     get:
       tags:
-        - teams
-      summary: Get All Teams
+        - Teams
+      summary: All Teams
       description: Retrieve a list of all teams
       responses:
         200:
@@ -16,8 +16,8 @@ paths:
           $ref: "../common/errors.yml#/responses/BadRequest"
     post:
       tags:
-        - teams
-      summary: Create a New Team
+        - Teams
+      summary: Create Team
       description: Creates a new team
       requestBody:
         description: A JSON object with a valid team
@@ -38,8 +38,8 @@ paths:
   /teams/{id}:
     get:
       tags:
-        - teams
-      summary: Get team by ID
+        - Teams
+      summary: Team by ID
       description: Retrieve a team by ID
       parameters:
         - name: id
@@ -59,9 +59,9 @@ paths:
           $ref: "../common/errors.yml#/responses/BadRequest"
     put:
       tags:
-        - teams
-      summary: Update a team
-      description: Updates a team
+        - Teams
+      summary: Update Team by ID
+      description: Updates a team by ID
       parameters:
         - name: id
           in: path

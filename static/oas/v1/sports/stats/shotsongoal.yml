@@ -4,7 +4,7 @@ paths:
     post:
       tags:
         - Stats
-      summary: Shot on Goal POST request
+      summary: Add Shot on Goal
       description: Get all penalty types
       requestBody:
         description: The request body should contain a user id, game id, team id, duration, period, assist1 id, assist2 id, powerplay, and penalty

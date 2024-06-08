@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - Leagues
-      summary: Get All Leagues
+      summary: All Leagues
       description: |
         Get all leagues
       responses:
@@ -18,7 +18,7 @@ paths:
     post:
       tags:
         - Leagues
-      summary: Create a League
+      summary: Create League
       description: Creates a league using the given input.
       requestBody:
         description: A JSON object with a valid league

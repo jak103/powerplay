@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - Stats
-      summary: Get Penalty Types
+      summary: All Penalty Types
       description: Get all penalty types
       responses:
         200:
@@ -18,7 +18,7 @@ paths:
     get:
       tags:
         - Stats
-      summary: Get All Penalties
+      summary: All Penalties
       description: |
         Get all penalties
       responses:
@@ -33,7 +33,7 @@ paths:
     post:
       tags:
         - Stats
-      summary: Create a New Penalty
+      summary: Add Penalty
       description: Creates a new penalty
       requestBody:
         description: A JSON object with a valid penalty

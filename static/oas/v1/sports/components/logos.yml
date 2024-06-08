@@ -3,7 +3,7 @@ paths:
     post:
       tags:
         - Logos
-      summary: Upload a Logo
+      summary: Create Team Logo
       description: Uploads a team's logo
       requestBody:
         content:
@@ -27,7 +27,7 @@ paths:
     get:
       tags:
         - Logos
-      summary: Get Logo By ID
+      summary: Logo by ID
       description: Get a logo by Logo ID
       parameters:
         - name: id

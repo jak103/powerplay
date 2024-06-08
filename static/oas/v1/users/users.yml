@@ -2,7 +2,7 @@ paths:
   user:
     post:
       tags:
-        - user
+        - Users
       summary: Creates a user
       requestBody:
         description: Create user object

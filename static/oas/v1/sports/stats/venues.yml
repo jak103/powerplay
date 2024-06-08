@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - Stats
-      summary: Get All Venues
+      summary: All Venues
       description: |
         Get all Venues
       responses:
@@ -18,7 +18,7 @@ paths:
     post:
       tags:
         - Stats
-      summary: Add Venue
+      summary: Create Venue
       description: |
         **REQUIRED PERMISSIONS:** none:none  
         **RATE LIMIT:** TBD
