@@ -20,7 +20,7 @@ paths:
     $ref: "./stats/penalties.yml#/paths/penalties"
   /user:
     $ref: "./users/users.yml#/paths/user"
-  /schedule/games:
+  /schedule/auto/games:
     $ref: "./schedule/schedule.yml#/paths/games"
 
   # /[URL path]

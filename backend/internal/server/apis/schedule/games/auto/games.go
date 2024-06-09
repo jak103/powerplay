@@ -3,6 +3,10 @@ package auto
 import (
 	"encoding/csv"
 	"errors"
+	"io"
+	"mime/multipart"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
@@ -14,9 +18,6 @@ import (
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
-	"io"
-	"mime/multipart"
-	"strings"
 )
 
 // The following endpoints are for the schedule creation
@@ -33,7 +34,7 @@ type Body struct {
 
 type response struct {
 	TeamStats []structures.TeamStats
-	SeasonID  uint
+	SeasonID  uint `json:"seasonId"`
 }
 
 func init() {
@@ -109,9 +110,10 @@ func handleCreateGames(c *fiber.Ctx) error {
 	} else {
 		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("invalid algorithm").Error())
 	}
+
 	// check for error after any of the algorithms is done
 	if err != nil {
-		return responder.InternalServerError(c, err)
+		return responder.InternalServerError(c, err.Error())
 	}
 
 	assignLockerRooms(games)
@@ -140,23 +142,26 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	// - algorithm
 	// - file
 
-	type Dto struct {
+	dto := struct {
 		SeasonID             uint   `json:"season_id"`
 		Algorithm            string `json:"algorithm"`
 		NumberOfGamesPerTeam int    `json:"number_of_games_per_team"`
-	}
+	}{}
 
-	var dto Dto
 	if err := c.BodyParser(&dto); err != nil {
+		log.Error("Error reading the body")
+		return Body{}, responder.BadRequest(c, "Failed to parse body of request")
+	}
+
+	file, err := c.FormFile("ice_times")
+	if err != nil {
+		log.Error("Error reading the file")
 		return Body{}, err
 	}
 
-	file, err := c.FormFile("file")
-	if err != nil {
-		return Body{}, err
-	}
 	iceTimes, err := getIceTimes(*file)
 	if err != nil {
+		log.Error("Error reading the ice times")
 		return Body{}, err
 	}
 
@@ -212,7 +217,7 @@ func assignLockerRooms(games []models.Game) {
 	//For the late game home team is locker room 5, and away team is locker room 2.
 
 	for i, game := range games {
-		if round_robin.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
+		if analysis.IsEarlyGame(game.Start.Hour(), game.Start.Minute()) {
 			games[i].HomeTeamLockerRoom = "3"
 			games[i].AwayTeamLockerRoom = "1"
 		} else {

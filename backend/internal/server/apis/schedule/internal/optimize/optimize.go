@@ -2,7 +2,7 @@ package optimize
 
 import (
 	"github.com/jak103/powerplay/internal/models"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"sort"
@@ -48,7 +48,7 @@ func Schedule(games []models.Game, seasonStats structures.SeasonStats, teamStats
 			if games[i].HomeTeam.Name == team || games[i].AwayTeam.Name == team {
 				// find a good candidate to swap games with
 				// Will it improve that balance
-				if round_robin.IsEarlyGame(games[i-1].Start.Hour(), games[i-1].Start.Minute()) == tooManyEarly {
+				if analysis.IsEarlyGame(games[i-1].Start.Hour(), games[i-1].Start.Minute()) == tooManyEarly {
 					log.Info("Can't swap games because it won't improve balance\n")
 					continue
 				}
@@ -85,7 +85,7 @@ func Schedule(games []models.Game, seasonStats structures.SeasonStats, teamStats
 			if games[i].HomeTeam.Name == team || games[i].AwayTeam.Name == team {
 				// find a good candidate to swap games with
 				// Will it improve that balance
-				if round_robin.IsEarlyGame(games[i+1].Start.Hour(), games[i+1].Start.Minute()) == tooManyEarly {
+				if analysis.IsEarlyGame(games[i+1].Start.Hour(), games[i+1].Start.Minute()) == tooManyEarly {
 					log.Info("Can't swap games because it won't improve balance\n")
 					continue
 				}
@@ -156,7 +156,7 @@ func updateStats(teamStats map[string]structures.TeamStats, games []models.Game,
 	game2Team1Stats := teamStats[games[j].HomeTeam.Name]
 	game2Team2Stats := teamStats[games[j].AwayTeam.Name]
 
-	if round_robin.IsEarlyGame(games[i].Start.Hour(), games[i].Start.Minute()) {
+	if analysis.IsEarlyGame(games[i].Start.Hour(), games[i].Start.Minute()) {
 		game1Team1Stats.EarlyGames--
 		game1Team2Stats.EarlyGames--
 		game1Team1Stats.LateGames++
