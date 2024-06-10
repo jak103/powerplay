@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="container py-4">
-      <h1>How to Join</h1>
+      <h1 class="text-primary text-weight-regular">How to Join</h1>
   
       <div style="overflow:hidden;">
         <img
@@ -10,8 +10,8 @@
           style="width: 39%; float: left; margin-bottom: 20px;"
         />
         <div style="width: 59%; float: right;">
-          <h2>About</h2>
-          <p>
+          <h2 class="text-secondary">About</h2>
+          <p class="text-body1">
             The Eccles Ice Center is proud to be home to one of Utah's largest and 
             rapidly expanding recreational hockey programs. Catering to both 
             newcomers to the sport as well as seasoned skaters, our program promises 
@@ -19,15 +19,15 @@
             of the game.
           </p>
 
-          <p>
+          <p class="text-body1">
             All leagues are recreational, co-ed, and non-checking leagues. Players 
             must have reached the age of 18 to participate in the program.
           </p>
         </div>
       </div>
   
-      <h2>How To Join</h2>
-      <p>
+      <h2 class="text-secondary">How To Join</h2>
+      <p class="text-body1">
         The way our league works is that the team managers are responsible for 
         managing their respective teams, including finding and rostering players. 
         The adult league directors are not responsible for that process. 
@@ -35,34 +35,34 @@
         will help non-league players connect with team managers.  
       </p>
   
-      <p>
+      <p class="text-body1">
         The League currently has limited space for new players. 
       </p>
   
-      <p>
+      <p class="text-body1">
         Update:
       </p>
 
-      <p>
+      <p class="text-body1">
         We are currently working on a new process to help connect new and 
         interested players with teams.
       </p>
 
-      <p>
+      <p class="text-body1">
         As we transition to a new process, we ask that you send an email to 
         <a href=mailto:jonahn@ecclesice.com>jonahn@ecclesice.com</a> if you are 
         interested in joining the league.
       </p>
 
-      <p>
+      <p class="text-body1">
         Please provide as much information as possible about your hockey 
         experience in the email.
       </p>
 
-      <h2>Division of Teams</h2>
+      <h2 class="text-secondary">Division of Teams</h2>
       <h5>A-League (Advanced):</h5>
 
-      <p>
+      <p class="text-body1">
         This division represents the pinnacle of competitive play within the league, 
         catering to participants with extensive experience at high levels of hockey, 
         including Pro, College, Junior, High School, and more. Players in this 
@@ -74,7 +74,7 @@
   
       <h5>B-League (Advanced - Lower):</h5>
   
-      <p>
+      <p class="text-body1">
         Participants in this league typically possess a solid skill set, allowing 
         for an engaging and enjoyable gameplay experience. While the focus remains 
         on having fun and fostering sportsmanship, there's still a healthy level of 
@@ -85,7 +85,7 @@
   
       <h5>C-League (Intermediate):</h5>
 
-      <p>
+      <p class="text-body1">
         This division is tailored for competitive beginners, offering a welcoming 
         environment for players who have transitioned from the D-league, those with 
         limited competitive experience, or those who prefer a more relaxed pace of 
@@ -99,7 +99,7 @@
 
       <h5>D-League (Developmental):</h5>
 
-      <p>
+      <p class="text-body1">
         The Developmental League serves as a nurturing ground for beginners who are 
         taking their first steps into the world of hockey. This league is specifically 
         designed for individuals with limited to no prior hockey experience. Teams 

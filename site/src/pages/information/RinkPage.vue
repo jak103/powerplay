@@ -1,11 +1,13 @@
 <template>
   <q-page padding>
     <div class="container py-4">
-      <h1>George S. Eccles Ice Center</h1>
+      <h1 class="text-primary text-weight-regular">George S. Eccles Ice Center</h1>
 
       <h5 class="map" style="margin-top: 50px;">
         The George S. Eccles Ice Center is located at &nbsp;
-        <a href="https://maps.app.goo.gl/6RsGqKGeJnGqT4Y98"> 
+        <a href="https://maps.app.goo.gl/6RsGqKGeJnGqT4Y98" 
+           target="_blank" 
+           style="text-decoration: none;"> 
             2825 N 200 E, North Logan, UT 84341 
         </a>.
       </h5>
@@ -32,23 +34,6 @@
     iframe {
         border: 0;
         margin-top: 50px;
-    }
-
-    .application {
-        background-color: #0042aa;
-        box-shadow: 0 -3px #002e91 inset;
-        display: block;
-        color: rgb(223, 221, 221) !important;
-        padding: 10px 20px 10px 10px;
-        margin-bottom: 0px;
-        line-height: 1.3;
-        text-decoration: none;
-        transition: background-color .2s;
-    }
-
-    .application:hover {
-        background-color: #002e91;
-        color: #fff !important;
     }
 
     .map {
