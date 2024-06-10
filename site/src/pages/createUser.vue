@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-
+import axios from 'axios'
 import {ref} from 'vue'
+//import { useRouter } from 'vue-router'
+
 
 const options = ref([
       'Youth League', 'High School', 'Adult League Only', 'College or Higher'
@@ -51,11 +53,57 @@ const createAccount = () => {
   console.log('Called?')
   if (isPasswordValid && isPhoneValid && isBirthdayValid && isEmailValid && isLastValid && isFirstValid && isExpValid && isOptionValid) {
     // All validations passed
-    console.log()
-    //TODO: figure out backend post requests and reroute user to login page
+    //MAKE API REQUEST HERE
+
+    //http://localhost:9002/api/v1/user
+    //first_name: string
+    //last_name: string
+    //password: string
+    //email: string
+    //phone: string
+    //skill_level: integer
+    //date_of_birth: Time
     // useRouter().push('/app')
+
+  // Simple POST request with a JSON body using fetch
+  //const requestOptions = {
+      //method: "POST",
+      //headers: { "Content-Type": "application/json" },
+      //body: JSON.stringify({
+      //first_name: firstName.value,
+      //last_name: lastName.value,
+      //password: password.value,
+      //email: email.value,
+      //phone: phoneNumber.value,
+      //skill_level: experience.value,
+      //date_of_birth: birthDate.value,
+      // useRouter().push('/app')
+      //})
+      makePostRequest()
+    }
+
+  }
+
+
+  async function makePostRequest() {
+  try {
+    const response = await axios.post('http://localhost:9002/api/v1/user', {
+      first_name: firstName.value,
+      last_name: lastName.value,
+      password: password.value,
+      email: email.value,
+      phone: phoneNumber.value,
+      skill_level: levelPlayed.value,
+      date_of_birth: birthDate.value
+    })
+    
+    console.log(response.data)
+    //router.push('/app')
+  } catch (error) {
+    console.error('There was an error making the POST request!', error)
   }
 }
+
 function validateFirst(){
 if(firstName.value == ''){
   first_errorMessage.value = 'Please enter your first name!'
@@ -210,31 +258,31 @@ function validateOption(){
 
       <!-- First Name -->  
       <div class="q-mt-md">
-        <q-input filled v-model="firstName" label="First Name" @keyup="validateIsAlphaOnly" />
-        <q-banner v-if="first_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;">
-          <p align="left">{{ first_errorMessage }}</p>
+        <q-input filled v-model="firstName" label="First Name" @keyup="validateIsAlphaOnly" class='input-first'/>
+        <q-banner v-if="first_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id="first-error">
+          <p>{{ first_errorMessage }}</p>
         </q-banner>
       </div>
       
       <!-- Last Name -->  
       <div class="q-mt-md">
-        <q-input filled v-model="lastName" label="Last Name" @keyup="validateIsAlphaOnly" />
-        <q-banner v-if="last_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;">
+        <q-input filled v-model="lastName" label="Last Name" @keyup="validateIsAlphaOnly" class="input-last"/>
+        <q-banner v-if="last_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id='last-error'>
           <p>{{ last_errorMessage }}</p>
         </q-banner>
       </div>
       
       <!-- Email -->   
       <div class="q-mt-md">
-        <q-input filled v-model="email" label="Email" @input="validateIsAlphaOnly" />
-        <q-banner v-if="email_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;">
+        <q-input filled v-model="email" label="Email" @input="validateIsAlphaOnly" class='input-email'/>
+        <q-banner v-if="email_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id="email-error">
           <p>{{ email_errorMessage }}</p>
         </q-banner>
       </div>
       
       <!-- Password -->
       <div class="q-mt-md">
-        <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password">
+        <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password" class='input-password'>
           <template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template>
@@ -242,28 +290,28 @@ function validateOption(){
       </div>
       
       <div class="q-mt-md">
-        <q-input v-model="confirmPassword" filled :type="isConPwd ? 'password' : 'text'" label="Confirm password">
+        <q-input v-model="confirmPassword" filled :type="isConPwd ? 'password' : 'text'" label="Confirm password" class="input-confirm-password">
           <template v-slot:append>
             <q-icon :name="isConPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isConPwd = !isConPwd" />
           </template>
         </q-input>
-        <q-banner v-if="pass_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;">
+        <q-banner v-if="pass_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id="password-error">
           <p>{{ pass_errorMessage }}</p>
         </q-banner>
       </div>
 
       <!-- Phone Number -->
       <div class="q-mt-md">
-        <q-input filled v-model="phoneNumberInput" label="Phone Number" />
-        <q-banner v-if="phone_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;">
+        <q-input filled v-model="phoneNumberInput" label="Phone Number" class="input-phone"/>
+        <q-banner v-if="phone_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id="phone-error">
           <p>{{ phone_errorMessage }}</p>
         </q-banner>
       </div>
 
       <!-- Birthday -->
       <div class="q-mt-md">
-        <q-input filled type="date" v-model="birthDate" label="Birth Date" />
-        <q-banner v-if="birthday_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;">
+        <q-input filled type="date" v-model="birthDate" label="Birth Date" class="input-birthday"/>
+        <q-banner v-if="birthday_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id="birthday-error">
           <p>{{ birthday_errorMessage }}</p>
         </q-banner>
       </div>
@@ -277,23 +325,24 @@ function validateOption(){
           label="Years of experience"
           :rules="[val => val >= 0 || 'The number cannot be negative']"
           min="0"
+          class = 'input-exp'
         />
-        <q-banner v-if="experience_errorMessage" class="text-white bg-red" style="border-radius: 4px 4px 4px 4px;">
+        <q-banner v-if="experience_errorMessage" class="text-white bg-red" style="border-radius: 4px 4px 4px 4px;" id ="exp-error">
           <p>{{ experience_errorMessage }}</p>
         </q-banner>
       </div>
       
       <!-- Level of Play -->
       <div class="q-mt-md">
-        <q-select filled v-model="levelPlayed" :options="options" label="Highest Level of Play" />
-        <q-banner v-if="option_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;">
+        <q-select filled v-model="levelPlayed" :options="options" label="Highest Level of Play" class="input-level"/>
+        <q-banner v-if="option_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id ="level-error">
           <p>{{ option_errorMessage }}</p>
         </q-banner>
       </div>
     </q-card-section>
 
     <q-card-actions align="center">
-      <q-btn label="Create Account" type="submit" color="primary" @click="createAccount" />
+      <q-btn label="Create Account" type="submit" color="primary" @click="createAccount" id="submitButton"/>
     </q-card-actions>
   </q-card>
 </template>
