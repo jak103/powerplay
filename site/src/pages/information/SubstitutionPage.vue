@@ -42,20 +42,20 @@
 </template>
 
 <style lang="scss" scoped>
-    .application {
-        background-color: #0042aa;
-        box-shadow: 0 -3px #002e91 inset;
-        display: block;
-        color: rgb(223, 221, 221) !important;
-        padding: 10px 20px 10px 10px;
-        margin-bottom: 0px;
-        line-height: 1.3;
-        text-decoration: none;
-        transition: background-color .2s;
-    }
+  .application {
+      background-color: #0042aa;
+      box-shadow: 0 -3px #002e91 inset;
+      display: block;
+      color: rgb(223, 221, 221) !important;
+      padding: 10px 20px 10px 10px;
+      margin-bottom: 0px;
+      line-height: 1.3;
+      text-decoration: none;
+      transition: background-color .2s;
+  }
 
-    .application:hover {
-        background-color: #002e91;
-        color: #fff !important;
-    }
+  .application:hover {
+      background-color: #002e91;
+      color: #fff !important;
+  }
 </style>

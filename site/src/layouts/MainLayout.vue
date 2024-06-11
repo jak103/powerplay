@@ -8,11 +8,11 @@
 
         <q-btn stretch flat label="Home" to="/" />
         <q-separator dark vertical inset />
-        <q-btn stretch flat label="League" to="/" />
+        <q-btn stretch flat label="*League" to="/" />
         <q-separator dark vertical inset />
-        <q-btn stretch flat label="Calendar" to="/" />
+        <q-btn stretch flat label="*Calendar" to="/" />
         <q-separator dark vertical inset />
-        <q-btn stretch flat label="Registration" to="/" />
+        <q-btn stretch flat label="*Registration" to="/" />
         <q-separator dark vertical inset />
 
         <q-btn-dropdown stretch flat label="Information">
@@ -39,9 +39,9 @@
         </q-btn-dropdown>
 
         <q-separator dark vertical inset />
-        <q-btn stretch flat label="Documents" to="/" />
+        <q-btn stretch flat label="*Documents" to="/" />
         <q-separator dark vertical inset />
-        <q-btn stretch flat label="Sign In" to="/sign-in" />
+        <q-btn stretch flat label="*Sign In" to="/sign-in" />
       </q-toolbar>
     </q-header>
 
