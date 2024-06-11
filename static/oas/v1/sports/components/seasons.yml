@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - Seasons
-      summary: Get All Seasons
+      summary: All Seasons
       description: |
         Get all seasons
       responses:
@@ -14,11 +14,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetSeasonsResponse"
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
     post:
       tags:
         - Seasons
-      summary: Season post request
+      summary: Create Season
       description: |
         **REQUIRED PERMISSIONS:** none:none  
         **RATE LIMIT:** TBD
@@ -37,7 +37,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/SeasonResponse"
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
 components:
   schemas:
@@ -45,11 +45,11 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
         response_data:
           type: object
           properties:
@@ -98,10 +98,10 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
         response_data:
           type: object

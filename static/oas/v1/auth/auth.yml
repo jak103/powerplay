@@ -22,7 +22,7 @@ paths:
               schema:
                 $ref: '#/schemas/AuthenticationResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../common/errors.yml#/components/responses/BadRequest"
   
 schemas:
   AuthenticationRequest:
