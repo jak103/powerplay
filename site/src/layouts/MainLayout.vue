@@ -40,6 +40,8 @@
 
         <q-separator dark vertical inset />
         <q-btn stretch flat label="Documents" to="/" />
+        <q-separator dark vertical inset />
+        <q-btn stretch flat label="Sign In" to="/sign-in" />
       </q-toolbar>
     </q-header>
 
