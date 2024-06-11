@@ -88,7 +88,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (structure
 		for round := 0; round < numberOfRounds; round++ {
 			rounds[round].Games = make([]models.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
-				rounds[round].Games[i] = newGame(league.Teams[i], league.Teams[numTeams-1-i])
+				rounds[round].Games[i] = newGame(league.Teams[i], league.Teams[numTeams-1-i], league.SeasonID)
 			}
 
 			rotateTeams(&league)
@@ -152,8 +152,9 @@ func rotateTeams(league *models.League) {
 	league.Teams[1] = lastTeam
 }
 
-func newGame(team1, team2 models.Team) models.Game {
+func newGame(team1, team2 models.Team, seasonId uint) models.Game {
 	return models.Game{
+		SeasonID: seasonId,
 		HomeTeam: team1,
 		AwayTeam: team2,
 	}
@@ -168,6 +169,18 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]models.Gam
 	}
 	games := make([]models.Game, 0)
 	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
+
+		//n := len(season.LeagueRounds)
+		//result := make([]string, n)
+		//// Rearrange leagues using the indexes instead of hard coding
+		//for i := 0; i < n; i++ {
+		//	if i%2 == 0 {
+		//		result[i/2] = leagues[i]
+		//	} else {
+		//		result[n/2+i/2] = leagues[i]
+		//	}
+		//}
+
 		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
 				continue
@@ -180,4 +193,3 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]models.Gam
 	}
 	return games, nil
 }
-
