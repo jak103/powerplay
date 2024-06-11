@@ -20,9 +20,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostLogoResponse'
+        $ref: '#/components/schemas/PostLogoResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
   /logos/{id}:
     get:
       tags:
@@ -48,7 +48,7 @@ paths:
                     type: string
                     format: binary
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
 components:
   schemas:
@@ -56,8 +56,8 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"

@@ -13,7 +13,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetTeamsResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
     post:
       tags:
         - Teams
@@ -34,7 +34,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PostTeamsResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
   /teams/{id}:
     get:
       tags:
@@ -56,7 +56,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetSingleTeam'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
     put:
       tags:
         - Teams
@@ -84,7 +84,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PutTeamsResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
 components:
   schemas:
@@ -92,11 +92,11 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
         response_data:
           type: object
           properties:
@@ -165,20 +165,20 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
     GetSingleTeam:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
         response_data:
           type: object
           properties:
@@ -236,8 +236,8 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"

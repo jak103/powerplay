@@ -21,7 +21,7 @@ paths:
               schema: 
                 $ref: '#/components/schemas/PostRosterResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest" 
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
     get: 
       tags:
         - Rosters
@@ -36,7 +36,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetRostersResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"                 
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
 components: 
   schemas:
@@ -44,11 +44,11 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
         response_data:
           type: array
           items: 
@@ -58,20 +58,20 @@ components:
                 type: integer
                 example: 1
               captain: 
-                $ref: "../users/users.yml#/schemas/User"
+                $ref: "../../users/users.yml#/schemas/User"
               players: 
                 type: array
                 items: 
-                  $ref: "../users/users.yml#/schemas/User"
+                  $ref: "../../users/users.yml#/schemas/User"
     PostRosterResponse:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
     PostRosterRequest:
       type: object
       properties:

@@ -18,7 +18,7 @@ paths:
               schema:
                 $ref: '#/schemas/UserCreationResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../common/errors.yml#/components/responses/BadRequest"
 
 # made the input schema follow the same format as the database table for users. I also removed fields that would be populated by the server. 
 schemas:

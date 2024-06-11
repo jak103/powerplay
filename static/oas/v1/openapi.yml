@@ -43,7 +43,7 @@ paths:
   /logos:
     $ref: "./sports/components/logos.yml#/paths/~1logos"
   /logos/{id}:
-    $ref: "./sports/components/logos.yml#/paths/~1logos~1%7Bid%7D"
+    $ref: "./sports/components/logos.yml#/paths/~1logos~1{id}"
   /penalties:
     $ref: "./sports/stats/penalties.yml#/paths/penalties"
   /penaltyTypes:
@@ -57,7 +57,7 @@ paths:
   /teams:
     $ref: "./sports/components/teams.yml#/paths/~1teams"
   /teams/{id}:
-    $ref: "./sports/components/teams.yml#/paths/~1teams~1%7Bid%7D"
+    $ref: "./sports/components/teams.yml#/paths/~1teams~1{id}"
   /user:
     $ref: "./users/users.yml#/paths/user"
   /venues:
