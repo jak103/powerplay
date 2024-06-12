@@ -9,3 +9,9 @@ func (s *session) GetUserByUsername(username string) (*models.User, error) {
 
 	return resultOrError(user, result)
 }
+
+func (s *session) CreateUser(user *models.User) (*models.User, error) {
+	result := s.connection.Create(user)
+
+	return resultOrError(user, result)
+}
