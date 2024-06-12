@@ -84,12 +84,12 @@ func TestAutoGames(t *testing.T) {
 		body, err := readBody(ctx)
 
 		// Check the result
-		// assert.NoError(t, err)
-		// assert.NotNil(t, body)
-		// assert.Equal(t, uint(123), body.seasonID)
-		// assert.Equal(t, "round_robin", body.algorithm)
-		// assert.Equal(t, 5, body.numberOfGamesPerTeam)
-		// assert.Empty(t, body.iceTimes)
+		assert.NoError(t, err)
+		assert.NotNil(t, body)
+		assert.Equal(t, uint(123), body.seasonID)
+		assert.Equal(t, "round_robin", body.algorithm)
+		assert.Equal(t, 5, body.numberOfGamesPerTeam)
+		assert.Empty(t, body.iceTimes)
 	})
 
 	t.Run("Test getIceTimes", func(t *testing.T) {
@@ -231,7 +231,7 @@ func getGames() []models.Game {
 	}
 
 	// Create games with corresponding start times
-	games := []models.Game{}
+	var games []models.Game
 	for i := 0; i < len(startTimes); i++ {
 		games = append(games, models.Game{
 			Start:      startTimes[i],
