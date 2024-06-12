@@ -1,50 +1,46 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { defineStore } from 'pinia';
-const useAuthStore = defineStore({
-    id: 'auth',
-    state: () => ({
-      isAuthenticated: false,
-    }),
-    actions: {
-      setAuthenticated(status : boolean) {
-        this.isAuthenticated = status;
-      },
-    },
-  });
-const authStore = useAuthStore();
-const email = ref('');
-const password = ref('');
+  import { useRouter } from 'vue-router';
+  import { useUserStore } from '../../../app/src/stores/user-store';
 
-definePageMeta({
-  layout: "auth-layout",
-});
+  const signIn = async () => {
+    const router = useRouter();
+    const userStore = useUserStore(); 
+    const emailElement = document.getElementById('email') as HTMLInputElement;
+    const passwordElement = document.getElementById('password') as HTMLInputElement;
 
-const signIn = async () => {
-  try {
-    const response = await fetch('http://localhost:9001/api/v1/auth', {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value
-      })
-    });
-
-    if (response.ok) {
-      authStore.setAuthenticated(true);
-      useRouter().push('/app');
-    } else {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!emailElement || !passwordElement) {
+      console.error('Email or password field is missing');
+      return;
     }
-  } catch (error) {
-    console.error('Login failed:', error);
-  }
-};
+
+    const email = emailElement.value;
+    const password = passwordElement.value;
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        userStore.setUser(data.user);
+        router.push('/app');
+      } else {
+        console.error('Login failed');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
 </script>
+
 <template>
   <Title>Sign In</Title>
   <h1>Sign In</h1>
@@ -55,12 +51,11 @@ const signIn = async () => {
         type="email"
         class="form-control"
         id="email"
-        v-model="email"
       />
     </div>
     <div>
       <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" v-model="password" />
+      <input type="password" class="form-control" id="password" />
     </div>
     <div class="hstack gap-3">
       <button class="btn btn-primary" @click="signIn">Sign In</button>
