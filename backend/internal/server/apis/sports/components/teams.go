@@ -68,9 +68,11 @@ func createTeam(c *fiber.Ctx) error {
 		log.WithErr(err).Alert("Failed to parse team data")
 		return responder.BadRequest(c, "Failed to parse team data")
 	}
-	if err := db.CreateTeam(&team); err != nil {
+
+	newTeam, err := db.CreateTeam(&team)
+	if err != nil {
 		log.WithErr(err).Alert("Failed to create Team in the database")
 		return responder.InternalServerError(c)
 	}
-	return responder.Ok(c) // TODO: 201 Created and return the team ID
+	return responder.OkWithData(c, newTeam) // TODO: 201 Created and return the team ID
 }
