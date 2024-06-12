@@ -99,7 +99,7 @@ func Run(db *gorm.DB) error {
 		err := tx.AutoMigrate(
 			&models.User{},
 			&models.Season{},
-			&models.League{},
+			&models.LeagueRecord{},
 			&models.Team{},
 			&models.Roster{},
 			&models.Venue{},

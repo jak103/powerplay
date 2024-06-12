@@ -9,5 +9,5 @@ type Season struct {
 	End           time.Time      `json:"end"`
 	Registrations []Registration `json:"registrations"`
 	Schedule      []Game         `json:"schedule"`
-	Leagues       []League       `json:"leagues"`
+	LeagueRecords []LeagueRecord `json:"league_records"`
 }

@@ -23,7 +23,7 @@ func getLeaguesHandler(c *fiber.Ctx) error {
 		return responder.BadRequest(c, err.Error())
 	}
 
-	sortField, sortOrder, err := query_params.GetSortParams(c, reflect.TypeOf(models.League{}))
+	sortField, sortOrder, err := query_params.GetSortParams(c, reflect.TypeOf(models.LeagueRecord{}))
 	if err != nil {
 		return responder.BadRequest(c, err.Error())
 	}
@@ -53,7 +53,7 @@ func getLeaguesHandler(c *fiber.Ctx) error {
 func postLeagueHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
 
-	leagueRequest := &models.League{}
+	leagueRequest := &models.LeagueRecord{}
 	err := c.BodyParser(leagueRequest)
 	if err != nil {
 		log.WithErr(err).Alert("Failed to parse leagues request payload")

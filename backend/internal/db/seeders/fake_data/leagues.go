@@ -21,18 +21,18 @@ func (s LeagueSeeder) Seed(db *gorm.DB, args ...interface{}) (interface{}, error
 	}
 
 	existingNames := make(map[string]bool)
-	var createdLeagues []models.League
+	var createdLeagues []models.LeagueRecord
 	for i := 0; i < 4; i++ {
-		league := models.League{
-			Name:          unittesting.GenerateUniqueName(existingNames),
-			CorrelationId: faker.UUIDHyphenated(),
-			SeasonID:      seasonID,
-			Teams:         []models.Team{},
+		league := models.LeagueRecord{
+			Name:     unittesting.GenerateUniqueName(existingNames),
+			LeagueID: faker.UUIDHyphenated(),
+			SeasonID: seasonID,
+			Teams:    []models.Team{},
 		}
-		if err := db.FirstOrCreate(&league, models.League{
-			Name:          league.Name,
-			CorrelationId: league.CorrelationId,
-			SeasonID:      league.SeasonID,
+		if err := db.FirstOrCreate(&league, models.LeagueRecord{
+			Name:     league.Name,
+			LeagueID: league.LeagueID,
+			SeasonID: league.SeasonID,
 		}).Error; err != nil {
 			return nil, err
 		}

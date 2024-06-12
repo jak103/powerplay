@@ -17,7 +17,7 @@ func (s SeasonSeeder) Seed(db *gorm.DB, args ...interface{}) (interface{}, error
 		End:           time.Now().AddDate(0, 3, 0),
 		Registrations: []models.Registration{},
 		Schedule:      []models.Game{},
-		Leagues:       []models.League{},
+		LeagueRecords: []models.LeagueRecord{},
 	}
 	if err := db.FirstOrCreate(&season, season).Error; err != nil {
 		return nil, err
