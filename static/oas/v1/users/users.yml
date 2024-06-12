@@ -2,7 +2,7 @@ paths:
   user:
     post:
       tags:
-        - user
+        - Users
       summary: Creates a user
       requestBody:
         description: Create user object
@@ -18,7 +18,7 @@ paths:
               schema:
                 $ref: '#/schemas/UserCreationResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../common/errors.yml#/components/responses/BadRequest"
 
 # made the input schema follow the same format as the database table for users. I also removed fields that would be populated by the server. 
 schemas:
@@ -43,6 +43,9 @@ schemas:
       skill_level: # will this match skill level? 
         type: integer
         example: 5
+      date_of_birth:
+        type: Time
+        example: "2009-11-10T23:00:00Z"
 
 # this is not an authentication response. This is a user creation response.
   UserCreationResponse:

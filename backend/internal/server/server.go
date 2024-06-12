@@ -12,12 +12,12 @@ import (
 	// Blank imports for apis to cause init functions to run
 	_ "github.com/jak103/powerplay/internal/server/apis/auth"
 	_ "github.com/jak103/powerplay/internal/server/apis/chat"
-	_ "github.com/jak103/powerplay/internal/server/apis/league"
 	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
-	_ "github.com/jak103/powerplay/internal/server/apis/stats"
+	_ "github.com/jak103/powerplay/internal/server/apis/schedule/games/auto"
+	_ "github.com/jak103/powerplay/internal/server/apis/schedule/games/manual"
+	_ "github.com/jak103/powerplay/internal/server/apis/sports/components"
+	_ "github.com/jak103/powerplay/internal/server/apis/sports/stats"
 	_ "github.com/jak103/powerplay/internal/server/apis/user"
-	_ "github.com/jak103/powerplay/internal/server/apis/groups"
-        _ "github.com/jak103/powerplay/internal/server/apis/schedule/games/auto"
 )
 
 func Run() {
@@ -32,7 +32,10 @@ func Run() {
 
 	app.Static("/", "/powerplay/static")
 
-	app.Listen(fmt.Sprintf(":%s", config.Vars.Port))
+	err := app.Listen(fmt.Sprintf(":%s", config.Vars.Port))
+	if err != nil {
+		return
+	}
 }
 
 func globalErrorHandler(c *fiber.Ctx, err error) error {
