@@ -78,7 +78,7 @@ func Migrate() error {
 }
 
 func GetDB() *gorm.DB {
-	return db
+	return dbConnection
 }
 
 func GetSession(c *fiber.Ctx) session {
@@ -100,7 +100,7 @@ func GetSession(c *fiber.Ctx) session {
 func RunSeeders(seeders []ppseeders.Seeder, args ...interface{}) error {
 	s := GetSession(nil)
 	for _, seeder := range seeders {
-		if _, err := seeder.Seed(s.connection, args...); err != nil {
+		if _, err := seeder.Seed(s.DB, args...); err != nil {
 			return err
 		}
 	}
