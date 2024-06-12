@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import axios from 'axios'
 import {ref} from 'vue'
-//import { useRouter } from 'vue-router'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 
 const options = ref([
@@ -10,6 +10,8 @@ const options = ref([
 
 const isPwd = ref(true)
 const isConPwd = ref(true)
+
+const router = useRouter()
 
 // user inputs
 const levelPlayed = ref('')
@@ -23,8 +25,6 @@ const phoneNumber = ref('')
 const email = ref('')
 const experience = ref('')
 
-//const yearsOfExp = 0
-
 // error messages if needed
 const first_errorMessage = ref('')
 const last_errorMessage = ref('')
@@ -34,6 +34,7 @@ const phone_errorMessage = ref('')
 const email_errorMessage = ref('')
 const option_errorMessage = ref('')
 const experience_errorMessage = ref('')
+const api_errorMessage = ref('')
 
 const createAccount = () => {
   pass_errorMessage.value = ''
@@ -49,60 +50,51 @@ const createAccount = () => {
   const isEmailValid = validateEmail()
   const isExpValid = validateYearsOfExp()
   const isOptionValid = validateOption()
-
-  console.log('Called?')
+  
+  api_errorMessage.value = ''
   if (isPasswordValid && isPhoneValid && isBirthdayValid && isEmailValid && isLastValid && isFirstValid && isExpValid && isOptionValid) {
-    // All validations passed
-    //MAKE API REQUEST HERE
-
-    //http://localhost:9002/api/v1/user
-    //first_name: string
-    //last_name: string
-    //password: string
-    //email: string
-    //phone: string
-    //skill_level: integer
-    //date_of_birth: Time
-    // useRouter().push('/app')
-
-  // Simple POST request with a JSON body using fetch
-  //const requestOptions = {
-      //method: "POST",
-      //headers: { "Content-Type": "application/json" },
-      //body: JSON.stringify({
-      //first_name: firstName.value,
-      //last_name: lastName.value,
-      //password: password.value,
-      //email: email.value,
-      //phone: phoneNumber.value,
-      //skill_level: experience.value,
-      //date_of_birth: birthDate.value,
-      // useRouter().push('/app')
-      //})
       makePostRequest()
     }
-
   }
 
+  //Makes api request in dev mode
 
+  //As of right now you need to set line 62
+  //AllowOrigins:     "http://localhost:9000"
+  //inside manager.go
+  //located here: powerplay/backend/internal/middleware/manager.go 
   async function makePostRequest() {
   try {
+    const dateFromString = new Date(birthDate.value);
+    let myNumber: number = +levelPlayed.value;
     const response = await axios.post('http://localhost:9002/api/v1/user', {
       first_name: firstName.value,
       last_name: lastName.value,
       password: password.value,
       email: email.value,
       phone: phoneNumber.value,
-      skill_level: levelPlayed.value,
-      date_of_birth: birthDate.value
+      skill_level: myNumber,
+      date_of_birth: dateFromString
     })
     
     console.log(response.data)
-    //router.push('/app')
+
+    //Redirect to index page for now
+    reRoute()
+
   } catch (error) {
+    
+    api_errorMessage.value = 'Something went wrong. Please try again later!'
     console.error('There was an error making the POST request!', error)
   }
 }
+
+function reRoute(){
+  router.push({ path: '/' }).then(() => {
+    router.go(0)
+  })
+}
+//Validate user input
 
 function validateFirst(){
 if(firstName.value == ''){
@@ -118,12 +110,13 @@ function validateLast(){
   return false
 }
 return true
-
 }
+
+// Must be 8 chacters long, match confirm password field, and contain a special character
 
 function validatePassword() {
   if (password.value !== confirmPassword.value) {
-    pass_errorMessage.value = 'Your password does not match!'
+    pass_errorMessage.value = 'Your passwords do not match!'
     return false
   }
   if (password.value.length < 8) {
@@ -141,7 +134,7 @@ function validatePassword() {
 
   return true
 }
-
+// accepts any format as long as 10 digits are present.
 function validatePhone() {
   phoneNumber.value = ''
   phone_errorMessage.value = ''
@@ -189,6 +182,7 @@ function validateBirthday() {
   return true
 }
 
+//Must be 18+ to play
 function isUnderage() {
   const [year, month, day] = birthDate.value.split('-').map(part => parseInt(part, 10))
   const currentDate = new Date()
@@ -219,6 +213,7 @@ function validateEmail() {
   return true
 }
 
+//Validates only alphabetical character are inputted. Activate after each keystroke
 function validateIsAlphaOnly() {
     first_errorMessage.value = ''
     last_errorMessage.value = ''
@@ -251,6 +246,7 @@ function validateOption(){
 }
 </script>
 
+<!--Page code-->
 <template>
   <q-card class="my-card white text-black" style="margin-left:20%; margin-right:20%; margin-top:5%; margin-bottom:5%;">
     <q-card-section align="middle">
@@ -341,9 +337,13 @@ function validateOption(){
       </div>
     </q-card-section>
 
+     <!-- submit -->
     <q-card-actions align="center">
       <q-btn label="Create Account" type="submit" color="primary" @click="createAccount" id="submitButton"/>
     </q-card-actions>
+    <q-banner v-if="api_errorMessage" class="text-white bg-red" style="border-radius: 0px 0px 4px 4px;" id ="api-error">
+          <p>{{ api_errorMessage }}</p>
+        </q-banner>
   </q-card>
 </template>
 
