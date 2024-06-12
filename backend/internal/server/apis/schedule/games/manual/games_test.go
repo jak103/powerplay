@@ -2,6 +2,8 @@ package manual
 
 import "testing"
 
+// TODO add dockertest to be able to test the functions that interact with the database
+
 func TestCreateGame(t *testing.T) {
 	t.Run("Test successful create game", func(t *testing.T) {
 		t.Skip("skipping test")

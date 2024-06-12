@@ -18,9 +18,7 @@ import (
 	"time"
 )
 
-// TODO add dockertest to be able to test the database connection
-// TODO merge main in
-// TODO take a look at db/league.go and db/league_test.go
+// TODO add dockertest to be able to test the functions that interact with the database
 
 func TestOptimizeGames(t *testing.T) {
 	t.Run("Test successful optimization", func(t *testing.T) {
