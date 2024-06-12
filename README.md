@@ -6,7 +6,18 @@
 [![Go](https://github.com/jak103/powerplay/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/jak103/powerplay/actions/workflows/go.yml)
 
 ## Table of Contents
-- [Adding and Updating API Endpoints](#adding-and-updating-api-endpoints)
+- [Team Specific Pages](#team-specific-pages)
+- [Helpful Commands](#helpful-commands)
+    - [Clear and Re-run Migrations](#clear-and-re-run-migrations)
+    - [Run All Go Tests](#run-all-go-tests)
+
+## Team Specific Pages
+- [Frontend Site](/site/README.md)
+- [Frontend App](/app/README.md)
+- [Chat Functions]()
+- [Scoreboard]()
+- [Scheduling]()
+- [Backend](/backend/README.md)
 
 ## Helpful Commands
 ### Clear and Re-run Migrations
@@ -31,21 +42,3 @@ pass all tests before committing code.
 ```shell
 make test 
 ```
-
-## Adding and Updating API Endpoints
-
-### Ensure Model is Created and Up to Date
-1. Navigate to the models directory: \
-   `backend/internal/models`
-
-### Add API Endpoint
-1. Navigate to the server directory: \
-    `backend/internal/server/apis`
-
-### Add DB methods used in API endpoint
-1. Navigate to the db directory: \
-    `backend/internal/db`
-
-### Update Open API docs**
-1. Navigate to the open api spec directory: \
-   `static/oas/v1`
