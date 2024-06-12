@@ -3,9 +3,15 @@ paths:
     get:
       tags:
         - Leagues
-      summary: Get All Leagues
+      summary: All Leagues
       description: |
         Get all leagues
+      parameters:
+        - $ref: '../../common/params.yml#/parameters/OffsetParam'
+        - $ref: '../../common/params.yml#/parameters/LimitParam'
+        - $ref: '../../common/params.yml#/parameters/FetchAllParam'
+        - $ref: '../../common/params.yml#/parameters/SortFieldParam'
+        - $ref: '../../common/params.yml#/parameters/SortOrderParam'
       responses:
         200:
           description: The response body should contain the list of leagues
@@ -14,11 +20,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetLeaguesResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
     post:
       tags:
         - Leagues
-      summary: Create a League
+      summary: Create League
       description: Creates a league using the given input.
       requestBody:
         description: A JSON object with a valid league
@@ -35,7 +41,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PostLeagueResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
 components:
   schemas:
@@ -43,11 +49,11 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
         response_data:
           type: object
           properties:
@@ -86,8 +92,8 @@ components:
       type: object
       properties:
         status_code:
-          $ref: "../common/schemas.yml#/schemas/StatusCode200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
         status_string:
-          $ref: "../common/schemas.yml#/schemas/StatusString200"
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
-          $ref: "../common/schemas.yml#/schemas/RequestId"
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
