@@ -47,7 +47,7 @@ paths:
           required: true
           description: The ID of the team to retrieve
           schema:
-            type: string
+            type: integer
       responses:
         200:
           description: The response body should contain the list of teams
@@ -68,7 +68,7 @@ paths:
           required: true
           description: The ID of the team to update
           schema:
-            type: string
+            type: integer
       requestBody:
         description: A JSON object with a valid team
         required: true

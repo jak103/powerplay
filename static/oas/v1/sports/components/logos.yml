@@ -4,7 +4,7 @@ paths:
       tags:
         - Logos
       summary: Create Team Logo
-      description: Uploads a team's logo
+      description: Uploads a team's logo. This currently supports png files only.
       requestBody:
         content:
           multipart/form-data:
@@ -13,6 +13,7 @@ paths:
               properties:
                 image:
                   type: string
+                  contentMediaType: image/png
                   format: binary
       responses:
         200:
@@ -35,10 +36,10 @@ paths:
           required: true
           description: The ID of the logo to retrieve
           schema:
-            type: string
+            type: integer
       responses:
         200:
-          description: The response body should contain the logo binary
+          description: The response body should contain the png logo
           content:
             multipart/form-data:
               schema:
@@ -46,6 +47,7 @@ paths:
                 properties:
                   image:
                     type: string
+                    contentMediaType: image/png
                     format: binary
         400:
           $ref: "../../common/errors.yml#/components/responses/BadRequest"
