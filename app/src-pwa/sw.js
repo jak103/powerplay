@@ -1,6 +1,6 @@
 self.addEventListener('push', (e) => {
-  console.log("Received push", e)
-  console.log("Showing notitification");
+  console.log('Received push', e);
+  console.log('Showing notitification');
   var options = {
     body: 'This notification was generate from a push.',
     vibrate: [100, 50, 100],
@@ -9,18 +9,14 @@ self.addEventListener('push', (e) => {
       primaryKey: '2'
     },
     actions: [
-      {
-        action: 'explore',
-        title: 'Explore this new world',
-      },
-      {
-        action: 'close',
-        title: 'Close',
-      }
+      {action: 'explore', title: 'Go to the site',
+        icon: 'images/checkmark.png'},
+      {action: 'close', title: 'Close the notification',
+        icon: 'images/xmark.png'},
     ]
   };
-  e.waitUntil(self.registration.showNotification('Hello World'));
-  console.log("Done showing notification");
+  e.waitUntil(self.registration.showNotification('Hello World', options));
+  console.log('Done showing notification');
 })
 
 
@@ -28,13 +24,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('v1').then((cache) => {
       return cache.addAll([
-        '/app',
-        '/app/chat',
-        '/app/profile',
-        '/app/schedule',
-        '/app/create-account',
-        '/app/sign-in',
-        '/app/offline-page',
+        '/#/',
         // Add other assets as needed
       ]);
     })
@@ -56,18 +46,14 @@ self.addEventListener('fetch', (event) => {
         if (cacheResponse) {
           return cacheResponse;
         }
-        // If the resource is not in the cache, return the offline page
-        return caches.match('/app/offline-page').then((offlineResponse) => {
-          return offlineResponse || new Response('Offline', { status: 503 });
-        });
       });
     })
   );
 });
 
 
-self.addEventListener("load", () => { // TESTING
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
+self.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
   }
 });
