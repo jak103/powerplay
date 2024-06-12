@@ -22,8 +22,8 @@ import (
 // TODO merge main in
 // TODO take a look at db/league.go and db/league_test.go
 
-func TestAutoGames(t *testing.T) {
-	t.Run("Test handleOptimizeGames", func(t *testing.T) {
+func TestOptimizeGames(t *testing.T) {
+	t.Run("Test successful optimization", func(t *testing.T) {
 		// Mock Fiber app
 		app := fiber.New()
 		app.Put("/schedule/auto/optimize", handleOptimizeGames)
@@ -53,7 +53,14 @@ func TestAutoGames(t *testing.T) {
 		assert.Equal(t, uint(123), response.SeasonID)
 	})
 
-	t.Run("Test handleCreateGames", func(t *testing.T) {
+	t.Run("Test failed optimization", func(t *testing.T) {
+		t.Skip("Skipping test")
+	})
+}
+
+func TestCreateGames(t *testing.T) {
+
+	t.Run("Test successful creation", func(t *testing.T) {
 		app := fiber.New()
 		request, err := getCreateRequest(app)
 		if err != nil {
@@ -70,7 +77,14 @@ func TestAutoGames(t *testing.T) {
 		assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 	})
 
-	t.Run("Test readBody", func(t *testing.T) {
+	t.Run("Test failed creation", func(t *testing.T) {
+		t.Skip("Skipping test")
+	})
+}
+
+func TestReadBody(t *testing.T) {
+
+	t.Run("Test successful read body", func(t *testing.T) {
 		app := fiber.New()
 		request, err := getCreateRequest(app)
 
@@ -92,7 +106,14 @@ func TestAutoGames(t *testing.T) {
 		assert.Empty(t, body.iceTimes)
 	})
 
-	t.Run("Test getIceTimes", func(t *testing.T) {
+	t.Run("Test failed read body", func(t *testing.T) {
+		t.Skip("Skipping test")
+	})
+}
+
+func TestGetIceTimes(t *testing.T) {
+
+	t.Run("Test successful get ice times", func(t *testing.T) {
 		// Create a mock multipart file
 		fileHeader, _, err := getMultiPartFile()
 		if err != nil {
@@ -107,7 +128,14 @@ func TestAutoGames(t *testing.T) {
 		assert.Nil(t, iceTimes)
 	})
 
-	t.Run("Test assignLockerRooms", func(t *testing.T) {
+	t.Run("Test failed get ice times", func(t *testing.T) {
+		t.Skip("Skipping test")
+	})
+}
+
+func TestAssignLockerRooms(t *testing.T) {
+
+	t.Run("Test successful assign", func(t *testing.T) {
 		// Mock games
 		games := getGames()
 
@@ -136,8 +164,13 @@ func TestAutoGames(t *testing.T) {
 			assert.Equal(t, expectedAwayLockerRoom, game.AwayTeamLockerRoom)
 		}
 	})
+
+	t.Run("Test failed assign", func(t *testing.T) {
+		t.Skip("Skipping test")
+	})
 }
 
+// Helper functions
 func getCreateRequest(app *fiber.App) (*http.Request, error) {
 	// Mock Fiber app
 	app.Post("/schedule/auto/games", handleCreateGames)
