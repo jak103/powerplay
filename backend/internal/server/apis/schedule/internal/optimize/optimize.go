@@ -1,13 +1,18 @@
 package optimize
 
 import (
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
+	"github.com/jak103/powerplay/internal/models"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"sort"
 )
 
-func Schedule(games []structures.Game, seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {
+var oMap map[uint]bool
+
+func Schedule(games []models.Game, seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {
+	// Convert the games to the internal game struct
+
 	resetOptimized(games)
 	log.Info("OPT: Early games percent: %v%%\n", seasonStats.EarlyPercentage()*100)
 	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games
@@ -43,7 +48,7 @@ func Schedule(games []structures.Game, seasonStats structures.SeasonStats, teamS
 			if games[i].HomeTeam.Name == team || games[i].AwayTeam.Name == team {
 				// find a good candidate to swap games with
 				// Will it improve that balance
-				if round_robin.IsEarlyGame(games[i-1].Start.Hour(), games[i-1].Start.Minute()) == tooManyEarly {
+				if analysis.IsEarlyGame(games[i-1].Start.Hour(), games[i-1].Start.Minute()) == tooManyEarly {
 					log.Info("Can't swap games because it won't improve balance\n")
 					continue
 				}
@@ -59,7 +64,7 @@ func Schedule(games []structures.Game, seasonStats structures.SeasonStats, teamS
 				}
 
 				// Don't swap games that are already optimized
-				if games[i].Optimized && games[i-1].Optimized {
+				if oMap[games[i].ID] && oMap[games[i-1].ID] {
 					log.Info("Can't swap games because it has already been swapped\n")
 					continue
 				}
@@ -80,7 +85,7 @@ func Schedule(games []structures.Game, seasonStats structures.SeasonStats, teamS
 			if games[i].HomeTeam.Name == team || games[i].AwayTeam.Name == team {
 				// find a good candidate to swap games with
 				// Will it improve that balance
-				if round_robin.IsEarlyGame(games[i+1].Start.Hour(), games[i+1].Start.Minute()) == tooManyEarly {
+				if analysis.IsEarlyGame(games[i+1].Start.Hour(), games[i+1].Start.Minute()) == tooManyEarly {
 					log.Info("Can't swap games because it won't improve balance\n")
 					continue
 				}
@@ -96,7 +101,7 @@ func Schedule(games []structures.Game, seasonStats structures.SeasonStats, teamS
 				}
 
 				// Don't swap games that are already swapped
-				if games[i].Optimized && games[i+1].Optimized {
+				if oMap[games[i].ID] && oMap[games[i+1].ID] {
 					log.Info("Can't swap games because it has already been swapped\n")
 					continue
 				}
@@ -145,13 +150,13 @@ func Schedule(games []structures.Game, seasonStats structures.SeasonStats, teamS
 	}
 }
 
-func updateStats(teamStats map[string]structures.TeamStats, games []structures.Game, i, j int) {
+func updateStats(teamStats map[string]structures.TeamStats, games []models.Game, i, j int) {
 	game1Team1Stats := teamStats[games[i].HomeTeam.Name]
 	game1Team2Stats := teamStats[games[i].AwayTeam.Name]
 	game2Team1Stats := teamStats[games[j].HomeTeam.Name]
 	game2Team2Stats := teamStats[games[j].AwayTeam.Name]
 
-	if round_robin.IsEarlyGame(games[i].Start.Hour(), games[i].Start.Minute()) {
+	if analysis.IsEarlyGame(games[i].Start.Hour(), games[i].Start.Minute()) {
 		game1Team1Stats.EarlyGames--
 		game1Team2Stats.EarlyGames--
 		game1Team1Stats.LateGames++
@@ -182,7 +187,7 @@ func updateStats(teamStats map[string]structures.TeamStats, games []structures.G
 	log.Info("Now %v (%v-%v) v %v (%v-%v)\n", game2Team1Stats.Name, game2Team1Stats.EarlyGames, game2Team1Stats.LateGames, game2Team2Stats.Name, game2Team2Stats.EarlyGames, game2Team2Stats.LateGames)
 }
 
-func swapGames(games []structures.Game, i, j int) {
+func swapGames(games []models.Game, i, j int) {
 	team1 := games[i].HomeTeam
 	team2 := games[i].AwayTeam
 	league := games[i].HomeTeam.League
@@ -196,8 +201,8 @@ func swapGames(games []structures.Game, i, j int) {
 	games[j].HomeTeam.League = league
 
 	// mark the swapped games as optimized so they can't be swapped again
-	games[j].Optimized = true
-	games[i].Optimized = true
+	oMap[games[j].ID] = true
+	oMap[games[i].ID] = true
 }
 
 func correctBalanceDirection(teamStats map[string]structures.TeamStats, seasonEarlyHigh, seasonEarlyLow int, team1, team2 string, tooManyEarly bool) bool {
@@ -231,8 +236,9 @@ func needsToBeBalanced(stats structures.TeamStats, seasonEarlyHigh, seasonEarlyL
 	return false, false
 }
 
-func resetOptimized(games []structures.Game) {
+func resetOptimized(games []models.Game) {
+	oMap = make(map[uint]bool)
 	for i := range games {
-		games[i].Optimized = false
+		oMap[games[i].ID] = false
 	}
 }

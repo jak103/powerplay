@@ -4,7 +4,7 @@ paths:
         tags:
           - Schedule
         requestBody:
-          description: The request body should contain a user id, game id, team id, duration, period, assist1 id, assist2 id, powerplay, and penalty
+          description: The request body should contain the id of the season, type of algorithm, ice times spreadsheet, and number of games per team
           required: true
           content:
             multipart/form-data:
@@ -34,9 +34,14 @@ schemas:
       request_id:
         $ref: "../common/schemas.yml#/schemas/RequestId"
       response_data:
-        type: array
-        items:
-          $ref: '#/components/schemas/TeamStats'
+        type: object
+        properties:
+          seasonId:
+            type: int
+          teamStats:
+            type: array
+            items:
+              $ref: '#/components/schemas/TeamStats'
   ScheduleRequest:
     type: object
     properties:
@@ -50,6 +55,10 @@ schemas:
       ice_times:
         type: string
         format: binary
+        description: Spread sheet of icetimes
+      numberOfGamesPerTeam:
+        type: int
+        description: Number of games to assign per team
 
 components:
   schemas:
@@ -79,10 +88,6 @@ components:
             type: integer
         averageDaysBetweenGames:
           type: float
-        games:
-          type: array
-          items:
-            $ref: '#components/schemas/Game'
         balanced:
           type: boolean
     Game:
@@ -168,9 +173,9 @@ components:
         players:
           type: array
           items:
-            type: integer #TODO: get users object
+            $ref: '../users/users.yml#schemas/User'
         captain:
-          type: integer #TODO: get users object
+            $ref: '../users/users.yml#schemas/User'
         captain_id:
           type: integer
     League:

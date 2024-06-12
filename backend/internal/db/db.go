@@ -86,9 +86,10 @@ func GetSession(c *fiber.Ctx) Session {
 	return s
 }
 
-func RunSeeders(seeders []ppseeders.Seeder) error {
+func RunSeeders(seeders []ppseeders.Seeder, args ...interface{}) error {
+	s := GetSession(nil)
 	for _, seeder := range seeders {
-		if err := seeder.Seed(db); err != nil {
+		if _, err := seeder.Seed(s.Connection, args...); err != nil {
 			return err
 		}
 	}
