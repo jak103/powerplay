@@ -25,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
 defineOptions({
   name: 'App',
 });
@@ -32,22 +34,6 @@ defineOptions({
 // Installation prompt below
 const showPrompt = ref(false);
 const os = ref('unknown');
-
-onMounted(() => {
-  os.value = detectOS();
-
-  // Only show the install prompt once
-  if (localStorage.getItem('promptShown') !== 'true') {
-    if (os.value !== 'unknown') {
-      showPrompt.value = true;
-    }
-    localStorage.setItem('promptShown', 'true');
-  }
-});
-</script>
-
-<script lang="ts">
-import { ref, onMounted } from 'vue';
 
 function detectOS() {
   const userAgent = navigator.userAgent || navigator.vendor;
@@ -67,4 +53,16 @@ function detectOS() {
     return 'unknown';
   } 
 }
+
+onMounted(() => {
+  os.value = detectOS();
+
+  // Only show the install prompt once
+  if (localStorage.getItem('promptShown') !== 'true') {
+    if (os.value !== 'unknown') {
+      showPrompt.value = true;
+    }
+    localStorage.setItem('promptShown', 'true');
+  }
+});
 </script>
