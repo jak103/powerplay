@@ -39,16 +39,12 @@ paths:
             type: integer
       responses:
         200:
-          description: The response body should contain the png logo
+          description: OK
           content:
-            multipart/form-data:
+            image/png:
               schema:
-                type: object
-                properties:
-                  image:
-                    type: string
-                    contentMediaType: image/png
-                    format: binary
+                type: string
+                format: binary
         400:
           $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
