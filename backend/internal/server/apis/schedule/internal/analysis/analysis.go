@@ -43,7 +43,7 @@ func RunTimeAnalysis(games []models.Game) (structures.SeasonStats, map[string]st
 
 	timeBetweenGames(games, teamStats)
 
-	scoreAll(games, &seasonStats, teamStats)
+	scoreAll(&seasonStats, teamStats)
 
 	return seasonStats, teamStats
 }
@@ -127,7 +127,7 @@ func IsEarlyGame(hour, minute int) bool {
 	return false
 }
 
-func scoreAll(games []structures.Game, ss *structures.SeasonStats, ts map[string]structures.TeamStats) {
+func scoreAll(ss *structures.SeasonStats, ts map[string]structures.TeamStats) {
 	// use the coefficient of variation so we can compare the variation across different pieces of data
 	// see https://en.wikipedia.org/wiki/Coefficient_of_variation
 

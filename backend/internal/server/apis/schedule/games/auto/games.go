@@ -3,6 +3,7 @@ package auto
 import (
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
@@ -47,7 +49,7 @@ func handleOptimizeGames(c *fiber.Ctx) error {
 		SeasonID uint `json:"season_id"`
 	}
 	var dto Dto
-	err := c.BodyParser(&dto)
+	body, err := readBody(c)
 	if err != nil {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -60,7 +62,16 @@ func handleOptimizeGames(c *fiber.Ctx) error {
 		return responder.InternalServerError(c, err)
 	}
 
-	round_robin.OptimizeSchedule(*games)
+	optimizer := body.optimizer
+
+	if optimizer == "pair-swap" {
+		optimize.PairOptimizeSchedule(*games)
+	} else if optimizer == "set-swap" {
+		optimize.SetOptimizeSchedule(*games)
+	} else {
+		return responder.BadRequest(c, fiber.StatusBadRequest, fmt.Sprintf("Invalid optimizer %v", optimizer))
+	}
+
 	// write to the db
 	assignLockerRooms(*games)
 	_, err = session.SaveGames(*games)
