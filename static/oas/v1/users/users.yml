@@ -2,7 +2,7 @@ paths:
   user:
     post:
       tags:
-        - user
+        - Users
       summary: Creates a user
       requestBody:
         description: Create user object
@@ -18,17 +18,42 @@ paths:
               schema:
                 $ref: '#/schemas/UserCreationResponse'
         400:
-          $ref: "../common/errors.yml#/responses/BadRequest"
+          $ref: "../common/errors.yml#/components/responses/BadRequest"
+    get:
+      tags:
+        - Users
+      summary: User by credentials
+      description: Get User details by email and password
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The response body should contain the user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/User'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
 # made the input schema follow the same format as the database table for users. I also removed fields that would be populated by the server. 
 schemas:
   User:
     type: object
     properties:
-      firstName:
+      first_name:
         type: string
         example: John
-      lastName:
+      last_name:
         type: string
         example: James
       password:
@@ -37,23 +62,20 @@ schemas:
       email:
         type: string
         example: john@email.com
-      phoneNumber:
+      phone:
         type: string
         example: '123-456-7890'
-      baseExperience: # will this match skill level? 
+      skill_level: # will this match skill level? 
         type: integer
         example: 5
-      username:     # Not within Meeting notes
-        type: string
-        example: billybob
+      date_of_birth:
+        type: Time
+        example: "2009-11-10T23:00:00Z"
 
 # this is not an authentication response. This is a user creation response.
   UserCreationResponse:
     type: object
     properties:
-      message:
-        type: string
-        example: User created successfully
       status_code:
         $ref: "../common/schemas.yml#/schemas/StatusCode200"
       status_string:
@@ -63,14 +85,12 @@ schemas:
       response_data:
         type: object
         properties:
-          user_id:
-            type: integer
-            example: 1
-          username:
-            type: string
-            example: billybob
           email:
             type: string
             example:
+          user_id:
+            type: integer
+            example:
+
 
 

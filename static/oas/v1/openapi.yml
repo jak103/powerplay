@@ -7,25 +7,62 @@ info:
     name: MIT
     url: https://opensource.org/license/mit
 
-paths:
-  /auth:
-    $ref: "./auth/auth.yml#/paths/auth"
-  /shotsongoal:
-    $ref: "./stats/shotsongoal.yml#/paths/shotsOnGoal"   
-  /penaltyTypes:
-    $ref: "./stats/penalties.yml#/paths/penaltyTypes"
-  /leagues:
-    $ref: "./leagues/leagues.yaml#/paths/leagues"
-  /penalties:
-    $ref: "./stats/penalties.yml#/paths/penalties"
-  /user:
-    $ref: "./users/users.yml#/paths/user"
+tags:
+  - name: Authentication
+    x-tag-expanded: false
+  - name: Games
+    x-tag-expanded: false
+  - name: Leagues
+    x-tag-expanded: false
+  - name: Logos
+    x-tag-expanded: false
+  - name: Rosters
+    x-tag-expanded: false
+  - name: Seasons
+    x-tag-expanded: false
+  - name: Stats
+    x-tag-expanded: false
+  - name: Teams
+    x-tag-expanded: false
+  - name: Users
+    x-tag-expanded: false
 
+paths:
   # /[URL path]
   #$ref: "./[Relative path starting from v1]#/paths/[yml path]"
+  /auth:
+    $ref: "./auth/auth.yml#/paths/auth"
+  /games:
+    $ref: "./sports/components/games.yml#/paths/~1games"
+  /games/{gameId}:
+    $ref: "./sports/components/games.yml#/paths/~1games~1{gameId}"
   /goals:
-    $ref: "./stats/goal.yml#/paths/goals"
-
+    $ref: "./sports/stats/goals.yml#/paths/goals"
+  /leagues:
+    $ref: "./sports/components/leagues.yml#/paths/leagues"
+  /logos:
+    $ref: "./sports/components/logos.yml#/paths/~1logos"
+  /logos/{id}:
+    $ref: "./sports/components/logos.yml#/paths/~1logos~1{id}"
+  /penalties:
+    $ref: "./sports/stats/penalties.yml#/paths/penalties"
+  /penaltyTypes:
+    $ref: "./sports/stats/penalties.yml#/paths/penaltyTypes"
+  /rosters:
+    $ref: "./sports/components/rosters.yml#/paths/rosters"
+  /seasons:
+    $ref: "./sports/components/seasons.yml#/paths/seasons"
+  /shotsongoal:
+    $ref: "./sports/stats/shotsongoal.yml#/paths/shotsOnGoal"
+  /teams:
+    $ref: "./sports/components/teams.yml#/paths/~1teams"
+  /teams/{id}:
+    $ref: "./sports/components/teams.yml#/paths/~1teams~1{id}"
+  /user:
+    $ref: "./users/users.yml#/paths/user"
+  /venues:
+    $ref: "./sports/stats/venues.yml#/paths/venues"
+  
 components:
   securitySchemes:
     BearerAuth:

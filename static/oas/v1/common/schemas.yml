@@ -1,14 +1,14 @@
-schemas:
-  StatusCode200:
-    type: integer
-    description: The HTTP status code
-    example: 200
-  StatusString200:
-    type: integer
-    description: The HTTP status string
-    example: OK
-  RequestId:
-    type: string
-    description: The request ID
-    example: df0d0d18-e66c-4910-bb81-205978497d11
-  
+components:
+  schemas:
+    StatusCode200:
+      type: integer
+      description: The HTTP status code
+      example: 200
+    StatusString200:
+      type: integer
+      description: The HTTP status string
+      example: OK
+    RequestId:
+      type: string
+      description: The request ID
+      example: df0d0d18-e66c-4910-bb81-205978497d11

@@ -1,7 +1,17 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated style="background-color: #343333;">
       <q-toolbar>
+        <q-btn
+          flat
+          dense
+          round
+          icon="arrow_back"
+          aria-label="Back"
+          class ="mobile-only"
+          @click="goBack"
+          v-if="canGoBack"
+        />
         <q-btn
           flat
           dense
@@ -9,35 +19,30 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
+          v-if="!$q.screen.lt.md" 
         />
-
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title class="text-center">{{ pageTitle }}</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+      <div class="column">
+        <q-btn
+          v-for="item in navItems"
+          :key="item.label"
+          v-bind="item"
+          class="q-mt-md q-pt-md q-pb-md"
+          style="display: flex; align-items: start; width: 90%;"
+          color="black"
         />
-      </q-list>
+      </div>
     </q-drawer>
+
+    <q-footer class="q-pa-md bg-white" elevated v-if="$q.screen.lt.md">
+        <div class="row justify-evenly">
+          <q-btn v-for="item in navItems" :key="item.label" v-bind="item" color="black" label=""/>
+        </div>
+    </q-footer>
 
     <q-page-container>
       <router-view />
@@ -45,62 +50,69 @@
   </q-layout>
 </template>
 
+<style scoped>
+  .column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
+
 <script setup lang="ts">
-import { ref } from 'vue';
-import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
+import { ref, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 defineOptions({
-  name: 'MainLayout'
+  name: 'MainLayout',
 });
 
-const linksList: EssentialLinkProps[] = [
+const router = useRouter();
+const route = useRoute(); // used to display the title of the page
+const pageTitle = computed(() => route.meta.title || 'Power Play');
+
+const navItems = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
+    label: 'Home',
+    icon: 'home',
+    to: '/',
+    flat: true,
+    dense: true,
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
+    label: 'Schedule',
+    icon: 'event',
+    to: '/schedule',
+    flat: true,
+    dense: true,
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    label: 'Chat',
+    icon: 'chat_bubble_outline',
+    to: '/chat',
+    flat: true,
+    dense: true,
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    label: 'Profile',
+    icon: 'person',
+    to: '/profile',
+    flat: true,
+    dense: true,
   },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
 ];
 
 const leftDrawerOpen = ref(false);
 
-function toggleLeftDrawer () {
+function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+function goBack() {
+  router.back();
+}
+
+const canGoBack = computed(() => {
+  // Only show the back button if the user can go back
+  return window.history.length > 1;
+});
 </script>

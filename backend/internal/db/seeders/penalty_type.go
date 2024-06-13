@@ -7,7 +7,7 @@ import (
 
 type PenaltyTypeSeeder struct{}
 
-func (pt PenaltyTypeSeeder) Seed(db *gorm.DB) error {
+func (pt PenaltyTypeSeeder) Seed(db *gorm.DB, args ...interface{}) (interface{}, error) {
 	penaltyTypes := []models.PenaltyType{
 		{Name: "Tripping", Duration: 2, Severity: "minor"},
 		{Name: "Hooking", Duration: 2, Severity: "minor"},
@@ -23,10 +23,13 @@ func (pt PenaltyTypeSeeder) Seed(db *gorm.DB) error {
 		{Name: "Game misconduct", Duration: 0, Severity: "game_misconduct"},
 		{Name: "Match Penalty", Duration: 0, Severity: "match"},
 	}
+
+	var createdPenaltyTypes []models.PenaltyType
 	for _, penaltyType := range penaltyTypes {
 		if err := db.FirstOrCreate(&penaltyType, models.PenaltyType{Name: penaltyType.Name, Duration: penaltyType.Duration, Severity: penaltyType.Severity}).Error; err != nil {
-			return err
+			return nil, err
 		}
+		createdPenaltyTypes = append(createdPenaltyTypes, penaltyType)
 	}
-	return nil
+	return createdPenaltyTypes, nil
 }
