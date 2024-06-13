@@ -14,6 +14,27 @@ import {
   createHandlerBoundToURL,
 } from 'workbox-precaching';
 import { registerRoute, NavigationRoute } from 'workbox-routing';
+import { NetworkFirst } from 'workbox-strategies';
+
+/*
+// Adding urls to precache
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
+
+module.exports = {
+  // other webpack config...
+  plugins: [
+    new WorkboxWebpackPlugin.InjectManifest({
+      swSrc: './src/custom-service-worker.js',
+      swDest: 'service-worker.js',
+      additionalManifestEntries: [
+        {url: '/home', revision: null},
+        {url: '/app', revision: null},
+        {url: '/chat', revision: null},
+        // add more URLs as needed, revisions are auto-generated
+      ],
+    }),
+  ],
+};*/
 
 self.skipWaiting();
 clientsClaim();
@@ -33,3 +54,21 @@ if (process.env.MODE !== 'ssr' || process.env.PROD) {
     )
   );
 }
+
+/*
+// Cache page navigations (html) with a Network First strategy
+registerRoute(
+  // Check to see if the request is a navigation to a new page
+  ({ request }) => request.mode === 'navigate',
+  // Use a Network First caching strategy
+  new NetworkFirst({
+    // Put all cached files in a cache named 'pages'
+    cacheName: 'pages',
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new workbox.cacheableResponse.Plugin({
+        statuses: [200],
+      }),
+    ],
+  }),
+); TEST, REMOVE */

@@ -16,7 +16,7 @@ module.exports = configure(function (/* ctx */) {
     // preFetch: true,
 
     // app boot file (/src/boot)
-    // --> boot files are part of "main.js"
+    // --> boot files are part of 'main.js'
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: ['axios'],
 
@@ -51,6 +51,8 @@ module.exports = configure(function (/* ctx */) {
         manifestFilename: 'manifest.json',
         useCredentialsForManifestTag: false,
         workboxOptions: {
+          skipWaiting: true,
+          clientsClaim: true,
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/localhost:9001\/app/, // TODO change this for production
@@ -69,7 +71,7 @@ module.exports = configure(function (/* ctx */) {
         // extendInjectManifestOptions (cfg) {},
         // extendManifestJson (json) {}
         // extendPWACustomSWConf (esbuildConf) {}
-      },
+      },  
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,

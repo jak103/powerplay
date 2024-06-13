@@ -38,7 +38,7 @@ const osObject = parser.getResult();
 const osName = ref(osObject.os.name);
 
 // Installation prompt below
-const showPrompt = ref(false); // Default to false
+const showPrompt = ref(false);
 onMounted(() => {
   // Only show the install prompt once
   if (localStorage.getItem('shownInstallPrompt') !== 'true') {
