@@ -38,7 +38,7 @@ func postSeasonsHandler(c *fiber.Ctx) error {
 	}
 
 	db := db.GetSession(c)
-	record, err := db.SaveSeason(seasonPostRequest)
+	record, err := db.CreateSeason(seasonPostRequest)
 
 	if err != nil {
 		log.WithErr(err).Alert("Failed to parse season request payload")
