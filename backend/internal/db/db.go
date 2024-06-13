@@ -70,7 +70,12 @@ func Migrate() error {
 	return migrations.Run(s.Connection)
 }
 
+func GetDB() *gorm.DB {
+	return db
+}
+
 func GetSession(c *fiber.Ctx) Session {
+
 	logger := log.TheLogger
 	if c != nil {
 		logger = locals.Logger(c)
