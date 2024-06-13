@@ -17,11 +17,11 @@ paths:
                   format: binary
       responses:
         200:
-          description: Successfully uploaded a team's logo
+          description: OK
           content:
             application/json:
               schema:
-        $ref: '#/components/schemas/PostLogoResponse'
+                $ref: '#/components/schemas/PostLogoResponse'
         400:
           $ref: "../../common/errors.yml#/components/responses/BadRequest"
   /logos/{id}:
