@@ -50,11 +50,11 @@ func Init() error {
 	}
 
 	if envConfig.Env == constants.Local || envConfig.Env == constants.Test {
-		path := path.Join(envConfig.Dir, fmt.Sprintf("%s.env", envConfig.Env))
-		log.Alert("Loading environment from %s", path)
-		err := godotenv.Load(path)
+		join := path.Join(envConfig.Dir, fmt.Sprintf("%s.env", envConfig.Env))
+		log.Alert("Loading environment from %s", join)
+		err := godotenv.Load(join)
 		if err != nil {
-			log.WithErr(err).Alert("Failed to load %s", path)
+			log.WithErr(err).Alert("Failed to load %s", join)
 			return err
 		}
 	}
