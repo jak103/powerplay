@@ -6,19 +6,8 @@
           flat
           dense
           round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-          v-if="!$q.screen.lt.md"
-        />
-
-        <q-btn
-          flat
-          dense
-          round
           icon="arrow_back"
           aria-label="Back"
-          class="mobile-only"
           @click="goBack"
           v-if="canGoBack"
         />
@@ -67,7 +56,7 @@ function toggleLeftDrawer() {
 }
 
 function goBack() {
-  router.back();
+  router.push({ name: 'ChatPage' });
 }
 
 const canGoBack = computed(() => {

@@ -48,7 +48,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useChannelStore } from '../stores/channelStore';
+
+const store = useChannelStore();
+const route = useRoute();
+const chatId = route.params.chatId as string;
 
 interface Message {
   user: string;
@@ -56,11 +62,22 @@ interface Message {
   sent: boolean;
 }
 
+interface Channel {
+  channel_name: string;
+  channel_id: string;
+  channel_image: string | null;
+  missed_chats: number;
+  type: string;
+}
+
 const messages = ref<Message[]>([]);
 const newMessage = ref('');
 const chatName = ref('');
 
-chatName.value = 'Chat Name';
+onMounted(() => {
+  const channel: Channel = store.getChannelById(chatId) as Channel;
+  chatName.value = channel.channel_name as string;
+});
 
 function sendMessage() {
   if (newMessage.value.trim() !== '') {

@@ -19,10 +19,10 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-  path: '/chat/chatId',
+  path: '/chatpage/',
   component: () => import('layouts/ChatLayout.vue'),
     children: [
-      { path: '', name: 'Chat', component: () => import('pages/chat/ChatUi.vue')},
+      { path: '/:chatId', name: 'Chat', component: () => import('pages/chat/ChatUi.vue')},
     ]
   },
 
