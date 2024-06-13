@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Site Node.js CI
 
 on:
   push:
@@ -26,12 +26,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: npm ci
-      working-directory: ./site
-      run: npm ci
-    - name: npm run build
-      working-directory: ./site
-      run: npm run build --if-present
-    - name: npm test 
-      working-directory: ./site
-      run: npm test
+        cache-dependency-path: site/package-lock.json
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+
+defaults:
+  run:
+    working-directory: ./site
