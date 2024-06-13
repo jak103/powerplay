@@ -28,7 +28,7 @@ func postGoalsHandler(c *fiber.Ctx) error {
 	}
 
 	// Connect to database and insert goal
-	db := db.GetSession(c)
+	db := database.newSession(c)
 	record, err := db.SaveGoal(goalPostRequest)
 
 	if err != nil {

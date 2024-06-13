@@ -87,14 +87,13 @@ func GetSession(c *fiber.Ctx) session {
 		logger = locals.Logger(c)
 	}
 
-	s := session{
+	return session{
 		dbConnection.Session(&gorm.Session{
 			Logger: &dbLogger{
 				theLogger: &logger,
 			},
 		}),
 	}
-	return s
 }
 
 func RunSeeders(seeders []ppseeders.Seeder, args ...interface{}) error {

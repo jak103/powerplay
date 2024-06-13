@@ -39,7 +39,8 @@ func TestPostGoal(t *testing.T) {
 
 	app := apis.CreateTestApp()
 
-	req, _ := http.NewRequest(fiber.MethodPost, "/api/v1/goals", bodyReader)
+	req, err := http.NewRequest(fiber.MethodPost, "/api/v1/goals", bodyReader)
+	assert.Nil(t, err)
 	req.Header.Add("Content-Type", "application/json")
 
 	res, err := app.Test(req)
