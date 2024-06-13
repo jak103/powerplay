@@ -13,6 +13,7 @@ import (
 func init() {
 	apis.RegisterHandler(fiber.MethodPost, "/logos", auth.Public, handleLogoUpload)
 	apis.RegisterHandler(fiber.MethodGet, "/logos/:id<int>", auth.Public, handleGetLogoByID)
+	// Need to be able to specify ctx.Type (the request's Content-Type) in the RegisterHandler
 }
 
 func handleLogoUpload(c *fiber.Ctx) error {
@@ -57,6 +58,6 @@ func handleGetLogoByID(c *fiber.Ctx) error {
 		return responder.InternalServerError(c)
 	}
 
-	// Send JSON response
-	return responder.OkWithData(c, logo)
+	c.Type("png")
+	return c.Send(logo.Image)
 }
