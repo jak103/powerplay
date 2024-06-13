@@ -28,6 +28,7 @@ type SeasonStats struct {
 	EarlyGames int
 	LateGames  int
 	TotalGames int
+	Score      float64
 }
 
 func (ss SeasonStats) EarlyPercentage() float32 {

@@ -48,10 +48,10 @@ schemas:
       seasonId:
         type: int
         description: The id of the season to generate a schedule for
-      algorithm:
+      optimizer:
         type: string
-        description: The type of algorithm to use
-        example: round_robin
+        description: Which optimization algorithm to use
+        example: set_swap
       ice_times:
         type: string
         format: binary

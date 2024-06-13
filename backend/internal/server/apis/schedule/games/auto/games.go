@@ -3,6 +3,7 @@ package auto
 import (
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
@@ -27,7 +29,7 @@ import (
 
 type Body struct {
 	seasonID             uint
-	algorithm            string
+	optimizer            string
 	iceTimes             []string
 	numberOfGamesPerTeam int
 }
@@ -47,7 +49,7 @@ func handleOptimizeGames(c *fiber.Ctx) error {
 		SeasonID uint `json:"season_id"`
 	}
 	var dto Dto
-	err := c.BodyParser(&dto)
+	body, err := readBody(c)
 	if err != nil {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -60,7 +62,16 @@ func handleOptimizeGames(c *fiber.Ctx) error {
 		return responder.InternalServerError(c, err)
 	}
 
-	round_robin.OptimizeSchedule(*games)
+	optimizer := body.optimizer
+
+	if optimizer == "pair-swap" {
+		optimize.PairOptimizeSchedule(*games)
+	} else if optimizer == "set-swap" {
+		optimize.SetOptimizeSchedule(*games)
+	} else {
+		return responder.BadRequest(c, fiber.StatusBadRequest, fmt.Sprintf("Invalid optimizer %v", optimizer))
+	}
+
 	// write to the db
 	assignLockerRooms(*games)
 	_, err = session.SaveGames(*games)
@@ -86,7 +97,8 @@ func handleCreateGames(c *fiber.Ctx) error {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
 	}
 	seasonID := body.seasonID
-	algorithm := body.algorithm
+	// TODO: optimize the schedule a couple times and pick the one with the best score
+	//optimizer := body.optimizer
 	iceTimes := body.iceTimes
 	numberOfGamesPerTeam := body.numberOfGamesPerTeam
 
@@ -105,12 +117,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 	}
 
 	var games []models.Game
-	if algorithm == "round_robin" {
-		games, err = round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
-	} else {
-		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("invalid algorithm").Error())
-	}
-
+	games, err = round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
 	// check for error after any of the algorithms is done
 	if err != nil {
 		return responder.InternalServerError(c, err.Error())
@@ -144,7 +151,7 @@ func readBody(c *fiber.Ctx) (Body, error) {
 
 	dto := struct {
 		SeasonID             uint   `json:"season_id"`
-		Algorithm            string `json:"algorithm"`
+		Optimizer            string `json:"optimizer"`
 		NumberOfGamesPerTeam int    `json:"number_of_games_per_team"`
 	}{}
 
@@ -167,7 +174,7 @@ func readBody(c *fiber.Ctx) (Body, error) {
 
 	body := Body{
 		seasonID:             dto.SeasonID,
-		algorithm:            dto.Algorithm,
+		optimizer:            dto.Optimizer,
 		iceTimes:             iceTimes,
 		numberOfGamesPerTeam: dto.NumberOfGamesPerTeam,
 	}
