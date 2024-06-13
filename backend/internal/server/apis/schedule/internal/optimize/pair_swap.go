@@ -25,7 +25,7 @@ func PairOptimizeSchedule(games []models.Game) {
 	lastBalanceCount := -1
 
 	for count := 0; balanceCount != lastBalanceCount && count < 3; count++ {
-		schedule(games, seasonStats, teamStats)
+		pairSwapSchedule(games, seasonStats, teamStats)
 
 		log.Info("Post-optimization analysis")
 		seasonStats, teamStats = analysis.RunTimeAnalysis(games)
@@ -37,7 +37,7 @@ func PairOptimizeSchedule(games []models.Game) {
 	}
 }
 
-func schedule(games []models.Game, seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {
+func pairSwapSchedule(games []models.Game, seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {
 	resetOptimized(games)
 	log.Info("OPT: Early games percent: %v%%\n", seasonStats.EarlyPercentage()*100)
 	seasonEarlyHigh := int(seasonStats.EarlyPercentage()*10.0) + 1 // TODO took a shortcut here and just hardcoded the 10 games
