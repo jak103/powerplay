@@ -51,7 +51,7 @@ schemas:
       optimizer:
         type: string
         description: Which optimization algorithm to use
-        example: set_sway
+        example: set_swap
       ice_times:
         type: string
         format: binary
