@@ -5,13 +5,13 @@ import "github.com/jak103/powerplay/internal/models"
 func (s *session) GetUserByUsername(username string) (*models.User, error) {
 	user := &models.User{}
 
-	result := s.connection.Where("username = ?", username).First(user)
+	result := s.Where("username = ?", username).First(user)
 
 	return resultOrError(user, result)
 }
 
 func (s *session) CreateUser(user *models.User) (*models.User, error) {
-	result := s.connection.Create(user)
+	result := s.Create(user)
 
 	return resultOrError(user, result)
 }
