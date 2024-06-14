@@ -21,8 +21,8 @@ import (
 
 var db *gorm.DB
 
-type Session struct {
-	Connection *gorm.DB
+type session struct {
+	connection *gorm.DB
 }
 
 func Init() error {
@@ -67,22 +67,22 @@ func Init() error {
 
 func Migrate() error {
 	s := GetSession(nil)
-	return migrations.Run(s.Connection)
+	return migrations.Run(s.connection)
 }
 
 func GetDB() *gorm.DB {
 	return db
 }
 
-func GetSession(c *fiber.Ctx) Session {
+func GetSession(c *fiber.Ctx) session {
 
 	logger := log.TheLogger
 	if c != nil {
 		logger = locals.Logger(c)
 	}
 
-	s := Session{
-		Connection: db.Session(&gorm.Session{
+	s := session{
+		connection: db.Session(&gorm.Session{
 			Logger: &dbLogger{
 				theLogger: &logger,
 			},
@@ -94,7 +94,7 @@ func GetSession(c *fiber.Ctx) Session {
 func RunSeeders(seeders []ppseeders.Seeder, args ...interface{}) error {
 	s := GetSession(nil)
 	for _, seeder := range seeders {
-		if _, err := seeder.Seed(s.Connection, args...); err != nil {
+		if _, err := seeder.Seed(s.connection, args...); err != nil {
 			return err
 		}
 	}
