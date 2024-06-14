@@ -4,10 +4,11 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/round_robin"
 	"io"
 	"mime/multipart"
 	"strings"
+
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/round_robin"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
