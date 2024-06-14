@@ -59,7 +59,7 @@ func Setup(app *fiber.App) {
 		log.Alert("Setting permissive CORS")
 		// CORS https://docs.gofiber.io/api/middleware/cors /
 		app.Use(cors.New(cors.Config{
-			AllowOrigins:     "*",
+			AllowOrigins:     "http://localhost:9002",
 			AllowCredentials: true,
 			AllowMethods:     "POST, GET, OPTIONS, PUT, DELETE",
 			AllowHeaders:     "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Cookie",
