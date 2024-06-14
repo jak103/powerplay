@@ -4,10 +4,11 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/round_robin"
 	"io"
 	"mime/multipart"
 	"strings"
+
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/round_robin"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
@@ -106,7 +107,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 	logger := locals.Logger(c)
 	session := db.GetSession(c)
 
-	leagues, err := session.GetLeaguesBySeason(seasonID)
+	leagues, err := session.GetLeaguesBySeason(int(seasonID))
 	if err != nil {
 		logger.WithErr(err).Error("Failed to get leagues for season %v the database", seasonID)
 		return responder.InternalServerError(c, err)
