@@ -48,6 +48,11 @@ func Forbidden(c *fiber.Ctx, message ...any) error {
 	return respond(c, fiber.StatusForbidden, nil, message...)
 }
 
+// 404
+func NotFound(c *fiber.Ctx, message ...any) error {
+	return respond(c, fiber.StatusNotFound, nil, message...)
+}
+
 func InternalServerError(c *fiber.Ctx, message ...any) error {
 	return respond(c, fiber.StatusInternalServerError, nil, message...)
 }

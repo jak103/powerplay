@@ -4,6 +4,7 @@
 
 
 [![Go](https://github.com/jak103/powerplay/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/jak103/powerplay/actions/workflows/go.yml)
+[![Site Node.js CI](https://github.com/jak103/powerplay/actions/workflows/node.js.yml/badge.svg)](https://github.com/jak103/powerplay/actions/workflows/node.js.yml)
 
 ## Table of Contents
 - [Team Specific Pages](#team-specific-pages)
