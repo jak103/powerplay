@@ -1,8 +1,6 @@
 package main
 
 import (
-	"flag"
-
 	"github.com/jak103/powerplay/internal/db/seeders/fake_data"
 	"github.com/jak103/powerplay/internal/models"
 
@@ -78,9 +76,9 @@ func runFakeDataSeeds() {
 }
 
 func main() {
-	migrateFlag := flag.Bool("migrate", false, "Run database migrations and exit")
-	seedTestData := flag.Bool("seed-test", false, "Seed test data and exit")
-	flag.Parse()
+	// migrateFlag := flag.Bool("migrate", false, "Run database migrations and exit")
+	// seedTestData := flag.Bool("seed-test", false, "Seed test data and exit")
+	// flag.Parse()
 
 	err := log.Init("DEBUG", false)
 	if err != nil {
