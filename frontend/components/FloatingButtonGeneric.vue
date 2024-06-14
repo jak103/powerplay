@@ -4,11 +4,9 @@
     </div>
 </template>
 
-<<<<<<< main
-<script>
-=======
+
 <script lang="ts">
->>>>>>> main
+
     export default {
         props: {
             link: {
@@ -53,8 +51,6 @@
         font-size: large;
         color: lightgray;
     }
-<<<<<<< main
+
 </style>
-=======
-</style>
->>>>>>> main
+
