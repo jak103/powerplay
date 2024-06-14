@@ -1,8 +1,6 @@
 package optimize
 
 import (
-	"sort"
-
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"

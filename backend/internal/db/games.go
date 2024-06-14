@@ -26,7 +26,9 @@ func (s Session) GetGames(seasonId uint) (*[]models.Game, error) {
 	return resultOrError(&games, result)
 }
 
-func (s Session) UpdateGame(game models.Game) (*models.Game, error) {
+func (s Session) UpdateGame(id uint, game models.Game) (*models.Game, error) {
+	// use the id to update the game
+	game.ID = id
 	result := s.Connection.Save(&game)
 	return resultOrError(&game, result)
 }

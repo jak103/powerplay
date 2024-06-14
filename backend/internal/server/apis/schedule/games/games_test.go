@@ -1,4 +1,4 @@
-package auto
+package games
 
 import (
 	"bytes"

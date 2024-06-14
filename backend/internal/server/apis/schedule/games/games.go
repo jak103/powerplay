@@ -1,9 +1,10 @@
-package auto
+package games
 
 import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/round_robin"
 	"io"
 	"mime/multipart"
 	"strings"
@@ -12,7 +13,6 @@ import (
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
