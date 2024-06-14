@@ -17,7 +17,7 @@ include_ext = ["go", "yml", "mod", "env"]
 # Ignore these filename extensions or directories.
 exclude_dir = ["vendor"]
 # Watch these directories if you specified.
-include_dir = ["backend/cmd", "backend/internal", "backend"]
+include_dir = ["backend/cmd", "backend/internal", "backend", "config"]
 # Watch these files.
 include_file = []
 # Exclude files.

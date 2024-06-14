@@ -32,7 +32,7 @@ There are 5 major steps to creating or editing an endpoint.
 #### **GET and POST Handlers**
 The following links to the current penalty API handlers. Use this as an example for creating new handlers so everything in the backend follows a similar pattern.
 
-- [Example Penalties API Handler](/backend/internal/server/apis/stats/penalty.go)
+- [Example Penalties API Handler](/backend/internal/server/apis/sports/stats/penalty.go)
 
 4. Add in any handlers to the init function
 ``` go
@@ -59,7 +59,7 @@ The following link is to an example .go file containing methods to be used as an
 2. Create or update the corresponding .yml file to correctly reflect any changes you have made.
 
 3. Use the following linked .yml file to keep the documentation consistent throughout the backend.
-- [Example .yml file](/static/oas/v1/stats/penalties.yml)
+- [Example .yml file](/static/oas/v1/sports/stats/penalties.yml)
 
 ## Adding and Updating Unit Testing for Database Model
 Adding a unit test for a database model. These tests will be using a docker spin up of the actual database for testing the database interfacing functions.
