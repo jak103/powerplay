@@ -60,7 +60,7 @@ func Setup(app *fiber.App) {
 		// CORS https://docs.gofiber.io/api/middleware/cors /
 		app.Use(cors.New(cors.Config{
 			AllowOrigins:     "*",
-			AllowCredentials: true,
+			AllowCredentials: false,
 			AllowMethods:     "POST, GET, OPTIONS, PUT, DELETE",
 			AllowHeaders:     "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Cookie",
 			ExposeHeaders:    "Set-Cookie",

@@ -62,7 +62,9 @@ paths:
     $ref: "./users/users.yml#/paths/user"
   /venues:
     $ref: "./sports/stats/venues.yml#/paths/venues"
-  
+  /schedule/games:
+    $ref: "./schedule/schedule.yml#/paths/games"
+
 components:
   securitySchemes:
     BearerAuth:
