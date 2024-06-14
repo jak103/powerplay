@@ -18,10 +18,10 @@ func (s session) CreateRoster(roster *models.Roster) error {
 	return result.Error
 }
 
-func (s session) GetUserByEmail(email string) (*models.User, error) {
+func (s session) GetUserByUsername(email string) (*models.User, error) {
 	user := &models.User{}
 
-	err := s.Find(&user, "email = ?", email)
+	err := s.Find(&user, "username = ?", email)
 
 	return resultOrError(user, err)
 }
