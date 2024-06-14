@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM node:20-alpine AS frontend
-WORKDIR /app/frontend
-COPY ./frontend .
+FROM node:20-alpine AS site
+WORKDIR /app/site
+COPY ./site .
 RUN npm install
 ENV NODE_ENV production
 RUN npm run build
@@ -19,5 +19,5 @@ WORKDIR /app
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=backend /app/powerplay /app/powerplay
 COPY ./static /app/static
-# COPY --from=frontend /app/frontend/dist/spa /app/static
+COPY --from=site /app/site/dist/spa /app/static
 CMD ["/app/powerplay"]
