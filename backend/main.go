@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/jak103/powerplay/internal/db/seeders/fake_data"
 	"github.com/jak103/powerplay/internal/models"
 
@@ -102,24 +103,24 @@ func main() {
 	log.Info("--Power Play v0.0.0--") // TODO Get build info automatically
 
 	// Connect to DB
-	err = db.Init()
-	if err != nil {
-		log.WithErr(err).Alert("Failed to connect to DB")
-		return
-	}
+	// err = db.Init()
+	// if err != nil {
+	// 	log.WithErr(err).Alert("Failed to connect to DB")
+	// 	return
+	// }
 
-	if *migrateFlag {
-		runMigrations()
-		return
-	}
+	// if *migrateFlag {
+	// 	runMigrations()
+	// 	return
+	// }
 
-	if *seedTestData {
-		runFakeDataSeeds()
-		return
-	}
+	// if *seedTestData {
+	// 	runFakeDataSeeds()
+	// 	return
+	// }
 
-	runMigrations()
-	runSeeds()
+	// runMigrations()
+	// runSeeds()
 
 	// run
 	server.Run()
