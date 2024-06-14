@@ -2,6 +2,8 @@ package models
 
 type League struct {
 	DbModel
-	Name  string //`json:"name"`
-	Teams []Team //`json:"teams"`//
+	CorrelationId string `json:"correlation_id"`
+	SeasonID      uint   `json:"season_id"`
+	Name          string `json:"name"`
+	Teams         []Team `json:"teams"`
 }

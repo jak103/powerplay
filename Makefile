@@ -3,8 +3,13 @@
 
 migrate:
 	@echo "🚀 Running app in detached mode and applying migrations"
-	@docker-compose -f docker-compose.yml up -d
-	@docker-compose -f docker-compose.yml exec backend bash -c "cd /app/backend && go run . -migrate" || (echo "Migration failed, halting" && exit 1)
+	@docker compose -f docker-compose.yml up -d
+	@docker compose -f docker-compose.yml exec backend bash -c "cd /powerplay/backend && go run . -migrate" || (echo "Migration failed, halting" && exit 1)
+
+nuke-migrations:
+	@echo "💥 Truncating migrations table"
+	@docker compose -f docker-compose.yml exec database bash -c "psql -d powerplay -c 'TRUNCATE migrations';"
+	@$(MAKE) migrate
 
 production_image:
 	docker build -f build/Dockerfile.production -t powerplay .
@@ -15,8 +20,12 @@ production_debug:
 run_local_image:
 	docker run -p 127.0.0.1:9001:9001/tcp powerplay:latest
 
+seed_test_data:
+	@echo "🌱 Running backend in detached mode and seeding test data"
+	@docker compose -f docker-compose.yml up -d
+	@docker compose -f docker-compose.yml exec backend bash -c "cd /powerplay/backend && go run . -seed-test" || (echo "Seeding failed, halting" && exit 1)
 
 
 test:
 	@echo "🚀 Testing code: Running go test inside the backend container"
-	@docker-compose -f docker-compose.yml exec -T backend bash -c "cd /app/backend && go test -v ./..."
+	@docker compose -f docker-compose.yml exec -T backend bash -c "cd /powerplay/backend && go test -v ./..."

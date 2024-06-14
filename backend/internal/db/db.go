@@ -11,6 +11,7 @@ import (
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db/migrations"
 
+	ppseeders "github.com/jak103/powerplay/internal/db/seeders"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"gorm.io/driver/postgres"
@@ -18,10 +19,10 @@ import (
 	gorm_logger "gorm.io/gorm/logger"
 )
 
-var db *gorm.DB
+var dbConnection *gorm.DB
 
 type session struct {
-	connection *gorm.DB
+	*gorm.DB
 }
 
 func Init() error {
@@ -54,7 +55,7 @@ func Init() error {
 		},
 	)
 
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
+	dbConnection, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		log.WithErr(err).Alert("Failed to connect to DB")
 		return err
@@ -65,8 +66,19 @@ func Init() error {
 }
 
 func Migrate() error {
-	s := GetSession(nil)
-	return migrations.Run(s.connection)
+	logger := log.TheLogger
+
+	s := dbConnection.Session(&gorm.Session{
+		Logger: &dbLogger{
+			theLogger: &logger,
+		},
+	})
+
+	return migrations.Run(s)
+}
+
+func GetDB() *gorm.DB {
+	return dbConnection
 }
 
 func GetSession(c *fiber.Ctx) session {
@@ -75,14 +87,23 @@ func GetSession(c *fiber.Ctx) session {
 		logger = locals.Logger(c)
 	}
 
-	s := session{
-		connection: db.Session(&gorm.Session{
+	return session{
+		dbConnection.Session(&gorm.Session{
 			Logger: &dbLogger{
 				theLogger: &logger,
 			},
 		}),
 	}
-	return s
+}
+
+func RunSeeders(seeders []ppseeders.Seeder, args ...interface{}) error {
+	s := GetSession(nil)
+	for _, seeder := range seeders {
+		if _, err := seeder.Seed(s.DB, args...); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func resultOrError[T any](t *T, result *gorm.DB) (*T, error) {

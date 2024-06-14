@@ -2,12 +2,15 @@ package models
 
 type Team struct {
 	DbModel
-	Name     string //`json:"name"`
-	LogoPath string //`json:"logo_path"`
-	Color    string //`json:"color"`
-	Active   bool   //`json:"active"`
-	LeagueID uint   //`json:"league_id"`
-	League   League `json:"league"`
-	// Captain   User   `json:"primary_captain" gorm:"foreignKey:CaptainID"`
-	// CaptainID uint   `json:"primary_captain_id"`
+	CorrelationId string  `json:"correlation_id"`
+	Name          string  `json:"name"`
+	LogoId        string  `json:"logo_id"`
+	Color         string  `json:"color"`
+	LeagueID      uint    `json:"league_id"`
+	League        League  `json:"league"`
+	Roster        *Roster `json:"roster"`
+	RosterID      *uint   `json:"roster_id"`
+
+	Wins   int `json:"wins"`
+	Losses int `json:"losses"`
 }
