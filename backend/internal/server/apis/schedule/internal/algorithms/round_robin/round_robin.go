@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"github.com/jak103/powerplay/internal/models"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
 	"github.com/jak103/powerplay/internal/utils/log"
 )
@@ -33,33 +31,6 @@ func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam
 	}
 
 	return games, nil
-}
-
-func OptimizeSchedule(games []models.Game) {
-	if len(games) == 0 {
-		log.Info("No games to optimize")
-		return
-	}
-	log.Info("Pre-optimization analysis")
-	seasonStats, teamStats := analysis.RunTimeAnalysis(games)
-
-	// Need to make sure games are balanced in
-	// - Early / late
-	// - Days between games
-	balanceCount := getBalanceCount(&teamStats)
-	lastBalanceCount := -1
-
-	for count := 0; balanceCount != lastBalanceCount && count < 3; count++ {
-		optimize.Schedule(games, seasonStats, teamStats)
-
-		log.Info("Post-optimization analysis")
-		seasonStats, teamStats = analysis.RunTimeAnalysis(games)
-
-		lastBalanceCount = balanceCount
-		balanceCount := getBalanceCount(&teamStats)
-
-		log.Info("Balanced count: %v\n", balanceCount)
-	}
 }
 
 func generateGames(leagues []models.League, numberOfGamesPerTeam int) (structures.Season, error) {
@@ -127,19 +98,6 @@ func assignTimes(times []string, season structures.Season, numberOfGamesPerTeam 
 	}
 
 	return games, nil
-}
-
-func getBalanceCount(teamStats *map[string]structures.TeamStats) int {
-	if teamStats == nil {
-		return 0
-	}
-	balanceCount := 0
-	for _, team := range *teamStats {
-		if team.Balanced {
-			balanceCount++
-		}
-	}
-	return balanceCount
 }
 
 func rotateTeams(league *models.League) {

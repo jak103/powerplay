@@ -1,11 +1,9 @@
 package analysis
 
 import (
-	"fmt"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
-	"github.com/jak103/powerplay/internal/utils/log"
-	"sort"
+	"math"
 	"time"
 )
 
@@ -45,7 +43,7 @@ func RunTimeAnalysis(games []models.Game) (structures.SeasonStats, map[string]st
 
 	timeBetweenGames(games, teamStats)
 
-	printStats(seasonStats, teamStats)
+	scoreAll(&seasonStats, teamStats)
 
 	return seasonStats, teamStats
 }
@@ -129,43 +127,61 @@ func IsEarlyGame(hour, minute int) bool {
 	return false
 }
 
-func printStats(seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {
-	log.Debug("Early games: %v/%v (%v%%)\n", seasonStats.EarlyGames, seasonStats.TotalGames, (float32(seasonStats.EarlyGames)/float32(seasonStats.TotalGames))*100)
-	log.Debug("Late  games: %v/%v (%v%%)\n", seasonStats.LateGames, seasonStats.TotalGames, (float32(seasonStats.LateGames)/float32(seasonStats.TotalGames))*100)
+func scoreAll(ss *structures.SeasonStats, ts map[string]structures.TeamStats) {
+	// use the coefficient of variation so we can compare the variation across different pieces of data
+	// see https://en.wikipedia.org/wiki/Coefficient_of_variation
 
-	for _, league := range []string{"A", "B", "C", "D"} {
-		log.Debug("%v league:\n", league)
+	var earlyGamesCoefficientOfVariation float64
+	var daysBetweenGamesMeanCoefficientOfVariation float64
 
-		teams := make([]string, 0)
-		for key := range teamStats {
-			teams = append(teams, key)
-		}
-		sort.Strings(teams)
-
-		for _, team := range teams {
-			stats := teamStats[team]
-			if stats.League == league {
-				log.Debug("%v: (%v-%v)\n", team, stats.EarlyGames, stats.LateGames)
-
-				log.Debug("Days of the week: ")
-				for _, dotw := range []time.Weekday{1, 2, 3, 4, 5, 6} {
-					day := fmt.Sprintf("%v", dotw)
-					log.Debug("%c:%v ", day[0], stats.DaysOfTheWeek[dotw])
-				}
-				log.Debug("\n")
-
-				log.Debug("Days between games: ")
-				for i, daysBetween := range stats.DaysBetweenGames {
-					if i < len(stats.DaysBetweenGames)-1 {
-						log.Debug("%v-", daysBetween)
-					} else {
-						log.Debug("%v", daysBetween)
-					}
-				}
-				log.Debug("\n")
-
-				log.Debug("Average days between games: %0.1f\n", stats.AverageDaysBetweenGames)
-			}
-		}
+	// compute the variation for early-late games for all teams over the season
+	earlyGameCounts := make([]float64, len(ts))
+	i := 0
+	for _, teamStats := range ts {
+		earlyGameCounts[i] = float64(teamStats.EarlyGames)
+		i++
 	}
+	earlyGamesCoefficientOfVariation = coefficientOfVariation(earlyGameCounts)
+
+	// compute the mean variation for time between games
+	dayCoefficientsOfVariation := make([]float64, len(ts))
+	i = 0
+	for _, teamStats := range ts {
+		daysBetweenGames := make([]float64, len(teamStats.DaysBetweenGames))
+		for i, days := range teamStats.DaysBetweenGames {
+			daysBetweenGames[i] = float64(days)
+		}
+
+		coefficient := coefficientOfVariation(daysBetweenGames)
+		dayCoefficientsOfVariation[i] = coefficient
+		i++
+	}
+	daysBetweenGamesMeanCoefficientOfVariation = mean(dayCoefficientsOfVariation)
+
+	// TODO: maybe weight these
+	ss.Score = earlyGamesCoefficientOfVariation + daysBetweenGamesMeanCoefficientOfVariation
+}
+
+func coefficientOfVariation(numbers []float64) float64 {
+	mean := mean(numbers)
+	return stddev(numbers, mean) / mean
+}
+
+func mean(numbers []float64) float64 {
+	sum := 0.0
+	for _, value := range numbers {
+		sum += float64(value)
+	}
+
+	return sum / float64(len(numbers))
+}
+
+func stddev(numbers []float64, mean float64) float64 {
+	sum := 0.0
+	for _, value := range numbers {
+		diff := float64(value) - mean
+		sum += (diff * diff)
+	}
+
+	return math.Sqrt(sum / float64(len(numbers)))
 }
