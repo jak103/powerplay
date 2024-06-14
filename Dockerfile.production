@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1
+FROM node:20-alpine AS site
+WORKDIR /app/site
+COPY ./site .
+RUN npm install
+ENV NODE_ENV production
+RUN npm run build
+
+FROM golang:1.22.3 AS backend
+WORKDIR /app
+COPY ./backend .
+RUN CGO_ENABLED=0 go build -o powerplay ./main.go
+
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
+
+FROM scratch
+WORKDIR /app
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=backend /app/powerplay /app/powerplay
+COPY ./static /app/static
+COPY --from=site /app/site/dist/spa /app/static
+CMD ["/app/powerplay"]
