@@ -8,8 +8,8 @@ export interface Team extends DbModel {
   color: string
   league_id: LeagueId
   league: League
-  roster: Roster
-  roster_id: RosterId
+  roster?: Roster
+  roster_id?: RosterId
   wins: number
   losses: number
 }

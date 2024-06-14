@@ -11,6 +11,6 @@ export interface Goals extends DbModel {
   period: number
   assist1_id: UserId
   assist2_id: UserId
-  player_differential: number
-  is_penalty_shot: boolean
+  playerdifferential: number
+  ispenaltyshot: boolean
 }

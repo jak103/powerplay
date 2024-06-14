@@ -14,7 +14,8 @@ export interface Penalty extends DbModel {
   team_id: TeamId
   game_id: GameId
   period: number
-  game_time: number
+  /** Penalty.duration === game time */
+  duration: number
   created_by: UserId
   penalty_type: PenaltyType
   penalty_type_id: PenaltyTypeId
