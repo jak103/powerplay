@@ -11,17 +11,17 @@ import (
 )
 
 type Config struct {
-	Env             string   `env:"ENV" envDefault:"local"`
-	Dir             string   `env:"CONFIG_DIR" envDefault:"/powerplay/config"`
-	DebugVars       bool     `env:"DEBUG_VARS" envDefault:"false"`
-	LogLevel        string   `env:"LOG_LEVEL" envDefault:"DEBUG"`
-	LogColor        bool     `env:"LOG_COLOR" envDefault:"true"`
-	JwtSecret       string   `env:"JWT_SECRET"`
-	VapidPublicKey  string   `env:"VAPID_PUBLIC_KEY"  envDefault:"BMPQhGq2KuP92WTzRK7S5UgLk5v8H0ZoNXXJji0J5wO3ufLm24AgelUfpe0BvasoupYfSagpGFZvwRTSBS-KYzY"`
-	VapidPrivateKey string   `env:"VAPID_PRIVATE_KEY" envDefault:"ZcXYJyrk0kAeC0VkIcJWkwlPvC6CwrVsjTlys1Uu2P8"`
-	Port            string   `env:"PORT" envDefault:"9002"`
-	Db              Postgres `envPrefix:"DB_"`
-	PasswordKey     string   `env:"PASSWORD_KEY,required"`
+	Env       string `env:"ENV" envDefault:"local"`
+	Dir       string `env:"CONFIG_DIR" envDefault:"/powerplay/config"`
+	DebugVars bool   `env:"DEBUG_VARS" envDefault:"false"`
+	LogLevel  string `env:"LOG_LEVEL" envDefault:"DEBUG"`
+	LogColor  bool   `env:"LOG_COLOR" envDefault:"true"`
+	JwtSecret string `env:"JWT_SECRET"`
+	// VapidPublicKey  string   `env:"VAPID_PUBLIC_KEY"  envDefault:"BMPQhGq2KuP92WTzRK7S5UgLk5v8H0ZoNXXJji0J5wO3ufLm24AgelUfpe0BvasoupYfSagpGFZvwRTSBS-KYzY"`
+	// VapidPrivateKey string   `env:"VAPID_PRIVATE_KEY" envDefault:"ZcXYJyrk0kAeC0VkIcJWkwlPvC6CwrVsjTlys1Uu2P8"`
+	Port        string   `env:"PORT" envDefault:"8080"`
+	Db          Postgres `envPrefix:"DB_"`
+	PasswordKey string   `env:"PASSWORD_KEY,required"`
 }
 
 type Postgres struct {
