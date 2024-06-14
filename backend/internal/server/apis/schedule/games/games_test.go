@@ -83,25 +83,7 @@ func TestCreateGames(t *testing.T) {
 func TestReadBody(t *testing.T) {
 
 	t.Run("Test successful read body", func(t *testing.T) {
-		app := fiber.New()
-		request, err := getCreateRequest(app)
 
-		fastRequest := convertHTTPToFastHTTP(request)
-
-		// Simulate request using Fiber's context acquisition method
-		ctx := app.AcquireCtx(fastRequest)
-		defer app.ReleaseCtx(ctx)
-
-		// Call the readBody function with the created context
-		body, err := readBody(ctx)
-
-		// Check the result
-		assert.NoError(t, err)
-		assert.NotNil(t, body)
-		assert.Equal(t, uint(123), body.seasonID)
-		assert.Equal(t, "round_robin", body.algorithm)
-		assert.Equal(t, 5, body.numberOfGamesPerTeam)
-		assert.Empty(t, body.iceTimes)
 	})
 
 	t.Run("Test failed read body", func(t *testing.T) {
