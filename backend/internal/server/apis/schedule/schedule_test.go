@@ -1,4 +1,4 @@
-package games
+package schedule
 
 import (
 	"bytes"
@@ -24,7 +24,7 @@ func TestOptimizeGames(t *testing.T) {
 	t.Run("Test successful optimization", func(t *testing.T) {
 		// Mock Fiber app
 		app := fiber.New()
-		app.Put("/schedule/auto/optimize", handleOptimizeGames)
+		app.Put("/schedule", handleOptimizeGames)
 
 		// Prepare request body
 		requestBody := `{"season_id": 123}`
@@ -153,7 +153,7 @@ func TestAssignLockerRooms(t *testing.T) {
 // Helper functions
 func getCreateRequest(app *fiber.App) (*http.Request, error) {
 	// Mock Fiber app
-	app.Post("/schedule/auto/games", handleCreateGames)
+	app.Post("/schedule", handleCreateGames)
 
 	// Get the multipart file
 	fileHeader, body, err := getMultiPartFile()
@@ -185,7 +185,7 @@ func getCreateRequest(app *fiber.App) (*http.Request, error) {
 	}
 
 	// Make a request to the endpoint with the multipart form data
-	request := httptest.NewRequest("POST", "/schedule/auto/games", &b)
+	request := httptest.NewRequest("POST", "/schedule", &b)
 	request.Header.Set("Content-Type", multipartWriter.FormDataContentType())
 	return request, nil
 }
