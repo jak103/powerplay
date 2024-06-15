@@ -20,7 +20,7 @@ import (
 
 // TODO add dockertest to be able to test the functions that interact with the database
 
-func TestOptimizeGames(t *testing.T) {
+func TestOptimizeGames(s) {
 	t.Run("Test successful optimization", func(t *testing.T) {
 		// Mock Fiber app
 		app := fiber.New()
