@@ -25,6 +25,13 @@ paths:
       put:
         tags:
           - Schedule
+        requestBody:
+          description: The request body should contain the id of the season, type of algorithm, ice times spreadsheet, and number of games per team
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/OptimizeRequest"
         summary: Optimize current schedule and get corresponding analysis
         description: |
           **REQUIRED PERMISSIONS:** admin
@@ -63,10 +70,11 @@ schemas:
       seasonId:
         type: int
         description: The id of the season to generate a schedule for
+        example: 1
       optimizer:
         type: string
         description: Which optimization algorithm to use
-        example: set_swap
+        example: set-swap
       ice_times:
         type: string
         format: binary
@@ -74,6 +82,17 @@ schemas:
       numberOfGamesPerTeam:
         type: int
         description: Number of games to assign per team
+  OptimizeRequest:
+    type: object
+    properties:
+      seasonId:
+        type: int
+        description: The id of the season to generate a schedule for
+        example: 1
+      optimizer:
+        type: string
+        description: Which optimization algorithm to use
+        example: set-swap
 
 components:
   schemas:
