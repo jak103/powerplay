@@ -1,5 +1,5 @@
 paths:
-    games:
+    schedule:
       post:
         tags:
           - Schedule
@@ -16,6 +16,21 @@ paths:
         responses:
           200:
             description: Successfully generated schedule
+            content:
+              application/json:
+                schema:
+                  $ref: '#/schemas/ScheduleResponse'
+          400:
+            $ref: "../common/errors.yml#/responses/BadRequest"
+      put:
+        tags:
+          - Schedule
+        summary: Optimize current schedule and get analysis corresponding
+        description: |
+          **REQUIRED PERMISSIONS:** admin
+        responses:
+          200:
+            description: Successfully optimized schedule
             content:
               application/json:
                 schema:
