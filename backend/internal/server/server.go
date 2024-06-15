@@ -13,7 +13,7 @@ import (
 	_ "github.com/jak103/powerplay/internal/server/apis/auth"
 	_ "github.com/jak103/powerplay/internal/server/apis/chat"
 	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
-	_ "github.com/jak103/powerplay/internal/server/apis/schedule/games"
+	_ "github.com/jak103/powerplay/internal/server/apis/schedule"
 	_ "github.com/jak103/powerplay/internal/server/apis/sports/components"
 	_ "github.com/jak103/powerplay/internal/server/apis/sports/stats"
 	_ "github.com/jak103/powerplay/internal/server/apis/user"

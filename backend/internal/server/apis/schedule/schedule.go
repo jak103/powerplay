@@ -1,4 +1,4 @@
-package games
+package schedule
 
 import (
 	"encoding/csv"
