@@ -155,3 +155,6 @@ go.work
 /.vscode
 /.idea
 local.env
+
+#CODE-COV Files
+.github/workflows/main.yml
