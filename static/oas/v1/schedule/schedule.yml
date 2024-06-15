@@ -25,7 +25,7 @@ paths:
       put:
         tags:
           - Schedule
-        summary: Optimize current schedule and get analysis corresponding
+        summary: Optimize current schedule and get corresponding analysis
         description: |
           **REQUIRED PERMISSIONS:** admin
         responses:
