@@ -18,9 +18,9 @@ import (
 	"time"
 )
 
-// TODO add dockertest to be able to test the functions that interact with the database
+// TODO mock the db.GetSession function
 
-func TestOptimizeGames(s) {
+func TestOptimizeGames(t *testing.T) {
 	t.Run("Test successful optimization", func(t *testing.T) {
 		// Mock Fiber app
 		app := fiber.New()
@@ -52,7 +52,7 @@ func TestOptimizeGames(s) {
 	})
 
 	t.Run("Test failed optimization", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
@@ -76,18 +76,36 @@ func TestCreateGames(t *testing.T) {
 	})
 
 	t.Run("Test failed creation", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
 func TestReadBody(t *testing.T) {
 
 	t.Run("Test successful read body", func(t *testing.T) {
+		app := fiber.New()
+		request, err := getCreateRequest(app)
 
+		fastRequest := convertHTTPToFastHTTP(request)
+
+		// Simulate request using Fiber's context acquisition method
+		ctx := app.AcquireCtx(fastRequest)
+		defer app.ReleaseCtx(ctx)
+
+		// Call the readBody function with the created context
+		body, err := readBody(ctx)
+
+		// Check the result
+		assert.NoError(t, err)
+		assert.NotNil(t, body)
+		assert.Equal(t, uint(123), body.seasonID)
+		assert.Equal(t, "pair-swap", body.optimizer)
+		assert.Equal(t, 5, body.numberOfGamesPerTeam)
+		assert.Empty(t, body.iceTimes)
 	})
 
 	t.Run("Test failed read body", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
@@ -109,7 +127,7 @@ func TestGetIceTimes(t *testing.T) {
 	})
 
 	t.Run("Test failed get ice times", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
@@ -146,7 +164,7 @@ func TestAssignLockerRooms(t *testing.T) {
 	})
 
 	t.Run("Test failed assign", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
@@ -176,7 +194,7 @@ func getCreateRequest(app *fiber.App) (*http.Request, error) {
 
 	// Write other fields
 	_ = multipartWriter.WriteField("seasonID", "123")
-	_ = multipartWriter.WriteField("algorithm", "round_robin")
+	_ = multipartWriter.WriteField("optimizer", "pair-swap")
 	_ = multipartWriter.WriteField("number_of_games_per_team", "5")
 
 	// Close the multipart writer
