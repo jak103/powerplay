@@ -53,13 +53,6 @@ func (m *MockSession) SaveGames(games []models.Game) (int, error) {
 	return args.Int(0), args.Error(1)
 }
 
-type CreateRequestBody struct {
-	seasonID             uint
-	iceTimes             int
-	numberOfGamesPerTeam int
-	// Add other fields as needed
-}
-
 func TestOptimizeGames(t *testing.T) {
 	t.Run("Test successful optimization", func(t *testing.T) {
 		// Mock the db module
@@ -439,7 +432,7 @@ func getMultiPartFile() (*multipart.FileHeader, *bytes.Buffer, error) {
 
 	// Create a new multipart file header
 	fileHeader := &multipart.FileHeader{
-		Filename: "data.csv",
+		Filename: "file",
 		Header: textproto.MIMEHeader{
 			"Content-Type": []string{"text/csv"},
 		},
