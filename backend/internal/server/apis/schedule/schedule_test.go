@@ -19,8 +19,6 @@ import (
 	"time"
 )
 
-// TODO mock the db.GetSession function
-
 // Mocked types for testing
 type MockSession struct {
 	mock.Mock
