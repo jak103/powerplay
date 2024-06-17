@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { useRouter } from 'vue-router';
-  import { useUserStore } from '../../../app/src/stores/user-store';
+  import { useUserStore } from '../stores/user-store';
 
   const signIn = async () => {
     const router = useRouter();
