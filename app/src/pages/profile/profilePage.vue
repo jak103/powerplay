@@ -19,7 +19,7 @@
         <div>{{ userInfo["birthday"] }}</div>
         <q-list class="custom-list" >
           <div style="font-weight: 500; font-size: 20px;">Teams</div>
-      <q-item v-for="team in userInfo['teams']" :key="team.name" class="list-item" @click="goToTeamInfo(team.name)">
+      <q-item v-for="team in userInfo['teams']" :key="team.name" class="list-item" :to="'/teaminfo/' + team.name">
           <q-img 
           :src="team.logo"
            width="45px"
@@ -32,7 +32,7 @@
     </q-list>
     <q-list class="custom-list" >
           <div style="font-weight: 500; font-size: 20px;">Leagues</div>
-      <q-item v-for="league in userInfo['leagues']" :key="league" class="list-item">
+      <q-item v-for="league in userInfo['leagues']" :key="league" class="list-item" :to="'/leagueinfo/' + league">
           <q-img 
           :src="'/src/assets/' + league + '.jpeg'"
            width="45px"
@@ -60,30 +60,19 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-const router = useRouter();
+import {useProfileStore} from 'app/src/stores/profileStore';
+import { ref } from 'vue';
 
-const userInfo = {
-  'name': 'Ricky Bobby',
-  'phone-number': '901-123-4567',
-  'email': 'RickyBobby@gmail.com',
-  'birthday': '12/12/1998',
-  'teams': [{
-    name: 'Trash Pandas',
-    logo: '/src/assets/trash-panda.webp'
-  }, 
-  {
-    name: 'District 5',
-    logo: '/src/assets/District-5.webp'
-  }],
-  'leagues': ['C', 'D']
-}
+const profileStore = useProfileStore();
 
-const goToTeamInfo = (teamName: string) => {
-  const encodedTeamName = encodeURIComponent(teamName);
-  console.log('Going to team info');
-  router.push({ name: 'TeamInfo', params: { teamName: encodedTeamName } });
-};
+const userInfo = ref({
+  'name': profileStore.profile.name,
+  'phone-number': profileStore.profile.number,
+  'email': profileStore.profile.email,
+  'birthday': profileStore.profile.birthday,
+  'teams': profileStore.profile.teams, 
+  'leagues': profileStore.profile.leagues
+});
 
 </script>
 
