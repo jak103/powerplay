@@ -114,7 +114,7 @@ func newLogger(oldLogger Logger) Logger {
 func print(level, text, requestId string, tags map[string]any, skip int) {
 	_, file, line, _ := runtime.Caller(skip)
 
-	file = strings.TrimPrefix(file, "/app/")
+	file = strings.TrimPrefix(file, "/powerplay/")
 
 	tagText := ""
 	if len(tags) > 0 {
