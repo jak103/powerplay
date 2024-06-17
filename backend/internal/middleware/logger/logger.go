@@ -13,6 +13,10 @@ func New() fiber.Handler {
 }
 
 func middleware(c *fiber.Ctx) error {
+	if c.Method() != fiber.MethodOptions {
+		return c.Next()
+	}
+
 	reqid := locals.RequestId(c)
 	logger := log.WithRequestId(reqid)
 
@@ -22,7 +26,7 @@ func middleware(c *fiber.Ctx) error {
 	start := time.Now()
 	err := c.Next()
 	total := time.Since(start)
-
 	logger.Info("Finished %s %s -- [%v] %v", c.Method(), c.Path(), c.Response().StatusCode(), total)
+
 	return err
 }

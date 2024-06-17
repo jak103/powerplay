@@ -2,7 +2,9 @@ package apis
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/jak103/powerplay/internal/middleware"
 	"github.com/jak103/powerplay/internal/server/services/auth"
+	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/log"
 )
 
@@ -47,4 +49,27 @@ func GetRole(method, path string) []auth.Role {
 	}
 
 	return r.roles
+}
+
+// Test utilities
+
+func CreateTestApp() *fiber.App {
+	app := fiber.New(fiber.Config{
+		ErrorHandler:          testErrorHandler,
+		DisableStartupMessage: true,
+	})
+
+	middleware.Setup(app)
+
+	SetupRoutes(app)
+
+	return app
+}
+
+func testErrorHandler(c *fiber.Ctx, err error) error {
+	log := locals.Logger(c)
+
+	log.WithErr(err).Error("Caught by global error handler")
+
+	return c.Status(fiber.StatusNotFound).SendString("Not found")
 }
