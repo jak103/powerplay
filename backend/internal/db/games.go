@@ -27,12 +27,11 @@ func (s session) GetGames(seasonId uint) (*[]models.Game, error) {
 }
 
 func (s session) GetGameById(id uint) (*models.Game, error) {
-    var game *models.Game
-    err := s.First(&game, "id = ?", id).Error
-    if err != nil {
-        return nil, err
-    }
-    return game, nil
+        game := &models.Game{}
+
+        err := s.Find(&game, "id = ?", id)
+
+        return resultOrError(game, err)
 }
 
 func (s session) UpdateGame(id uint, game models.Game) (*models.Game, error) {

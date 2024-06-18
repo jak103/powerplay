@@ -102,7 +102,6 @@ func (s *dbTestingSuite) TestGetGameById() {
 	s.Len(game, 3)
 }
 
-
 func (s *dbTestingSuite) TestUpdateGame() {
 	game := models.Game{
 		SeasonID:   1,
