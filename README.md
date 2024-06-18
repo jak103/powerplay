@@ -4,6 +4,7 @@
 
 
 [![Go](https://github.com/jak103/powerplay/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/jak103/powerplay/actions/workflows/go.yml)
+[![Site Node.js CI](https://github.com/jak103/powerplay/actions/workflows/node.js.yml/badge.svg)](https://github.com/jak103/powerplay/actions/workflows/node.js.yml)
 
 ## Table of Contents
 - [Team Specific Pages](#team-specific-pages)
@@ -20,6 +21,12 @@
 - [Backend](/backend/README.md)
 
 ## Helpful Commands
+
+### Environment Variables
+We use dotenv and a local.env to store all environment variables.
+Please copy config/local.env.example to config/local.env and update
+any environment variables.
+
 ### Clear and Re-run Migrations
 Sometimes you need to clear out migrations due to a model change. 
 While we are in early development we've decided to drop and recreate

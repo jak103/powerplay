@@ -1,12 +1,16 @@
 package auth
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jak103/powerplay/internal/config"
+	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
@@ -27,11 +31,10 @@ func postAuthHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
 
 	creds := struct {
-		Username string `json:"username"`
+		Email    string `json:"email"`
 		Password string `json:"password"`
 	}{}
 
-	// creds := request{}
 	err := c.BodyParser(&creds)
 	if err != nil {
 		log.WithErr(err).Error("Failed to parse authentication credentials")
@@ -39,8 +42,26 @@ func postAuthHandler(c *fiber.Ctx) error {
 	}
 
 	// TODO look up user in database
+	db := db.GetSession(c)
+	user, err := db.GetUserByEmail(creds.Email)
+	if err != nil {
+		log.WithErr(err).Error("Failed to get user by email")
+		return responder.InternalServerError(c)
+	}
 
-	jwt, err := generateJwt(1)
+	if user == nil {
+		log.Debug("Couldn't find user with email %s", creds.Email)
+		return responder.Unauthorized(c, "Incorrect email or password")
+	}
+
+	log.Debug("User.password %q", user.Password)
+
+	if !validatePassword(creds.Password, user.Password, config.Vars.PasswordKey) {
+		log.Debug("Password did not match")
+		return responder.Unauthorized(c, "Incorrect email or password")
+	}
+
+	jwt, err := generateJwt(int(user.ID))
 	if err != nil {
 		log.WithErr(err).Alert("Failed to generate JWT")
 	}
@@ -72,4 +93,16 @@ func generateJwt(keyId int) (string, error) {
 	}
 
 	return jwt, nil
+}
+
+func validatePassword(password, hash, key string) bool {
+	passwordBytes := []byte(password)
+	hashBytes, _ := base64.StdEncoding.DecodeString(hash)
+	keyBytes := []byte(key)
+
+	mac := hmac.New(sha256.New, keyBytes)
+	mac.Write(passwordBytes)
+	hashedPassword := mac.Sum(nil)
+
+	return hmac.Equal(hashBytes, hashedPassword)
 }

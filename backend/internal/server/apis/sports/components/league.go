@@ -1,6 +1,8 @@
 package components
 
 import (
+	"reflect"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
@@ -9,7 +11,6 @@ import (
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/query_params"
 	"github.com/jak103/powerplay/internal/utils/responder"
-	"reflect"
 )
 
 func init() {
@@ -61,11 +62,11 @@ func postLeagueHandler(c *fiber.Ctx) error {
 	}
 
 	db := db.GetSession(c)
-	err = db.CreateLeague(leagueRequest)
+	league, err := db.CreateLeague(leagueRequest)
 	if err != nil {
 		log.WithErr(err).Alert("Failed to save leagues request")
 		return responder.InternalServerError(c)
 	}
 
-	return responder.Ok(c)
+	return responder.OkWithData(c, league)
 }

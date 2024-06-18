@@ -44,7 +44,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         200:
           description: The response body should contain the game details
@@ -63,7 +63,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       description: Update game details by ID
       requestBody:
         required: true
