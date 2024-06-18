@@ -147,7 +147,7 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]models.Gam
 func reorderLeagues(roundMap map[string][]structures.Round) []string {
 	/**
 		This reorders the league names so that no league that is
-		adjacent to the anther will have games on the same day. This is
+		adjacent to the another will have games on the same day. This is
 		to help those who play in two leagues. This is dependent on the
 		leagues being alphabetically named by skill level.
 	**/
