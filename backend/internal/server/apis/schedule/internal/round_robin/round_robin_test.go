@@ -99,7 +99,7 @@ func TestReorderLeagues(t *testing.T) {
 				"Y": dummyRound,
 				"Z": dummyRound,
 			},
-			want: []string{"Y", "W", "Z", "X", "V"},
+			want: []string{"V", "Y", "W", "Z", "X"},
 		},
 		{
 			name: "single element",

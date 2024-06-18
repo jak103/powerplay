@@ -2,6 +2,7 @@ package round_robin
 
 import (
 	"errors"
+	"sort"
 	"time"
 
 	"github.com/jak103/powerplay/internal/models"
@@ -146,30 +147,20 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]models.Gam
 func reorderLeagues(roundMap map[string][]structures.Round) []string {
 	/**
 		This reorders the league names so that no league that is
-		adjacent to the other will have games on the same day. This is
+		adjacent to the anther will have games on the same day. This is
 		to help those who play in two leagues. This is dependent on the
-		leagues being inserted in the order of skill level in the db.
+		leagues being alphabetically named by skill level.
 	**/
 
-	// Associate a key with an index
-	// I'm sure there's a better way to do this but go is weird
-	indexMap := make(map[int]string)
-	keys := make([]int, 0, len(indexMap))
-
-	i := 0
-	for key := range roundMap {
-		indexMap[i] = key
-		keys = append(keys, i)
-		i++
+	// Extract values then sort because maps
+	// don't guarantee order
+	values := make([]string, 0)
+	for i := range roundMap {
+		values = append(values, i)
 	}
+	sort.Strings(values)
 
-	// Extract values in the sorted order of keys
-	values := make([]string, len(keys))
-	for i, k := range keys {
-		values[i] = indexMap[k]
-	}
-
-	// Create the result slice
+	// reorder
 	result := make([]string, len(values))
 	left, right := 0, (len(values)+1)/2
 
