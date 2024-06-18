@@ -22,8 +22,8 @@ type Body struct {
 }
 
 const (
-    notAttending = iota
-    attending
+        notAttending = iota
+        attending
 )
 
 func handleRsvp(c *fiber.Ctx) error {
@@ -81,9 +81,9 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	}
 
 	body := Body{
-            UserId: dto.UserId,
+                UserId: dto.UserId,
 		TeamId: dto.TeamId,
-            GameId: dto.GameId,
+                GameId: dto.GameId,
 		Rsvp:   dto.Rsvp,
 	}
 	return body, nil
