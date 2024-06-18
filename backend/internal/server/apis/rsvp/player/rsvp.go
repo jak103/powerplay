@@ -23,8 +23,8 @@ type Body struct {
 }
 
 const (
-    NotAttending = iota
-    Attending
+    notAttending = iota
+    attending
 )
 
 func handleRsvp(c *fiber.Ctx) error {
@@ -34,7 +34,7 @@ func handleRsvp(c *fiber.Ctx) error {
     }
 
     //If they are attending, then put them on the roster
-    if body.Rsvp == Attending {
+    if body.Rsvp == attending {
         session := db.GetSession(c)
         team, err := session.GetTeamByID(string(body.TeamId))
         if err != nil {
