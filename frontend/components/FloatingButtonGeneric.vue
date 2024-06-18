@@ -4,7 +4,9 @@
     </div>
 </template>
 
+
 <script lang="ts">
+
     export default {
         props: {
             link: {
@@ -49,4 +51,6 @@
         font-size: large;
         color: lightgray;
     }
+
 </style>
+

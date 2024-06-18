@@ -1,8 +1,6 @@
 package optimize
 
 import (
-	"fmt"
-
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
@@ -28,8 +26,6 @@ func setSwapSchedule(games []models.Game, seasonStats structures.SeasonStats, te
 		}
 	}
 	teamsPerLeague := len(teamStats) / len(leagues)
-
-	fmt.Printf("\n\n\nteams per leauge: %v\n\n\n", teamsPerLeague)
 
 	// This algorithm is based on taking sets of games and trying to swap games for teams with inverse imbalances
 	for i := 0; i < len(games)/teamsPerLeague; i++ {

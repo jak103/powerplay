@@ -1,4 +1,4 @@
-package manual
+package components
 
 import "testing"
 

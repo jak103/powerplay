@@ -1,4 +1,4 @@
-package auto
+package schedule
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/valyala/fasthttp"
 	"io"
 	"mime/multipart"
@@ -18,23 +19,133 @@ import (
 	"time"
 )
 
-// TODO add dockertest to be able to test the functions that interact with the database
+// Mocked types for testing
+type MockSession struct {
+	mock.Mock
+}
+
+type MockDB struct {
+	mock.Mock
+}
+
+// Mock implementation for GetSession
+func (m *MockDB) GetSession(c *fiber.Ctx) *MockSession {
+	args := m.Called(c)
+	return args.Get(0).(*MockSession)
+}
+
+// Mock implementation for GetGames
+func (m *MockSession) GetGames(seasonID uint) (*[]Game, error) {
+	args := m.Called(seasonID)
+	return args.Get(0).(*[]Game), args.Error(1)
+}
+
+// Define a mock game struct for the purposes of testing
+type Game struct {
+	ID   int
+	Name string
+	// Define other relevant fields
+}
+
+// Mock implementation for SaveGames
+func (m *MockSession) SaveGames(games []models.Game) (int, error) {
+	args := m.Called(games)
+	return args.Int(0), args.Error(1)
+}
 
 func TestOptimizeGames(t *testing.T) {
 	t.Run("Test successful optimization", func(t *testing.T) {
-		// Mock Fiber app
-		app := fiber.New()
-		app.Put("/schedule/auto/optimize", handleOptimizeGames)
+		// Mock the db module
+		mockDB := new(MockDB)
+		mockSession := new(MockSession)
+		mockDB.On("GetSession", mock.Anything).Return(mockSession)
 
-		// Prepare request body
+		// Mock the db.GetGames function
+		seasonID := uint(123)
+		mockGames := []Game{
+			{ID: 1, Name: "Game 1"},
+			{ID: 2, Name: "Game 2"},
+		}
+		mockSession.On("GetGames", seasonID).Return(&mockGames, nil)
+
+		// Create Fiber app
+		app := fiber.New()
+
+		// Define handler function to call in Fiber app
+		app.Put("/schedule", func(c *fiber.Ctx) error {
+			return handleOptimizeGames(c)
+		})
+
+		// Create mock request body
 		requestBody := `{"season_id": 123}`
 
-		// Make a request to the endpoint
-		request := httptest.NewRequest("PUT", "/schedule/auto/optimize", strings.NewReader(requestBody))
-		request.Header.Set("Content-Type", "application/json")
-		resp, err := app.Test(request)
+		// Perform request using Fiber's Test function
+		req := httptest.NewRequest("PUT", "/schedule", strings.NewReader(requestBody))
+		req.Header.Set("Content-Type", "application/json")
+		resp, err := app.Test(req)
 
-		// Check the response
+		assert.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+
+		// Read the response body
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				t.Errorf("Error closing response body: %v", err)
+			}
+		}(resp.Body)
+		body, err := io.ReadAll(resp.Body)
+		assert.NoError(t, err)
+
+		// Parse the response body
+		var response struct {
+			TeamStats []byte `json:"team_stats"`
+			SeasonID  uint   `json:"season_id"`
+		}
+		err = json.Unmarshal(body, &response)
+		assert.NoError(t, err)
+
+		// Assertions
+		assert.NotNil(t, response.TeamStats)
+		assert.Equal(t, seasonID, response.SeasonID)
+
+		// Assert that expected functions were called
+		mockDB.AssertExpectations(t)
+		mockSession.AssertExpectations(t)
+	})
+
+	t.Run("Test failed optimization", func(t *testing.T) {
+		t.Skip("Need to implement test")
+	})
+}
+
+func TestCreateGames(t *testing.T) {
+
+	t.Run("Test successful creation", func(t *testing.T) {
+		// Mock setup
+		mockDB := new(MockDB)
+		mockSession := new(MockSession)
+		mockDB.On("GetSession", mock.Anything).Return(mockSession)
+
+		// Mock successful SaveGames call
+		mockSession.On("SaveGames", mock.Anything).Return(1, nil)
+
+		// Create Fiber app
+		app := fiber.New()
+
+		// Define handler function to call in Fiber app
+		app.Post("/schedule", func(c *fiber.Ctx) error {
+			return handleCreateGames(c)
+		})
+
+		// Prepare request body
+		requestBody := `{"season_id": 123, "ice_times": 3, "number_of_games_per_team": 4}`
+
+		// Perform request using Fiber's Test function
+		req := httptest.NewRequest("POST", "/schedule", strings.NewReader(requestBody))
+		req.Header.Set("Content-Type", "application/json")
+		resp, err := app.Test(req)
+
 		assert.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 
@@ -46,37 +157,17 @@ func TestOptimizeGames(t *testing.T) {
 		err = json.NewDecoder(resp.Body).Decode(&response)
 		assert.NoError(t, err)
 
-		// You can add more specific assertions based on the expected response data
+		// Assertions
 		assert.NotNil(t, response.TeamStats)
 		assert.Equal(t, uint(123), response.SeasonID)
-	})
 
-	t.Run("Test failed optimization", func(t *testing.T) {
-		t.Skip("Skipping test")
-	})
-}
-
-func TestCreateGames(t *testing.T) {
-
-	t.Run("Test successful creation", func(t *testing.T) {
-		app := fiber.New()
-		request, err := getCreateRequest(app)
-		if err != nil {
-			t.Errorf("Failed to create request: %v", err)
-			return
-		}
-		resp, err := app.Test(request)
-
-		// Check the response
-		if err != nil {
-			t.Errorf("Failed to make request: %v", err)
-			return
-		}
-		assert.Equal(t, fiber.StatusOK, resp.StatusCode)
+		// Assert that expected functions were called
+		mockDB.AssertExpectations(t)
+		mockSession.AssertExpectations(t)
 	})
 
 	t.Run("Test failed creation", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
@@ -99,13 +190,13 @@ func TestReadBody(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, body)
 		assert.Equal(t, uint(123), body.seasonID)
-		assert.Equal(t, "round_robin", body.algorithm)
+		assert.Equal(t, "pair-swap", body.optimizer)
 		assert.Equal(t, 5, body.numberOfGamesPerTeam)
 		assert.Empty(t, body.iceTimes)
 	})
 
 	t.Run("Test failed read body", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
@@ -127,7 +218,7 @@ func TestGetIceTimes(t *testing.T) {
 	})
 
 	t.Run("Test failed get ice times", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
@@ -164,14 +255,14 @@ func TestAssignLockerRooms(t *testing.T) {
 	})
 
 	t.Run("Test failed assign", func(t *testing.T) {
-		t.Skip("Skipping test")
+		t.Skip("Need to implement test")
 	})
 }
 
 // Helper functions
 func getCreateRequest(app *fiber.App) (*http.Request, error) {
 	// Mock Fiber app
-	app.Post("/schedule/auto/games", handleCreateGames)
+	app.Post("/schedule", handleCreateGames)
 
 	// Get the multipart file
 	fileHeader, body, err := getMultiPartFile()
@@ -194,7 +285,7 @@ func getCreateRequest(app *fiber.App) (*http.Request, error) {
 
 	// Write other fields
 	_ = multipartWriter.WriteField("seasonID", "123")
-	_ = multipartWriter.WriteField("algorithm", "round_robin")
+	_ = multipartWriter.WriteField("optimizer", "pair-swap")
 	_ = multipartWriter.WriteField("number_of_games_per_team", "5")
 
 	// Close the multipart writer
@@ -203,7 +294,7 @@ func getCreateRequest(app *fiber.App) (*http.Request, error) {
 	}
 
 	// Make a request to the endpoint with the multipart form data
-	request := httptest.NewRequest("POST", "/schedule/auto/games", &b)
+	request := httptest.NewRequest("POST", "/schedule", &b)
 	request.Header.Set("Content-Type", multipartWriter.FormDataContentType())
 	return request, nil
 }
@@ -341,7 +432,7 @@ func getMultiPartFile() (*multipart.FileHeader, *bytes.Buffer, error) {
 
 	// Create a new multipart file header
 	fileHeader := &multipart.FileHeader{
-		Filename: "data.csv",
+		Filename: "file",
 		Header: textproto.MIMEHeader{
 			"Content-Type": []string{"text/csv"},
 		},

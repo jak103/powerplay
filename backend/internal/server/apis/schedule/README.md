@@ -4,9 +4,7 @@
 This API is responsible for managing the schedule of the games per season.
 
 ## Directory Structure
-- `games` - Contains the endpoints for managing games.
-  - `auto` - Contains the endpoints for automatically generating games.
-  - `manual` - Contains the endpoints for manually interacting with games.
+- `schedule.go` - Contains the logic for the schedule API.
 - `internal` - Contains the internal logic for the schedule API.
   - `algorithms` - Contains the algorithms for generating games.
   - `analysis` - Contains the logic for analyzing the schedule. We use this to be able to tell if we should keep optimizing the schedule created from the algorithm.

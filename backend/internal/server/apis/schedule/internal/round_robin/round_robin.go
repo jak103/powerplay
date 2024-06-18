@@ -2,6 +2,7 @@ package round_robin
 
 import (
 	"errors"
+	"sort"
 	"time"
 
 	"github.com/jak103/powerplay/internal/models"
@@ -111,6 +112,8 @@ func rotateTeams(league *models.League) {
 }
 
 func newGame(team1, team2 models.Team, seasonId uint) models.Game {
+
+	// TODO: This should probably create new rosters along with the game
 	return models.Game{
 		SeasonID: seasonId,
 		HomeTeam: team1,
@@ -128,18 +131,9 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]models.Gam
 	games := make([]models.Game, 0)
 	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 
-		//n := len(season.LeagueRounds)
-		//result := make([]string, n)
-		//// Rearrange leagues using the indexes instead of hard coding
-		//for i := 0; i < n; i++ {
-		//	if i%2 == 0 {
-		//		result[i/2] = leagues[i]
-		//	} else {
-		//		result[n/2+i/2] = leagues[i]
-		//	}
-		//}
+		reorderedLeagues := reorderLeagues(season.LeagueRounds)
 
-		for _, league := range []string{"A", "C", "B", "D"} { // Alternate leagues so if you play in two leagues you don't play back to back
+		for _, league := range reorderedLeagues { // Alternate leagues so if you play in two leagues you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
 				continue
 			}
@@ -150,4 +144,37 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]models.Gam
 		}
 	}
 	return games, nil
+}
+
+func reorderLeagues(roundMap map[string][]structures.Round) []string {
+	/**
+		This reorders the league names so that no league that is
+		adjacent to the another will have games on the same day. This is
+		to help those who play in two leagues. This is dependent on the
+		leagues being alphabetically named by skill level.
+	**/
+
+	// Extract values then sort because maps
+	// don't guarantee order
+	values := make([]string, 0)
+	for i := range roundMap {
+		values = append(values, i)
+	}
+	sort.Strings(values)
+
+	// reorder
+	result := make([]string, len(values))
+	left, right := 0, (len(values)+1)/2
+
+	for i := 0; i < len(values); i++ {
+		if i%2 == 0 {
+			result[i] = values[left]
+			left++
+		} else {
+			result[i] = values[right]
+			right++
+		}
+	}
+
+	return result
 }

@@ -1,4 +1,4 @@
-package auto
+package schedule
 
 import (
 	"encoding/csv"
@@ -8,11 +8,12 @@ import (
 	"mime/multipart"
 	"strings"
 
+	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/round_robin"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
-	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/algorithms/round_robin"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/analysis"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/optimize"
 	"github.com/jak103/powerplay/internal/server/apis/schedule/internal/structures"
@@ -40,8 +41,8 @@ type response struct {
 }
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/schedule/auto/games", auth.Authenticated, handleCreateGames)
-	apis.RegisterHandler(fiber.MethodPut, "/schedule/auto/optimize", auth.Authenticated, handleOptimizeGames)
+	apis.RegisterHandler(fiber.MethodPost, "/schedule", auth.Authenticated, handleCreateGames)
+	apis.RegisterHandler(fiber.MethodPut, "/schedule", auth.Authenticated, handleOptimizeGames)
 }
 
 func handleOptimizeGames(c *fiber.Ctx) error {
@@ -105,7 +106,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 	logger := locals.Logger(c)
 	session := db.GetSession(c)
 
-	leagues, err := session.GetLeaguesBySeason(seasonID)
+	leagues, err := session.GetLeaguesBySeason(int(seasonID))
 	if err != nil {
 		logger.WithErr(err).Error("Failed to get leagues for season %v the database", seasonID)
 		return responder.InternalServerError(c, err)
