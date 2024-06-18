@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
 
+interface User {
+  id: number;
+  name: string;
+  // Add other properties as needed
+}
+
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: null,
+    user: null as User | null,
   }),
   actions: {
-    setUser(user) {
+    setUser(user: User | null) {
       this.user = user;
     },
     clearUser() {
