@@ -28,9 +28,7 @@ func (s session) GetGames(seasonId uint) (*[]models.Game, error) {
 
 func (s session) GetGameById(id uint) (*models.Game, error) {
         game := &models.Game{}
-
-        err := s.Find(&game, "id = ?", id)
-
+        err := s.Preload("AwayTeam").Preload("HomeTeam").Find(&game, "id = ?", id)
         return resultOrError(game, err)
 }
 
