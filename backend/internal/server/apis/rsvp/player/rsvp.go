@@ -2,6 +2,7 @@ package player
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
@@ -27,14 +28,6 @@ const (
 )
 
 func handleRsvp(c *fiber.Ctx) error {
-	// TODO I think the body of the request should be a JSON object with the following fields:
-	// - team_id (int)
-	// - game_id (int) - Should only need game_id and team_id, the rest can be derived
-	// - player (string) - "yes":1 or "no":0
-	// With this information, we can update the team roster for that games.
-	// We should also check if the user is on the team roster for that games.
-	// If not, we should check if they are a sub for that team.
-	// So we need to have another table in the database that keeps track of who played in each games.
     body, err := readBody(c)
     if err != nil {
         return responder.InternalServerError(c, "Could not read the body of the request")
@@ -47,6 +40,7 @@ func handleRsvp(c *fiber.Ctx) error {
         if err != nil {
             return responder.InternalServerError(c, err.Error())
         }
+
         game, err := session.GetGameById(body.GameId)
         if err != nil {
             return responder.InternalServerError(c, err.Error())
@@ -61,15 +55,18 @@ func handleRsvp(c *fiber.Ctx) error {
         if team == &game.HomeTeam {
             _ = append(game.HomeTeamRoster.Players, user)
             session.SaveGame(*game)
+            return responder.Ok(c, fmt.Sprint("Successfully rsvp'd for %v", team.Name))
         }
 
         if team == &game.AwayTeam {
             _ = append(game.HomeTeamRoster.Players, user)
             session.SaveGame(*game)
+            return responder.Ok(c, fmt.Sprint("Successfully rsvp'd for %v", team.Name))
         }
     }
 
-	return responder.Ok(c, "Successfully rsvp'd")
+    // They are not attending or the team could not be found
+	return responder.Ok(c)
 }
 
 func readBody(c *fiber.Ctx) (Body, error) {
