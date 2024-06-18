@@ -1,0 +1,176 @@
+paths:
+  /games:
+    get:
+      tags:
+        - Games
+      summary: All Games
+      description: |
+        Get all games  
+      responses:
+        200:
+          description: The response body should contain the list of leagues
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGamesResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+    post:
+      tags:
+        - Games
+      summary: Create a New Game
+      description: Create a new game
+      requestBody:
+        description: JSON object with valid game
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        200:
+          description: Game created successfully
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+
+  /games/{gameId}:
+    get:
+      tags:
+        - Games
+      summary: Game by ID
+      description: Get game details by ID
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The response body should contain the game details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+    put:
+      tags:
+        - Games
+      summary: Update Game by ID
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: integer
+      description: Update game details by ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        200:
+          description: Game updated successfully
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+
+components:
+  schemas:
+    GetGamesResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
+        status_string:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
+        request_id:
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
+        response_data:
+          type: object
+          properties:
+            games:
+              type: array
+              description: All games
+              items:
+                $ref: '#/components/schemas/Game'
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-01-02T12:00:00Z"
+        start:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+        end:
+          type: string
+          format: date-time
+          example: "2023-01-01T14:00:00Z"
+        status:
+          type: string
+          enum: [SCHEDULED, IN_PROGRESS, FINAL]
+          example: "SCHEDULED"
+        home_team_id:
+          type: integer
+          example: 2
+        home_team_locker_room:
+          type: string
+          example: "Locker Room B"
+        home_team_shots_on_goal:
+          type: integer
+          example: 20
+        home_team_goals:
+          type: integer
+          example: 3
+        home_team_roster_id:
+          type: integer
+          example: 1
+        away_team_id:
+          type: integer
+          example: 2
+        away_team_locker_room:
+          type: string
+          example: "Locker Room A"
+        away_team_shots_on_goal:
+          type: integer
+          example: 15
+        away_team_goals:
+          type: integer
+          example: 2
+        away_team_roster_id:
+          type: integer
+          example: 1
+        venue_id:
+          type: integer
+          example: 1
+        league_id:
+          type: integer
+          example: 3
+        manager_on_call_id:
+          type: integer
+          example: 1
+        primary_referee_id:
+          type: integer
+          example: 1
+        score_keeper_id:
+          type: integer
+          example: 1
+        secondary_referee_id:
+          type: integer
+          example: 1
+        season_id:
+          type: integer
+          example: 1
+

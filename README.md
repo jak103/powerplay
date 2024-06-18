@@ -4,11 +4,29 @@
 
 
 [![Go](https://github.com/jak103/powerplay/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/jak103/powerplay/actions/workflows/go.yml)
+[![Site Node.js CI](https://github.com/jak103/powerplay/actions/workflows/node.js.yml/badge.svg)](https://github.com/jak103/powerplay/actions/workflows/node.js.yml)
 
 ## Table of Contents
-- [Adding and Updating API Endpoints](#adding-and-updating-api-endpoints)
+- [Team Specific Pages](#team-specific-pages)
+- [Helpful Commands](#helpful-commands)
+    - [Clear and Re-run Migrations](#clear-and-re-run-migrations)
+    - [Run All Go Tests](#run-all-go-tests)
+
+## Team Specific Pages
+- [Frontend Site](/site/README.md)
+- [Frontend App](/app/README.md)
+- [Chat Functions]()
+- [Scoreboard]()
+- [Scheduling]()
+- [Backend](/backend/README.md)
 
 ## Helpful Commands
+
+### Environment Variables
+We use dotenv and a local.env to store all environment variables.
+Please copy config/local.env.example to config/local.env and update
+any environment variables.
+
 ### Clear and Re-run Migrations
 Sometimes you need to clear out migrations due to a model change. 
 While we are in early development we've decided to drop and recreate
@@ -31,21 +49,3 @@ pass all tests before committing code.
 ```shell
 make test 
 ```
-
-## Adding and Updating API Endpoints
-
-### Ensure Model is Created and Up to Date
-1. Navigate to the models directory: \
-   `backend/internal/models`
-
-### Add API Endpoint
-1. Navigate to the server directory: \
-    `backend/internal/server/apis`
-
-### Add DB methods used in API endpoint
-1. Navigate to the db directory: \
-    `backend/internal/db`
-
-### Update Open API docs**
-1. Navigate to the open api spec directory: \
-   `static/oas/v1`

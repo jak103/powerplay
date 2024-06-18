@@ -1,7 +1,8 @@
 package main
 
 import (
-	"flag"
+	"github.com/jak103/powerplay/internal/db/seeders/fake_data"
+	"github.com/jak103/powerplay/internal/models"
 
 	"github.com/jak103/powerplay/internal/config"
 	"github.com/jak103/powerplay/internal/db"
@@ -32,9 +33,52 @@ func runSeeds() {
 	log.Info("Successfully seeded database")
 }
 
+func runFakeDataSeeds() {
+	// Initialize seeders
+	seasonSeeder := fake_data.SeasonSeeder{}
+	leagueSeeder := fake_data.LeagueSeeder{}
+	teamSeeder := fake_data.TeamSeeder{}
+	venueSeeder := fake_data.VenueSeeder{}
+
+	// Seed Season
+	season, err := seasonSeeder.Seed(db.GetDB())
+	if err != nil {
+		log.WithErr(err).Alert("Failed to seed Season: %v", err)
+		return
+	}
+	log.Info("Successfully seeded Season")
+
+	// Seed League with SeasonID
+	leagues, err := leagueSeeder.Seed(db.GetDB(), season.(models.Season).ID)
+	if err != nil {
+		log.WithErr(err).Alert("Failed to seed League: %v", err)
+		return
+	}
+	log.Info("Successfully seeded League")
+
+	// Seed Teams for each League
+	for _, league := range leagues.([]models.League) {
+		_, err = teamSeeder.Seed(db.GetDB(), league.ID)
+		if err != nil {
+			log.WithErr(err).Alert("Failed to seed Teams for League %d: %v", league.ID, err)
+			return
+		}
+		log.Info("Successfully seeded Teams for League %d", league.ID)
+	}
+
+	// Seed Venues
+	_, err = venueSeeder.Seed(db.GetDB())
+	if err != nil {
+		log.WithErr(err).Alert("Failed to seed Venues: %v", err)
+		return
+	}
+	log.Info("Successfully seeded Venues")
+}
+
 func main() {
-	migrateFlag := flag.Bool("migrate", false, "Run database migrations and exit")
-	flag.Parse()
+	// migrateFlag := flag.Bool("migrate", false, "Run database migrations and exit")
+	// seedTestData := flag.Bool("seed-test", false, "Seed test data and exit")
+	// flag.Parse()
 
 	err := log.Init("DEBUG", false)
 	if err != nil {
@@ -57,19 +101,24 @@ func main() {
 	log.Info("--Power Play v0.0.0--") // TODO Get build info automatically
 
 	// Connect to DB
-	err = db.Init()
-	if err != nil {
-		log.WithErr(err).Alert("Failed to connect to DB")
-		return
-	}
+	// err = db.Init()
+	// if err != nil {
+	// 	log.WithErr(err).Alert("Failed to connect to DB")
+	// 	return
+	// }
 
-	if *migrateFlag {
-		runMigrations()
-		return
-	}
+	// if *migrateFlag {
+	// 	runMigrations()
+	// 	return
+	// }
 
-	runMigrations()
-	runSeeds()
+	// if *seedTestData {
+	// 	runFakeDataSeeds()
+	// 	return
+	// }
+
+	// runMigrations()
+	// runSeeds()
 
 	// run
 	server.Run()

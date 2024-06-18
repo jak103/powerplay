@@ -8,6 +8,7 @@
 
   }
 
+
 </script>
 
 
@@ -16,7 +17,9 @@
   <div id="container">
     <h1>Create a channel</h1>
     <p class="maintext">Name</p>
+
     <input id="channelName" type="text" v-model="channelName">
+
     <p class="subtext">Channels are where conversations happen around a topic. Use a name that is easy to find and understand.</p>
     <p class="maintext">Visibility</p>
     <div class="channelTypeSelectorContainer">
@@ -27,7 +30,9 @@
       <input type="radio"/>
       <p class="subtext">Private - Only specific people</p>
     </div>
+
     <FloatingButtonGeneric onclick="" text="Create Channel" :link="chatRoom"/>
+
   </div>
 </template>
 
@@ -56,4 +61,6 @@ input[type="text"] {
   margin-right: 8px;
   vertical-align: middle;
 }
+
 </style>
+
