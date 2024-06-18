@@ -26,6 +26,15 @@ func (s session) GetGames(seasonId uint) (*[]models.Game, error) {
 	return resultOrError(&games, result)
 }
 
+func (s session) GetGameById(id uint) (*models.Game, error) {
+    var game *models.Game
+    err := s.First(&game, "id = ?", id).Error
+    if err != nil {
+        return nil, err
+    }
+    return game, nil
+}
+
 func (s session) UpdateGame(id uint, game models.Game) (*models.Game, error) {
 	// use the id to update the game
 	game.ID = id

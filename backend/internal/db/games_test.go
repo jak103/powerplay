@@ -96,6 +96,13 @@ func (s *dbTestingSuite) TestGetGames() {
 	s.Len(other, 3)
 }
 
+func (s *dbTestingSuite) TestGetGameById() {
+	game, err := s.session.GetGameById(1)
+	s.Nil(err)
+	s.Len(game, 3)
+}
+
+
 func (s *dbTestingSuite) TestUpdateGame() {
 	game := models.Game{
 		SeasonID:   1,
