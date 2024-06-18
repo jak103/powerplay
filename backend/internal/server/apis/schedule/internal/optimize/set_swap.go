@@ -14,12 +14,12 @@ func SetOptimizeSchedule(games []models.Game) {
 	}
 	log.Info("Pre-optimization analysis")
 	seasonStats, teamStats := analysis.RunTimeAnalysis(games)
-	pairSwapSchedule(games, seasonStats, teamStats)
+	setSwapSchedule(games, seasonStats, teamStats)
 	log.Info("Finished running optimizer")
 }
 
 func setSwapSchedule(games []models.Game, seasonStats structures.SeasonStats, teamStats map[string]structures.TeamStats) {
-	var leagues map[string]bool // set of leagues
+	leagues := make(map[string]bool) // set of leagues
 	for _, team := range teamStats {
 		if _, ok := leagues[team.League]; !ok {
 			leagues[team.League] = true
@@ -104,6 +104,20 @@ func setSwapSchedule(games []models.Game, seasonStats structures.SeasonStats, te
 		}
 
 		updateStats(teamStats, games, worstIndex, oppositeIndex)
-		swapGames(games, worstIndex, oppositeIndex)
+		setSwapGames(games, worstIndex, oppositeIndex)
 	}
+}
+
+func setSwapGames(games []models.Game, i, j int) {
+	team1 := games[i].HomeTeam
+	team2 := games[i].AwayTeam
+	league := games[i].HomeTeam.League
+
+	games[i].HomeTeam = games[j].HomeTeam
+	games[i].AwayTeam = games[j].AwayTeam
+	games[i].HomeTeam.League = games[j].HomeTeam.League
+
+	games[j].HomeTeam = team1
+	games[j].AwayTeam = team2
+	games[j].HomeTeam.League = league
 }

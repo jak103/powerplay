@@ -98,8 +98,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
 	}
 	seasonID := body.seasonID
-	// TODO: optimize the schedule a couple times and pick the one with the best score
-	//optimizer := body.optimizer
+	optimizer := body.optimizer
 	iceTimes := body.iceTimes
 	numberOfGamesPerTeam := body.numberOfGamesPerTeam
 
@@ -126,14 +125,40 @@ func handleCreateGames(c *fiber.Ctx) error {
 
 	assignLockerRooms(games)
 
+	// optimize the schedule 10 times and pick the one with the best score
+	seasonStats, ts := analysis.RunTimeAnalysis(games)
+	bestScore := seasonStats.Score
+	bestGames := make([]models.Game, len(games))
+	for i, game := range games {
+		bestGames[i] = game
+	}
+	for i := 0; i < 10; i++ {
+		if optimizer == "pair_swap" {
+			optimize.PairOptimizeSchedule(games)
+		} else if optimizer == "set_swap" {
+			optimize.SetOptimizeSchedule(games)
+		} else {
+			return responder.BadRequest(c, fiber.StatusBadRequest, errors.New(fmt.Sprintf("Invalid optimizer %v", optimizer)).Error())
+		}
+
+		seasonStats, ts = analysis.RunTimeAnalysis(games)
+
+		if seasonStats.Score > bestScore {
+			for i, game := range games {
+				bestGames[i] = game
+			}
+			bestScore = seasonStats.Score
+		}
+	}
+
+	seasonStats, ts = analysis.RunTimeAnalysis(bestGames)
+
 	// save to db
-	_, err = session.SaveGames(games)
+	_, err = session.SaveGames(bestGames)
 	if err != nil {
 		log.Info("Failed to save games to the database\n")
 		return responder.InternalServerError(c, err)
 	}
-
-	_, ts := analysis.RunTimeAnalysis(games)
 
 	data := response{
 		TeamStats: analysis.Serialize(ts),
