@@ -23,7 +23,10 @@ const routes: RouteRecordRaw[] = [
       { path: 'substitution', component: () => import('pages/information/SubstitutionPage.vue') },
     ],
   },
- 
+  {
+    path: '/sign-in',
+    component: () => import('pages/sign-in.vue'), // Sign-In page route
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
