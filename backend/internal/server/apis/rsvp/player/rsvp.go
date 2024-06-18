@@ -70,7 +70,7 @@ func handleRsvp(c *fiber.Ctx) error {
 
 func readBody(c *fiber.Ctx) (Body, error) {
 	dto := struct {
-        UserId             uint   `json:"user_id"`
+            UserId             uint   `json:"user_id"`
 		TeamId             uint   `json:"team_id"`
 		GameId             uint   `json:"game_id"`
 		Rsvp               int    `json:"rsvp"`
