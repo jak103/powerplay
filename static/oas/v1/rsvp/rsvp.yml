@@ -1,0 +1,51 @@
+paths:
+    player:
+      post:
+        tags:
+          - Rsvp
+        requestBody:
+          description: The request body should contain the user id, team id, game id, and whether they want to rsvp
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/RsvpRequest"
+        summary: Rsvp for the specified game
+        responses:
+          200:
+            description: Successfully rsvp'd game
+            content:
+              application/json:
+                schema:
+                  $ref: '#/schemas/RsvpResponse'
+          400:
+            $ref: "../common/errors.yml#/responses/BadRequest"
+
+schemas:
+  RsvpResponse:
+    type: object
+    properties:
+      status_code:
+        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+      status_string:
+        $ref: "../common/schemas.yml#/schemas/StatusString200"
+      request_id:
+        $ref: "../common/schemas.yml#/schemas/RequestId"
+      response_data:
+        type: object
+
+  RsvpRequest:
+    type: object
+    properties:
+      user_id:
+        type: int
+        example: 1
+      team_id:
+        type: int
+        example: 1
+      game_id:
+        type: int
+        example: 1
+      rsvp:
+        type: int
+        example: 0 (not attending), 1 (attending)

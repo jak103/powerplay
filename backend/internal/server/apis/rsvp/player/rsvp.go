@@ -1,7 +1,6 @@
 package player
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
