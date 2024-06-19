@@ -22,6 +22,7 @@
         <router-link
               v-for="item in items"
               :key="item.label"
+              :id="'label-' + item.label"
               :to="{ name: routesMapping[item.label] }"
               class="q-ma-sm card-square shadow-2 rounded-borders"
               style="text-decoration: none; color: inherit;"
