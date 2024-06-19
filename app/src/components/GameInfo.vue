@@ -1,24 +1,19 @@
 <template>
-  <q-card class="match-info">
+  <q-card bordered class="match-info" @click="goToGameDetails">
     <q-card-section class="q-pa-xs">
       <q-item class="team-wrapper">
         <q-item-section avatar>
-          <q-img :src="homeTeamLogo" alt="Logo" class="team-logo" />
+          <q-img :src="getLogoSrc(game.home_team_record.logo_id)" alt="Home Team Logo" class="team-logo" />
         </q-item-section>
         <q-item-section class="team-details">
-          <q-item-label
-            :class="{ 'text-bold': homeScore > awayScore }"
-            class="team-name"
-          >
-            {{ homeTeam }}
+          <q-item-label :class="{ 'text-bold': game.home_team_score > game.away_team_score }" class="team-name">
+            {{ game.home_team_record.name }}
           </q-item-label>
           <q-item-label caption class="home-away-label">Home</q-item-label>
         </q-item-section>
         <q-item-section side class="score-section">
-          <q-item-label
-            :class="{ 'text-bold': homeScore > awayScore }"
-          >
-            {{ homeScore !== null ? homeScore : '' }}
+          <q-item-label :class="{ 'text-bold': game.home_team_score > game.away_team_score }">
+            {{ game.home_team_score !== null ? game.home_team_score : '' }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -26,23 +21,17 @@
     <q-card-section class="q-pa-xs">
       <q-item class="team-wrapper">
         <q-item-section avatar>
-          <q-img :src="awayTeamLogo" alt="Logo" class="team-logo" />
+          <q-img :src="getLogoSrc(game.away_team_record.logo_id)" alt="Away Team Logo" class="team-logo" />
         </q-item-section>
         <q-item-section class="team-details">
-          <q-item-label
-            :class="{ 'text-bold': awayScore > homeScore }"
-            class="team-name"
-          >
-            {{ awayTeam }}
+          <q-item-label :class="{ 'text-bold': game.away_team_score > game.home_team_score }" class="team-name">
+            {{ game.away_team_record.name }}
           </q-item-label>
           <q-item-label caption class="home-away-label">Away</q-item-label>
         </q-item-section>
         <q-item-section side class="score-section">
-          <q-item-label
-            :class="{ 'text-bold': awayScore > homeScore }"
-            class="score"
-          >
-            {{ awayScore !== null ? awayScore : '' }}
+          <q-item-label :class="{ 'text-bold': game.away_team_score > game.home_team_score }">
+            {{ game.away_team_score !== null ? game.away_team_score : '' }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -50,77 +39,87 @@
     <q-card-section class="q-pa-xs">
       <q-item class="datetime-wrapper">
         <q-item-section class="datetime-details">
-          <q-item-label>{{ date }}</q-item-label>
-          <q-item-label>{{ time }}</q-item-label>
+          <q-item-label>{{ formatTimeInterval(game.start) }}</q-item-label>
+          <q-item-label>{{ formatDate(game.start) }}</q-item-label>
         </q-item-section>
         <q-item-section v-if="showRsvpButton" side class="rsvp-section">
-          <q-btn v-if="!hasRsvped" size="sm" color="primary" @click="goToGameDetails">RSVP</q-btn>
-          <q-icon
-            v-else
-            name="check_circle"
-            color="green"
-            size="md"
-            class="checkmark"
-          />
+          <q-btn v-if="!props.hasRsvped" size="sm" color="primary" class="active-button no-cursor-change no-pointer-events">
+            RSVP
+          </q-btn>
+          <q-icon v-else name="check_circle" color="green" size="md" class="checkmark" />
         </q-item-section>
       </q-item>
     </q-card-section>
   </q-card>
 </template>
 
-<script>
-export default {
-  props: {
-    homeTeam: {
-      type: String,
-      default: 'The Homeys',
-    },
-    awayTeam: {
-      type: String,
-      default: 'A Way Good Team',
-    },
-    date: {
-      type: String,
-      default: 'Wed, Jan 25, 2024',
-    },
-    time: {
-      type: String,
-      default: '9:00 - 10:15 PM',
-    },
-    hasRsvped: {
-      type: Boolean,
-      default: false,
-    },
-    homeScore: {
-      type: Number,
-      default: 0,
-    },
-    awayScore: {
-      type: Number,
-      default: 0,
-    },
-    homeTeamLogo: {
-      type: String,
-      default: 'src/assets/test/homeys.png',
-    },
-    awayTeamLogo: {
-      type: String,
-      default: 'src/assets/test/awaygoodteam.png',
-    },
-    showRsvpButton: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  methods: {
-    goToGameDetails() {
-      this.$router.push({ path: '/game-details' });
-    },
-  },
-};
-</script>
+<script setup lang="ts">
+import { defineProps } from 'vue';
+import { Game } from 'src/models/Game';
+import { useRouter } from 'vue-router';
+import { useScheduleStore } from 'src/stores/scheduleStore';
+import { onMounted, ref } from 'vue';
+import type { LogoId } from 'src/models/ids';
 
+const router = useRouter();
+const store = useScheduleStore();
+const logos = ref<{ id: LogoId, src: string }[]>([]);
+
+onMounted(() => {
+  store.loadExampleData();
+  logos.value = store.logos;
+});
+
+interface Props {
+  game: Game;
+  showRsvpButton: boolean;
+  hasRsvped: boolean;
+}
+
+const props = defineProps<Props>();
+
+const getLogoSrc = (logoId: LogoId): string => {
+  const logo = store.logos.find(logo => logo.id === logoId);
+  return logo ? logo.src : '';
+};
+
+const formatTime = (timeString: string): string => {
+  const date = new Date(timeString);
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+  return `${hours}:${minutesStr} ${ampm}`;
+};
+
+const formatTimeInterval = (startTime: string): string => {
+  const startDate = new Date(startTime);
+  const endDate = new Date(startDate.getTime() + 75 * 60 * 1000); // Add 1 hour and 15 minutes
+  return `${formatTime(startDate.toISOString())} - ${formatTime(endDate.toISOString())}`;
+};
+
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  };
+  return date.toLocaleDateString('en-US', options);
+};
+function goToGameDetails() {
+  if (props.showRsvpButton) {
+    router.push({ name: 'GameDetailsPage', params: { gameId: props.game.id, teamId: props.game.away_team_record.id } });
+  }
+}
+</script>
 <style scoped>
+.match-info {
+  cursor: pointer;
+}
 .team-logo {
   width: 8vw;
   height: 8vw;
@@ -133,7 +132,19 @@ export default {
 .checkmark {
   font-size: 2.5em;
 }
+.active-button {
+  background-color: #1976d2;
+  color: white;
+  opacity: 1;
+}
 
+/* prevents the cursor from changing to a pointer when hovering over the button */
+.no-cursor-change {
+  cursor: default;
+}
+.no-pointer-events {
+  pointer-events: none;
+}
 @media (min-width: 768px) {
   .team-logo {
     width: 4vw;
