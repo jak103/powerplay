@@ -26,6 +26,8 @@ const (
         attending
 )
 
+// Currently, this function is using the roster on the game as the rsvp. The roster on the game is actually the people who are showing up, not people who will potentially show up
+// Something will need to be done to handle rsvp separately
 func handleRsvp(c *fiber.Ctx) error {
         body, err := readBody(c)
         if err != nil {
