@@ -26,6 +26,12 @@ func (s session) GetGames(seasonId uint) (*[]models.Game, error) {
 	return resultOrError(&games, result)
 }
 
+func (s session) GetGameById(id uint) (*models.Game, error) {
+        game := &models.Game{}
+        err := s.Preload("AwayTeam").Preload("HomeTeam").Find(&game, "id = ?", id)
+        return resultOrError(game, err)
+}
+
 func (s session) UpdateGame(id uint, game models.Game) (*models.Game, error) {
 	// use the id to update the game
 	game.ID = id
