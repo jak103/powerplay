@@ -6,19 +6,8 @@
           flat
           dense
           round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-          v-if="!$q.screen.lt.md"
-        />
-
-        <q-btn
-          flat
-          dense
-          round
           icon="arrow_back"
           aria-label="Back"
-          class="mobile-only"
           @click="goBack"
           v-if="canGoBack"
         />
@@ -36,19 +25,6 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <div class="column">
-        <q-btn
-          v-for="item in navItems"
-          :key="item.label"
-          v-bind="item"
-          class="q-mt-md q-pt-md q-pb-md"
-          style="display: flex; align-items: start; width: 90%"
-          color="black"
-        />
-      </div>
-    </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -65,14 +41,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 defineOptions({
   name: 'MainLayout',
 });
 
 const router = useRouter();
-const route = useRoute();
 
 const leftDrawerOpen = ref(false);
 
@@ -81,7 +56,7 @@ function toggleLeftDrawer() {
 }
 
 function goBack() {
-  router.back();
+  router.push({ name: 'ChatPage' });
 }
 
 const canGoBack = computed(() => {

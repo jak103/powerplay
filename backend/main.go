@@ -101,11 +101,11 @@ func main() {
 	log.Info("--Power Play v0.0.0--") // TODO Get build info automatically
 
 	// Connect to DB
-	// err = db.Init()
-	// if err != nil {
-	// 	log.WithErr(err).Alert("Failed to connect to DB")
-	// 	return
-	// }
+	err = db.Init()
+	if err != nil {
+		log.WithErr(err).Alert("Failed to connect to DB")
+		return
+	}
 
 	// if *migrateFlag {
 	// 	runMigrations()
@@ -117,8 +117,8 @@ func main() {
 	// 	return
 	// }
 
-	// runMigrations()
-	// runSeeds()
+	runMigrations()
+	runSeeds()
 
 	// run
 	server.Run()

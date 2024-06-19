@@ -23,6 +23,7 @@
         <router-link
               v-for="item in items"
               :key="item.label"
+              :id="'label-' + item.label"
               :to="{ name: routesMapping[item.label] }"
               class="q-ma-sm card-square rounded-borders shadow-2"
               style="text-decoration: none; color: inherit;"
@@ -58,7 +59,7 @@ const items = ref([
   { icon: 'event', label: 'Schedule' },
   { icon: 'chat', label: 'Chat' },
   { icon: 'people', label: 'Roster' },
-  { icon: 'list_alt', label: 'Sub List' },
+  { icon: 'list_alt', label: 'Sub' },
   { icon: 'assessment', label: 'Standings' },
   { icon: 'insights', label: 'Statistics' },
 ]);
@@ -67,7 +68,7 @@ const routesMapping = {
   'Schedule': 'SchedulePage',
   'Chat': 'ChatPage',
   'Roster': 'RosterPage', /* change to RosterPage when we have */
-  'Sub List': 'SubPage', /* change to SubPage when we have */
+  'Sub': 'SubPage', /* change to SubPage when we have */
   'Standings': 'StandingsPage', /* change to StandingsPage when we have */
   'Statistics': 'StatsPage', /* change to StatisticsPage when we have */
 };
