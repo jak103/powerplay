@@ -33,8 +33,8 @@
     </div>
     <div class='text-h6'>My Teams</div>
 
-    <q-item v-for='team in teams' :key='team.id' class='q-mb-sm border-bottom'>
-        <q-item clickable v-ripple @click='goToTeamInfo(team.name)'>
+    <q-item v-for='team in teams' :key='team.id' :id="'team-' + team.id" class='q-mb-sm border-bottom'>
+        <q-item clickable v-ripple @click='goToTeamInfo(team.name)' class='full-width'>
             <q-avatar size='30px' class='q-mr-md'>
                 <img src='team.logo' alt='Logo'>
             </q-avatar>
@@ -46,8 +46,8 @@
 
     <div class='text-h6'>My Leagues</div>
 
-    <q-item v-for='team in teams' :key='team.id' class='q-mb-sm border-bottom'>
-        <q-item clickable v-ripple @click='goToLeagueInfo(team.league)'>
+    <q-item v-for='team in teams' :key='team.id' :id="'league-' + team.league" class='q-mb-sm border-bottom'>
+        <q-item clickable v-ripple @click='goToLeagueInfo(team.league)' class='full-width'>
             <q-avatar size='30px' class='q-mr-md'>
                 <img src='team.logo' alt='Logo'>
             </q-avatar>
