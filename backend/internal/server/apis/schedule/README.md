@@ -20,3 +20,8 @@ This API is responsible for managing the schedule of the games per season.
   - Zane Hirning
   - Marcus Quincy
   - Nate Stott
+
+## Reinforcement Learning Alternative
+Work was done on a reinforcement learning model which is an alternative to the schedules generated here. That code is hosted at [this repository](https://github.com/marcus-quincy/schedule-rl).
+
+We were unable to make the reinforcement learning approach perform better than the algorithms currently implemented, so it is currently not integrated into this application.
