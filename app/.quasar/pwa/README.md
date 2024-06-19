@@ -60,6 +60,27 @@ Links:
 4. ##### Attempting to 'precacheAndRoute' all url patterns/their files in the app, similarly to how the icons are correctly cached at the bottom 30 lines of sw.js
     1. Caching the files didn't work because the js, css, and html files made from the vue files are generated with a different name each time they're sent (with a random number at the end). Because of this, we can't simply cache what the generated files will always be named, since it changes. We also can't cache the vue files, because neither the browser nor service worker know how to handle them
     2. Not sure why caching the url patterns didn't work. I think it's similar to why caching the files didn't work, but might also be because there's no way for it to keep track of the revision of the file if it's a url pattern that uses (potentially) multiple files
+    3. In **custom-service-worker.ts**
+    ```
+    // Adding urls to precache
+    const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
+
+    module.exports = {
+    // other webpack config...
+    plugins: [
+        new WorkboxWebpackPlugin.InjectManifest({
+        swSrc: './src/custom-service-worker.js',
+        swDest: 'service-worker.js',
+        additionalManifestEntries: [
+            {url: '/home', revision: null},
+            {url: '/app', revision: null},
+            {url: '/chat', revision: null},
+            // add more URLs as needed, revisions are auto-generated
+        ],
+        }),
+    ],
+    };
+    ```
 
 #### Some things that might help:
 
