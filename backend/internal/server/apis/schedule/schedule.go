@@ -30,6 +30,7 @@ import (
 
 type Body struct {
 	seasonID             uint
+	venueID              uint
 	optimizer            string
 	iceTimes             []string
 	numberOfGamesPerTeam int
@@ -98,6 +99,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 		return responder.BadRequest(c, fiber.StatusBadRequest, err.Error())
 	}
 	seasonID := body.seasonID
+	venueID := body.venueID
 	optimizer := body.optimizer
 	iceTimes := body.iceTimes
 	numberOfGamesPerTeam := body.numberOfGamesPerTeam
@@ -113,11 +115,21 @@ func handleCreateGames(c *fiber.Ctx) error {
 	}
 
 	if leagues == nil {
-		return responder.BadRequest(c, fiber.StatusBadRequest, errors.New("no league for the season").Error())
+		return responder.BadRequest(c, errors.New("no league for the season").Error())
+	}
+
+	venue, err := session.GetVenueById(venueID)
+	if err != nil {
+		logger.WithErr(err).Error("Failed to get venue with id of %v the database", venueID)
+		return responder.InternalServerError(c, err)
+	}
+
+	if venue == nil {
+		return responder.BadRequest(c, errors.New("no venue for the season").Error())
 	}
 
 	var games []models.Game
-	games, err = round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam)
+	games, err = round_robin.RoundRobin(leagues, iceTimes, numberOfGamesPerTeam, *venue)
 	// check for error after any of the algorithms is done
 	if err != nil {
 		return responder.InternalServerError(c, err.Error())
@@ -133,9 +145,9 @@ func handleCreateGames(c *fiber.Ctx) error {
 		bestGames[i] = game
 	}
 	for i := 0; i < 10; i++ {
-		if optimizer == "pair_swap" {
+		if optimizer == "pair-swap" {
 			optimize.PairOptimizeSchedule(games)
-		} else if optimizer == "set_swap" {
+		} else if optimizer == "set-swap" {
 			optimize.SetOptimizeSchedule(games)
 		} else {
 			return responder.BadRequest(c, fiber.StatusBadRequest, errors.New(fmt.Sprintf("Invalid optimizer %v", optimizer)).Error())
@@ -157,7 +169,7 @@ func handleCreateGames(c *fiber.Ctx) error {
 	_, err = session.SaveGames(bestGames)
 	if err != nil {
 		log.Info("Failed to save games to the database\n")
-		return responder.InternalServerError(c, err)
+		return responder.InternalServerError(c, err.Error())
 	}
 
 	data := response{
@@ -172,11 +184,13 @@ func readBody(c *fiber.Ctx) (Body, error) {
 
 	// keys
 	// - season_id
+	// - venue_id
 	// - algorithm
 	// - file
 
 	dto := struct {
 		SeasonID             uint   `json:"season_id"`
+		VenueID              uint   `json:"venue_id"`
 		Optimizer            string `json:"optimizer"`
 		NumberOfGamesPerTeam int    `json:"number_of_games_per_team"`
 	}{}
@@ -200,6 +214,7 @@ func readBody(c *fiber.Ctx) (Body, error) {
 
 	body := Body{
 		seasonID:             dto.SeasonID,
+		venueID:              dto.VenueID,
 		optimizer:            dto.Optimizer,
 		iceTimes:             iceTimes,
 		numberOfGamesPerTeam: dto.NumberOfGamesPerTeam,

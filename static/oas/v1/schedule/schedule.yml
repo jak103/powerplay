@@ -71,6 +71,10 @@ schemas:
         type: int
         description: The id of the season to generate a schedule for
         example: 1
+      venueId:
+        type: int
+        description: The id of the venue for the generated games
+        example: 1
       optimizer:
         type: string
         description: Which optimization algorithm to use

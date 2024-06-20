@@ -10,7 +10,7 @@ import (
 	"github.com/jak103/powerplay/internal/utils/log"
 )
 
-func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam int) ([]models.Game, error) {
+func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam int, venue models.Venue) ([]models.Game, error) {
 	if len(leagues) == 0 {
 		return nil, errors.New("no leagues to generate games for")
 	}
@@ -21,7 +21,7 @@ func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam
 		return nil, errors.New("no games per team to generate")
 	}
 
-	season, err := generateGames(leagues, numberOfGamesPerTeam)
+	season, err := generateGames(leagues, numberOfGamesPerTeam, venue)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func RoundRobin(leagues []models.League, iceTimes []string, numberOfGamesPerTeam
 	return games, nil
 }
 
-func generateGames(leagues []models.League, numberOfGamesPerTeam int) (structures.Season, error) {
+func generateGames(leagues []models.League, numberOfGamesPerTeam int, venue models.Venue) (structures.Season, error) {
 	if len(leagues) == 0 {
 		return structures.Season{}, errors.New("no leagues to generate games for")
 	}
@@ -60,7 +60,7 @@ func generateGames(leagues []models.League, numberOfGamesPerTeam int) (structure
 		for round := 0; round < numberOfRounds; round++ {
 			rounds[round].Games = make([]models.Game, numTeams/2)
 			for i := 0; i < numTeams/2; i++ {
-				rounds[round].Games[i] = newGame(league.Teams[i], league.Teams[numTeams-1-i], league.SeasonID)
+				rounds[round].Games[i] = newGame(league.Teams[i], league.Teams[numTeams-1-i], league.SeasonID, venue)
 			}
 
 			rotateTeams(&league)
@@ -111,13 +111,14 @@ func rotateTeams(league *models.League) {
 	league.Teams[1] = lastTeam
 }
 
-func newGame(team1, team2 models.Team, seasonId uint) models.Game {
+func newGame(team1, team2 models.Team, seasonId uint, venue models.Venue) models.Game {
 
 	// TODO: This should probably create new rosters along with the game
 	return models.Game{
 		SeasonID: seasonId,
 		HomeTeam: team1,
 		AwayTeam: team2,
+		Venue:    venue,
 	}
 }
 
@@ -129,9 +130,9 @@ func newGames(season *structures.Season, numberOfGamesPerTeam int) ([]models.Gam
 		return nil, errors.New("no rounds to get games from")
 	}
 	games := make([]models.Game, 0)
-	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
+	reorderedLeagues := reorderLeagues(season.LeagueRounds)
 
-		reorderedLeagues := reorderLeagues(season.LeagueRounds)
+	for i := 0; i < numberOfGamesPerTeam; i += 1 { // Rounds // TODO This currently won't work if the leagues don't all have the same number of teams, fix this when needed (Balance by calculating the rate at which games have to be assigned, e.g. the average time between games to complete in the season from the number of first to last dates )
 
 		for _, league := range reorderedLeagues { // Alternate leagues so if you play in two leagues you don't play back to back
 			if season.LeagueRounds[league] == nil || len(season.LeagueRounds[league]) <= i {
