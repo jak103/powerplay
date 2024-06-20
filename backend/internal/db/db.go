@@ -16,7 +16,7 @@ import (
 	"github.com/jak103/powerplay/internal/utils/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	gormlogger "gorm.io/gorm/logger"
+	gorm_logger "gorm.io/gorm/logger"
 )
 
 var dbConnection *gorm.DB
@@ -35,23 +35,23 @@ func Init() error {
 		config.Vars.Db.DbName,
 		config.Vars.Db.Port)
 
-	dsnRedacted := fmt.Sprintf("host=%s user=%s password=<REDACTED> dbname=%s port=%s sslmode=disable TimeZone=UTC",
+	dsn_redacted := fmt.Sprintf("host=%s user=%s password=<REDACTED> dbname=%s port=%s sslmode=disable TimeZone=UTC",
 		config.Vars.Db.Host,
 		config.Vars.Db.Username,
 		config.Vars.Db.DbName,
 		config.Vars.Db.Port)
 
-	log.Info("DB DSN: %s", dsnRedacted)
+	log.Info("DB DSN: %s", dsn_redacted)
 
 	// TODO replace GORM logger with our logger
-	newLogger := gormlogger.New(
+	newLogger := gorm_logger.New(
 		stdLog.New(os.Stdout, "\r\n", stdLog.LstdFlags), // io writer
-		gormlogger.Config{
-			SlowThreshold:             time.Second,       // Slow SQL threshold
-			LogLevel:                  gormlogger.Silent, // Log level
-			IgnoreRecordNotFoundError: true,              // Ignore ErrRecordNotFound error for logger
-			ParameterizedQueries:      true,              // Don't include params in the SQL log
-			Colorful:                  false,             // Disable color
+		gorm_logger.Config{
+			SlowThreshold:             time.Second,        // Slow SQL threshold
+			LogLevel:                  gorm_logger.Silent, // Log level
+			IgnoreRecordNotFoundError: true,               // Ignore ErrRecordNotFound error for logger
+			ParameterizedQueries:      true,               // Don't include params in the SQL log
+			Colorful:                  false,              // Disable color
 		},
 	)
 
@@ -60,7 +60,7 @@ func Init() error {
 		log.WithErr(err).Alert("Failed to connect to DB")
 		return err
 	}
-	log.Info("Database connected")
+	log.Info("Databse connected")
 
 	return nil
 }
@@ -82,7 +82,6 @@ func GetDB() *gorm.DB {
 }
 
 func GetSession(c *fiber.Ctx) session {
-
 	logger := log.TheLogger
 	if c != nil {
 		logger = locals.Logger(c)

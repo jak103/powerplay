@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/jak103/powerplay/internal/utils/log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/config"
@@ -33,7 +34,7 @@ func Run() {
 
 	err := app.Listen(fmt.Sprintf(":%s", config.Vars.Port))
 	if err != nil {
-		return
+		log.WithErr(err).Error("Server error: %v", err.Error())
 	}
 }
 
