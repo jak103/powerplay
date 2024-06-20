@@ -1,4 +1,4 @@
-import type { GameId, PenaltyTypeId, TeamRecordId, UserId } from './ids'
+import type { GameId, PenaltyTypeId, TeamId, UserId } from './ids'
 import type { DbModel, User } from './index'
 
 export interface PenaltyType extends DbModel {
@@ -11,10 +11,11 @@ export interface PenaltyType extends DbModel {
 
 export interface Penalty extends DbModel {
   player_id: UserId
-  team_id: TeamRecordId
+  team_id: TeamId
   game_id: GameId
   period: number
-  game_time: number
+  /** Penalty.duration === game time */
+  duration: number
   created_by: UserId
   penalty_type: PenaltyType
   penalty_type_id: PenaltyTypeId
