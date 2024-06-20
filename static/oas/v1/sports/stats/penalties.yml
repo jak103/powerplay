@@ -1,26 +1,10 @@
 paths:
-  penaltyTypes:
+  /penalties:
     get:
       tags:
-        - Stats
-      summary: All Penalty Types
-      description: Get all penalty types
-      responses:
-        200:
-          description: The response body should contain the penalty types
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetPenaltyTypeResponse'
-        400:
-          $ref: "../../common/errors.yml#/components/responses/BadRequest"
-  penalties:
-    get:
-      tags:
-        - Stats
+        - Penalties
       summary: All Penalties
-      description: |
-        Get all penalties
+      description: Get all penalties
       responses:
         200:
           description: The response body should contain the list of penalties
@@ -32,8 +16,8 @@ paths:
           $ref: "../../common/errors.yml#/components/responses/BadRequest"
     post:
       tags:
-        - Stats
-      summary: Add Penalty
+        - Penalties
+      summary: Create Penalty
       description: Creates a new penalty
       requestBody:
         description: A JSON object with a valid penalty
@@ -41,14 +25,154 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PostPenaltiesRequest"
+              $ref: "#/components/schemas/PostPenaltyRequest"
       responses:
         200:
           description: Successfully created a new penalty
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostPenaltiesResponse'
+                $ref: '#/components/schemas/PenaltyResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+  /penalties/{id}:
+    get:
+      tags:
+        - Penalties
+      summary: Penalty by ID
+      description: Get a penalty by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the penalty
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully created a new penalty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PenaltyResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+    put:
+      tags:
+        - Penalties
+      summary: Update Penalty
+      description: |
+        Updates a penalty
+        
+        Note: You must include the whole Penalty object in the request body, including the id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the penalty to update
+          schema:
+            type: integer
+      requestBody:
+        description: A JSON object with a valid penalty
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PutPenaltyRequest"
+      responses:
+        200:
+          description: Successfully updated a penalty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PenaltyResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+    delete:
+      tags:
+        - Penalties
+      summary: Delete Penalty
+      description: Deletes a penalty
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the penalty to delete
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully deleted a penalty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletePenaltyResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+  /games/{gameId}/penalties:
+    get:
+      tags:
+        - Penalties
+      summary: All Penalties by Game
+      description: Get all penalties by game
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          description: The ID of the game
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The response body should contain the list of penalties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPenaltiesResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+  /teams/{teamID}/penalties:
+    get:
+      tags:
+        - Penalties
+      summary: All Penalties by Team
+      description: Get all penalties by team
+      parameters:
+        - name: teamID
+          in: path
+          required: true
+          description: The ID of the team
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The response body should contain the list of penalties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPenaltiesResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+  /users/{playerID}/penalties:
+    get:
+      tags:
+        - Penalties
+      summary: All Penalties by Player
+      description: Get all penalties by player
+      parameters:
+        - name: playerID
+          in: path
+          required: true
+          description: The ID of the player
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The response body should contain the list of penalties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPenaltiesResponse'
         400:
           $ref: "../../common/errors.yml#/components/responses/BadRequest"
 
@@ -64,49 +188,160 @@ components:
         request_id:
           $ref: "../../common/schemas.yml#/components/schemas/RequestId"
         response_data:
-          type: object
-          properties:
-            penalties:
-              type: array
-              description: All penalties
-              example:
-              - id: 1
-                created_at: "2009-11-10T23:00:00Z"
-                updated_at: "2009-11-10T23:00:00Z"
-                player_id: 55
-                team_id: 1
-                game_id: 42
-                period: 1
-                duration: 10
-                created_by: 1
-                penalty_type_id: 1
-                penalty_type:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: int
+                description: The ID of the penalty
+                example: 1
+              created_at:
+                type: string
+                description: Time penalty was created
+                example: "2024-05-22T03:08:30.187262Z"
+              updated_at:
+                type: string
+                description: Time penalty was updated
+                example: "2009-11-10T23:00:00Z"
+              player_id:
+                type: int
+                description: The player's ID
+                example: 55
+              team_id:
+                type: int
+                description: The ID of the team that the player is associated with
+                example: 2
+              game_id:
+                type: int
+                description: The game's ID
+                example: 42
+              period:
+                type: int
+                description: The period in the game that the penalty occurred
+                example: 1
+              duration:
+                type: int
+                description: The duration the player is benched in seconds
+                example: 10
+              created_by:
+                type: int
+                description: The ID of the user that creates the penalty
+                example: 2
+              penalty_type_id:
+                type: int
+                description: The ID of the Penalty Type
+                example: 1
+              penalty_type:
+                type: object
+                description: The Penalty Type
+                example:
                   id: 1
                   created_at: "2009-11-10T23:00:00Z"
                   updated_at: "2009-11-10T23:00:00Z"
                   name: Tripping
                   duration: 2
                   severity: Minor
-              - id: 2
-                created_at: "2009-11-10T23:00:00Z"
-                updated_at: "2009-11-10T23:00:00Z"
-                player_id: 88
-                team_id: 1
-                game_id: 42
-                period: 2
-                duration: 10
-                created_by: 1
-                penalty_type_id: 2
-                penalty_type:
-                  id: 1
-                  created_at: "2009-11-10T23:00:00Z"
-                  updated_at: "2009-11-10T23:00:00Z"
-                  name: Hooking
-                  duration: 2
-                  severity: Minor
-    PostPenaltiesRequest:
+    PostPenaltyRequest:
       type: object
       properties:
+        player_id:
+          type: int
+          description: The player's ID
+          example: 1
+        team_id:
+          type: int
+          description: The ID of the team that the player is associated with
+          example: 1
+        game_id:
+          type: int
+          description: The game's ID
+          example: 1
+        period:
+          type: int
+          description: The period in the game that the penalty occurred
+          example: 1
+        duration:
+          type: int
+          description: The duration the player is benched in seconds
+          example: 1
+        created_by:
+          type: int
+          description: The ID of the user that creates the penalty
+          example: 2
+        penalty_type_id:
+          type: int
+          description: The ID of the Penalty Type
+          example: 1
+    PenaltyResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
+        status_string:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
+        request_id:
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
+        response_data:
+          type: object
+          properties:
+            id:
+              type: int
+              description: The ID of the penalty
+              example: 1
+            created_at:
+              type: string
+              description: Time penalty was created
+              example: "2024-05-22T03:08:30.187262Z"
+            updated_at:
+              type: string
+              description: Time penalty was updated
+              example: "2009-11-10T23:00:00Z"
+            player_id:
+              type: int
+              description: The player's ID
+              example: 55
+            team_id:
+              type: int
+              description: The ID of the team that the player is associated with
+              example: 2
+            game_id:
+              type: int
+              description: The game's ID
+              example: 42
+            period:
+              type: int
+              description: The period in the game that the penalty occurred
+              example: 1
+            duration:
+              type: int
+              description: The duration the player is benched in seconds
+              example: 10
+            created_by:
+              type: int
+              description: The ID of the user that creates the penalty
+              example: 2
+            penalty_type_id:
+              type: int
+              description: The ID of the Penalty Type
+              example: 1
+            penalty_type:
+              type: object
+              description: The Penalty Type
+              example:
+                id: 1
+                created_at: "2009-11-10T23:00:00Z"
+                updated_at: "2009-11-10T23:00:00Z"
+                name: Tripping
+                duration: 2
+                severity: Minor
+    PutPenaltyRequest:
+      type: object
+      properties:
+        id:
+          type: int
+          description: The ID of the penalty
+          example: 1
         player_id:
           type: int
           description: The player's ID
@@ -135,7 +370,7 @@ components:
           type: int
           description: The ID of the Penalty Type
           example: 1
-    PostPenaltiesResponse:
+    DeletePenaltyResponse:
       type: object
       properties:
         status_code:
@@ -144,41 +379,5 @@ components:
           $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
         request_id:
           $ref: "../../common/schemas.yml#/components/schemas/RequestId"
-    GetPenaltyTypeResponse:
-      type: object
-      properties:
-        status_code:
-          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
-        status_string:
-          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
-        request_id:
-          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
-        response_data:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: int
-                description: Id of penalty type
-                example: 1
-              created_at:
-                type: string
-                description: Time penalty type was created
-                example: "2024-05-22T03:08:30.187262Z"
-              updated_at:
-                type: string
-                description: Time penalty type was updated
-                example: "2024-05-22T03:08:30.187262Z"
-              name:
-                type: string
-                description: Name of penalty
-                example: Hooking
-              duration:
-                type: int
-                description: Duration of penalty
-                example: 2
-              severity:
-                type: string
-                description: Severity of the penalty
-                example: minor
+        message:
+          type: string

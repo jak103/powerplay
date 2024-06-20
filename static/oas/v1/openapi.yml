@@ -36,6 +36,8 @@ paths:
     $ref: "./sports/components/games.yml#/paths/~1games"
   /games/{gameId}:
     $ref: "./sports/components/games.yml#/paths/~1games~1{gameId}"
+  /games/{gameId}/penalties:
+    $ref: "./sports/stats/penalties.yml#/paths/~1games~1{gameId}~1penalties"
   /goals:
     $ref: "./sports/stats/goals.yml#/paths/goals"
   /leagues:
@@ -45,9 +47,13 @@ paths:
   /logos/{id}:
     $ref: "./sports/components/logos.yml#/paths/~1logos~1{id}"
   /penalties:
-    $ref: "./sports/stats/penalties.yml#/paths/penalties"
+    $ref: "./sports/stats/penalties.yml#/paths/~1penalties"
+  /penalties/{id}:
+    $ref: "./sports/stats/penalties.yml#/paths/~1penalties~1{id}"
   /penaltyTypes:
-    $ref: "./sports/stats/penalties.yml#/paths/penaltyTypes"
+    $ref: "./sports/stats/penaltyTypes.yml#/paths/~1penaltyTypes"
+  /penaltyTypes/{id}:
+    $ref: "./sports/stats/penaltyTypes.yml#/paths/~1penaltyTypes~1{id}"
   /rosters:
     $ref: "./sports/components/rosters.yml#/paths/rosters"
   /seasons:
@@ -58,8 +64,12 @@ paths:
     $ref: "./sports/components/teams.yml#/paths/~1teams"
   /teams/{id}:
     $ref: "./sports/components/teams.yml#/paths/~1teams~1{id}"
+  /teams/{teamID}/penalties:
+    $ref: "./sports/stats/penalties.yml#/paths/~1teams~1{teamID}~1penalties"
   /user:
     $ref: "./users/users.yml#/paths/user"
+  /users/{playerID}/penalties:
+    $ref: "./sports/stats/penalties.yml#/paths/~1users~1{playerID}~1penalties" # Path mismatch with above
   /venues:
     $ref: "./sports/stats/venues.yml#/paths/venues"
   
