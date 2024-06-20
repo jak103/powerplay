@@ -30,4 +30,4 @@ jobs:
       run: cd backend && go build -v ./...
 
     - name: Test
-      run: cd backend && go test fmt -json -v ./... | tparse -all
+      run: cd backend && go test -json -v ./... | tparse -all
