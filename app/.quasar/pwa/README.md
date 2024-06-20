@@ -61,7 +61,7 @@ Links:
     1. Caching the files didn't work because the js, css, and html files made from the vue files are generated with a different name each time they're sent (with a random number at the end). Because of this, we can't simply cache what the generated files will always be named, since it changes. We also can't cache the vue files, because neither the browser nor service worker know how to handle them
     2. Not sure why caching the url patterns didn't work. I think it's similar to why caching the files didn't work, but might also be because there's no way for it to keep track of the revision of the file if it's a url pattern that uses (potentially) multiple files
     3. In **custom-service-worker.ts**
-    ```
+    ```javascript
     // Adding urls to precache
     const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 
