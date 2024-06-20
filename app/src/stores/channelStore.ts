@@ -87,10 +87,15 @@ state: () => ({
       channel_name: string;
       channel_id: string;
       channel_image: string | null;
-      missed_chats: number;
+      missed_chats: number ;
       type: string;
     }) {
+      debugger;
+      if (channel.channel_id == ''){
+        channel.channel_id = 'example' + (this.channels.length + 1).toString();
+      }
       this.channels.push(channel);
+      return channel
     },
     removeChannel(channelId: string) {
       this.channels = this.channels.filter(channel => channel.channel_id !== channelId);
