@@ -1,5 +1,5 @@
 import type { TimeString } from './types/timeString'
-import type { DbModel, Registration, Game, LeagueRecord } from './index'
+import type { DbModel, Registration, Game, League } from './index'
 
 export interface Season extends DbModel {
   name: string
@@ -7,7 +7,7 @@ export interface Season extends DbModel {
   end: TimeString
   registrations: Array<Registration>
   schedule: Array<Game>
-  leagues: Array<LeagueRecord>
+  leagues: Array<League>
 }
 
 export type { SeasonId } from './ids'
