@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import { GameStatus, type Game } from 'src/models/Game';
-import { RosterId, SeasonId, TeamRecordId, UserId, VenueId, LogoId, TeamGuid, LeagueRecordId, LeagueGuid } from 'src/models/ids';
+import { RosterId, SeasonId, TeamId, UserId, VenueId, LogoId, TeamGuid, LeagueId, LeagueGuid } from 'src/models/ids';
 import { TimeString } from 'src/models/types/timeString';
 import { TimeString as TimeUtil } from 'src/models/types/timeString';
 import type { User } from 'src/models/User';
 import type { Roster } from 'src/models/Roster';
-import type { TeamRecord } from 'src/models/TeamRecord';
+import type { Team} from 'src/models/Team';
 import type { Venue } from 'src/models/Venue';
-import type { LeagueRecord } from 'src/models/LeagueRecord';
+import type { League } from 'src/models/League';
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -37,20 +37,20 @@ export const useScheduleStore = defineStore('schedule', {
           } as Venue,
           venue_id: 1 as unknown as VenueId,
           status: GameStatus.SCHEDULED,
-          home_team_record: {
+          home_team: {
             id: 1,
             team_guid: 'teamGuid1' as unknown as TeamGuid,
             name: 'The Homeboys',
             logo_id: 'logo1' as unknown as LogoId,
             color: 'blue',
-            league_record_id: 'leagueRecord1' as unknown as LeagueRecordId,
+            league_record_id: 'league1' as unknown as LeagueId,
             league_record: {
               id: 1,
               league_guid: 'league1' as unknown as LeagueGuid,
               wins: 10,
               losses: 2,
               ties: 1,
-            } as unknown as LeagueRecord,
+            } as unknown as League,
             roster: {
               id: 1,
               players: [
@@ -82,8 +82,8 @@ export const useScheduleStore = defineStore('schedule', {
             roster_id: 1 as unknown as RosterId,
             wins: 10,
             losses: 2,
-          } as unknown as TeamRecord,
-          home_team_record_id: 1 as unknown as TeamRecordId,
+          } as unknown as Team,
+          home_team_id: 1 as unknown as TeamId,
           home_team_roster: {
             id: 1,
             players: [
@@ -116,20 +116,20 @@ export const useScheduleStore = defineStore('schedule', {
           home_team_locker_room: 'A1',
           home_team_shots_on_goal: 10,
           home_team_score: 2,
-          away_team_record: {
+          away_team: {
             id: 2,
             team_guid: 'teamGuid2' as unknown as TeamGuid,
             name: 'A Way Good Team',
             logo_id: 'logo2' as unknown as LogoId,
             color: 'red',
-            league_record_id: 'leagueRecord2' as unknown as LeagueRecordId,
+            league_record_id: 'league2' as unknown as LeagueId,
             league_record: {
               id: 2,
               league_guid: 'league2' as unknown as LeagueGuid,
               wins: 8,
               losses: 4,
               ties: 1,
-            } as unknown as LeagueRecord,
+            } as unknown as League,
             roster: {
               id: 2,
               players: [
@@ -161,8 +161,8 @@ export const useScheduleStore = defineStore('schedule', {
             roster_id: 2 as unknown as RosterId,
             wins: 8,
             losses: 4,
-          } as unknown as TeamRecord,
-          away_team_record_id: 2 as unknown as TeamRecordId,
+          } as unknown as Team,
+          away_team_id: 2 as unknown as TeamId,
           away_team_roster: {
             id: 2,
             players: [
@@ -248,20 +248,20 @@ export const useScheduleStore = defineStore('schedule', {
           } as Venue,
           venue_id: 2 as unknown as VenueId,
           status: GameStatus.SCHEDULED,
-          home_team_record: {
+          home_team: {
             id: 3,
             team_guid: 'teamGuid3' as unknown as TeamGuid,
             name: 'Another Home Team',
             logo_id: 'logo1' as unknown as LogoId,
             color: 'green',
-            league_record_id: 'leagueRecord3' as unknown as LeagueRecordId,
+            league_record_id: 'league3' as unknown as LeagueId,
             league_record: {
               id: 3,
               league_guid: 'league3' as unknown as LeagueGuid,
               wins: 5,
               losses: 5,
               ties: 0,
-            } as unknown as LeagueRecord,
+            } as unknown as League,
             roster: {
               id: 3,
               players: [
@@ -304,8 +304,8 @@ export const useScheduleStore = defineStore('schedule', {
             roster_id: 3 as unknown as RosterId,
             wins: 5,
             losses: 5,
-          } as unknown as TeamRecord,
-          home_team_record_id: 3 as unknown as TeamRecordId,
+          } as unknown as Team,
+          home_team_id: 3 as unknown as TeamId,
           home_team_roster: {
             id: 3,
             players: [
@@ -349,20 +349,20 @@ export const useScheduleStore = defineStore('schedule', {
           home_team_locker_room: 'C1',
           home_team_shots_on_goal: 15,
           home_team_score: 1,
-          away_team_record: {
+          away_team: {
             id: 4,
             team_guid: 'teamGuid4' as unknown as TeamGuid,
             name: 'Yet Another Away Team',
             logo_id: 'logo2' as unknown as LogoId,
             color: 'yellow',
-            league_record_id: 'leagueRecord4' as unknown as LeagueRecordId,
+            league_record_id: 'league4' as unknown as LeagueId,
             league_record: {
               id: 4,
               league_guid: 'league4' as unknown as LeagueGuid,
               wins: 6,
               losses: 4,
               ties: 1,
-            } as unknown as LeagueRecord,
+            } as unknown as League,
             roster: {
               id: 4,
               players: [
@@ -405,8 +405,8 @@ export const useScheduleStore = defineStore('schedule', {
             roster_id: 4 as unknown as RosterId,
             wins: 6,
             losses: 4,
-          } as unknown as TeamRecord,
-          away_team_record_id: 4 as unknown as TeamRecordId,
+          } as unknown as Team,
+          away_team_id: 4 as unknown as TeamId,
           away_team_roster: {
             id: 4,
             players: [

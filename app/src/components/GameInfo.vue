@@ -3,11 +3,11 @@
     <q-card-section class="q-pa-xs">
       <q-item class="team-wrapper">
         <q-item-section avatar>
-          <q-img :src="getLogoSrc(game.home_team_record.logo_id)" alt="Home Team Logo" class="team-logo" />
+          <q-img :src="getLogoSrc(game.home_team.logo_id)" alt="Home Team Logo" class="team-logo" />
         </q-item-section>
         <q-item-section class="team-details">
           <q-item-label :class="{ 'text-bold': game.home_team_score > game.away_team_score }" class="team-name">
-            {{ game.home_team_record.name }}
+            {{ game.home_team.name }}
           </q-item-label>
           <q-item-label caption class="home-away-label">Home</q-item-label>
         </q-item-section>
@@ -21,11 +21,11 @@
     <q-card-section class="q-pa-xs">
       <q-item class="team-wrapper">
         <q-item-section avatar>
-          <q-img :src="getLogoSrc(game.away_team_record.logo_id)" alt="Away Team Logo" class="team-logo" />
+          <q-img :src="getLogoSrc(game.away_team.logo_id)" alt="Away Team Logo" class="team-logo" />
         </q-item-section>
         <q-item-section class="team-details">
           <q-item-label :class="{ 'text-bold': game.away_team_score > game.home_team_score }" class="team-name">
-            {{ game.away_team_record.name }}
+            {{ game.away_team.name }}
           </q-item-label>
           <q-item-label caption class="home-away-label">Away</q-item-label>
         </q-item-section>
@@ -112,7 +112,7 @@ const formatDate = (dateString: string): string => {
 };
 function goToGameDetails() {
   if (props.showRsvpButton) {
-    router.push({ name: 'GameDetailsPage', params: { gameId: props.game.id, teamId: props.game.away_team_record.id } });
+    router.push({ name: 'GameDetailsPage', params: { gameId: props.game.id, teamId: props.game.away_team.id } });
   }
 }
 </script>
