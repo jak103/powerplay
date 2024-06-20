@@ -14,6 +14,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'substitues', name: 'SubPage', component: () => import('pages/SubPage.vue'), meta: { title: 'Substitutes' } },
       { path: 'chat', name: 'ChatPage', component: () => import('pages/chat/chatPage.vue'), meta: { title: 'Chat' } },
       { path: 'profile', name: 'ProfilePage', component: () => import('pages/profile/profilePage.vue'), meta: { title: 'Profile' } },
+      { path: 'profile/edit-profile', name: 'EditProfile', component: () => import('pages/profile/edit-profile/editProfile.vue'), meta: { title: 'Edit Profile' }},
       { path: 'schedule', name: 'SchedulePage', component: () => import('pages/schedule/schedulePage.vue'), meta: { title: 'Schedule' } },
     ],
   },
