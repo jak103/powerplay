@@ -1,13 +1,12 @@
 package player
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"strconv"
 )
 
 func init() {
@@ -15,67 +14,67 @@ func init() {
 }
 
 type Body struct {
-        UserId   uint `json:"user_id"`
-	TeamId   uint `json:"team_id"`
-	GameId   uint `json:"game_id"`
-	Rsvp     int  `json:"player"`
+	UserId uint `json:"user_id"`
+	TeamId uint `json:"team_id"`
+	GameId uint `json:"game_id"`
+	Rsvp   int  `json:"player"`
 }
 
 const (
-        notAttending = iota
-        attending
+	notAttending = iota
+	attending
 )
 
 // Currently, this function is using the roster on the game as the rsvp. The roster on the game is actually the people who are showing up, not people who will potentially show up
 // Something will need to be done to handle rsvp separately
 func handleRsvp(c *fiber.Ctx) error {
-        body, err := readBody(c)
-        if err != nil {
-            return responder.InternalServerError(c, "Could not read the body of the request")
-        }
+	body, err := readBody(c)
+	if err != nil {
+		return responder.InternalServerError(c, "Could not read the body of the request")
+	}
 
-        //If they are attending, then put them on the roster
-        if body.Rsvp == attending {
-            session := db.GetSession(c)
-            team, err := session.GetTeamByID(string(body.TeamId))
-            if err != nil {
-                return responder.InternalServerError(c, err.Error())
-            }
+	//If they are attending, then put them on the roster
+	if body.Rsvp == attending {
+		session := db.GetSession(c)
+		team, err := session.GetTeamByID(strconv.Itoa(int(body.TeamId)))
+		if err != nil {
+			return responder.InternalServerError(c, err.Error())
+		}
 
-            game, err := session.GetGameById(body.GameId)
-            if err != nil {
-                return responder.InternalServerError(c, err.Error())
-            }
+		game, err := session.GetGameById(body.GameId)
+		if err != nil {
+			return responder.InternalServerError(c, err.Error())
+		}
 
-            user, err := session.GetUserById(body.UserId)
-            if err != nil {
-                return responder.InternalServerError(c, err.Error())
-            }
+		user, err := session.GetUserById(body.UserId)
+		if err != nil {
+			return responder.InternalServerError(c, err.Error())
+		}
 
-            // Check if the team they are rsvp'ing for is home or away team
-            if team == &game.HomeTeam {
-                _ = append(game.HomeTeamRoster.Players, user)
-                session.SaveGame(*game)
-                return responder.Ok(c, fmt.Sprint("Successfully rsvp'd for %v", team.Name))
-            }
+		// Check if the team they are rsvp'ing for is home or away team
+		if team == &game.HomeTeam {
+			_ = append(game.HomeTeamRoster.Players, user)
+			session.SaveGame(*game)
+			return responder.Ok(c, "Successfully rsvp'd for %v", team.Name)
+		}
 
-            if team == &game.AwayTeam {
-                _ = append(game.HomeTeamRoster.Players, user)
-                session.SaveGame(*game)
-                return responder.Ok(c, fmt.Sprint("Successfully rsvp'd for %v", team.Name))
-            }
-        }
+		if team == &game.AwayTeam {
+			_ = append(game.HomeTeamRoster.Players, user)
+			session.SaveGame(*game)
+			return responder.Ok(c, "Successfully rsvp'd for %v", team.Name)
+		}
+	}
 
-        // They are not attending or the team could not be found
+	// They are not attending or the team could not be found
 	return responder.Ok(c)
 }
 
 func readBody(c *fiber.Ctx) (Body, error) {
 	dto := struct {
-                UserId             uint   `json:"user_id"`
-		TeamId             uint   `json:"team_id"`
-		GameId             uint   `json:"game_id"`
-		Rsvp               int    `json:"rsvp"`
+		UserId uint `json:"user_id"`
+		TeamId uint `json:"team_id"`
+		GameId uint `json:"game_id"`
+		Rsvp   int  `json:"rsvp"`
 	}{}
 
 	if err := c.BodyParser(&dto); err != nil {
@@ -83,9 +82,9 @@ func readBody(c *fiber.Ctx) (Body, error) {
 	}
 
 	body := Body{
-                UserId: dto.UserId,
+		UserId: dto.UserId,
 		TeamId: dto.TeamId,
-                GameId: dto.GameId,
+		GameId: dto.GameId,
 		Rsvp:   dto.Rsvp,
 	}
 	return body, nil
