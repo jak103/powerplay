@@ -31,15 +31,15 @@ func TestDatabase(t *testing.T) {
 	suite.Run(t, new(dbTestingSuite))
 }
 
-func (s *dbTestingSuite) SetupSuite() {
+func (suite *dbTestingSuite) SetupSuite() {
 	log.Info("Starting db container")
 	start := time.Now()
-	dbConnection = s.startDb()
+	dbConnection = suite.startDb()
 	if dbConnection == nil {
-		s.FailNow("Failed to start db")
+		suite.FailNow("Failed to start db")
 	}
 
-	s.session = session{
+	suite.session = session{
 		DB: dbConnection.Session(&gorm.Session{
 			Logger: logger.Default.LogMode(logger.Silent),
 		}),
@@ -47,8 +47,8 @@ func (s *dbTestingSuite) SetupSuite() {
 	log.Info("Done! (%v)", time.Since(start))
 }
 
-func (s *dbTestingSuite) TearDownSuite() {
-	if err := s.pool.Purge(s.db); err != nil {
+func (suite *dbTestingSuite) TearDownSuite() {
+	if err := suite.pool.Purge(suite.db); err != nil {
 		log.Error("Could not purge resource: %s", err)
 	}
 }
@@ -121,7 +121,7 @@ func (s *dbTestingSuite) startDb() *gorm.DB {
 	time.Sleep(10 * time.Second) // Let db start
 	// exponential backoff-retry, because the application in the container might not be ready to accept connections yet
 	if err := s.pool.Retry(func() error {
-		dsn := fmt.Sprintf("host=localhost user=postgres password=password dbname=powerplay port=%s sslmode=disable", s.db.GetPort("5432/tcp"))
+		dsn := fmt.Sprintf("host=localhost user=postgres password=password dbname=powerplay port=%s sslmode=disable", s.db.GetPort(("5432/tcp")))
 
 		log.Info("Trying to ping db at %s", dsn)
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
@@ -147,7 +147,7 @@ func TestResultOrErrorNominal(t *testing.T) {
 		Error: nil,
 	}
 
-	var record = &models.KeyRecord{
+	var record *models.KeyRecord = &models.KeyRecord{
 		UserId: 99,
 	}
 
@@ -162,7 +162,7 @@ func TestResultOrErrorNoResult(t *testing.T) {
 		Error: gorm.ErrRecordNotFound,
 	}
 
-	var record = &models.KeyRecord{
+	var record *models.KeyRecord = &models.KeyRecord{
 		UserId: 99,
 	}
 
@@ -177,7 +177,7 @@ func TestResultOrErrorError(t *testing.T) {
 		Error: gorm.ErrDuplicatedKey,
 	}
 
-	var record = &models.KeyRecord{
+	var record *models.KeyRecord = &models.KeyRecord{
 		UserId: 99,
 	}
 
