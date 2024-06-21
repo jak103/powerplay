@@ -1,0 +1,221 @@
+paths:
+  /penaltyTypes:
+    get:
+      tags:
+        - Penalties
+      summary: All Penalty Types
+      description: Get all penalty types
+      responses:
+        200:
+          description: The response body should contain the penalty types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPenaltyTypesResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+    post:
+      tags:
+        - Penalties
+      summary: Create Penalty Type
+      description: Creates a new penalty type
+      requestBody:
+        description: A JSON object with a valid penalty type
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostPenaltyTypeRequest"
+      responses:
+        200:
+          description: Successfully created a new penalty type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PenaltyTypeResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+  /penaltyTypes/{id}:
+    put:
+      tags:
+        - Penalties
+      summary: Update Penalty Type
+      description: |
+        Updates a penalty type
+        
+        Note: You must include the whole Penalty Type object in the request body, including the id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the penalty type to update
+          schema:
+            type: integer
+      requestBody:
+        description: A JSON object with a valid penalty type
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PutPenaltyTypeRequest"
+      responses:
+        200:
+          description: Successfully updated a penalty type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PenaltyTypeResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+    delete:
+      tags:
+        - Penalties
+      summary: Delete Penalty Type
+      description: Deletes a penalty type
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the penalty type to delete
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully deleted a penalty type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletePenaltyTypeResponse'
+        400:
+          $ref: "../../common/errors.yml#/components/responses/BadRequest"
+
+components:
+  schemas:
+    GetPenaltyTypesResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
+        status_string:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
+        request_id:
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
+        response_data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: int
+                description: The ID of the penalty type
+                example: 1
+              created_at:
+                type: string
+                description: Time penalty type was created
+                example: "2024-05-22T03:08:30.187262Z"
+              updated_at:
+                type: string
+                description: Time penalty type was updated
+                example: "2024-05-22T03:08:30.187262Z"
+              deleted_at:
+                type: string
+                description: Time penalty type was deleted
+                example: "2024-05-22T03:08:30.187262Z"
+              name:
+                type: string
+                description: The name of the penalty type
+                example: Hooking
+              duration:
+                type: int
+                description: The duration the player is benched in seconds
+                example: 2
+              severity:
+                type: string
+                description: The severity of a penalty type
+                example: minor
+    PostPenaltyTypeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the penalty type
+          example: Slashing
+        duration:
+          type: int
+          description: The duration the player is benched in seconds
+          example: 1
+        severity:
+          type: string
+          description: The severity of a penalty type
+          example: Minor
+    PenaltyTypeResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
+        status_string:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
+        request_id:
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
+        response_data:
+          type: object
+          properties:
+            id:
+              type: int
+              description: The ID of the penalty type
+              example: 1
+            created_at:
+              type: string
+              description: Time penalty type was created
+              example: "2024-05-22T03:08:30.187262Z"
+            updated_at:
+              type: string
+              description: Time penalty type was updated
+              example: "2024-05-22T03:08:30.187262Z"
+            deleted_at:
+              type: string
+              description: Time penalty type was deleted
+              example: "2024-05-22T03:08:30.187262Z"
+            name:
+              type: string
+              description: The name of the penalty type
+              example: Hooking
+            duration:
+              type: int
+              description: The duration the player is benched in seconds
+              example: 2
+            severity:
+              type: string
+              description: The severity of a penalty type
+              example: minor
+    PutPenaltyTypeRequest:
+      type: object
+      properties:
+        id:
+          type: int
+          description: The ID of the penalty type
+          example: 1
+        name:
+          type: string
+          description: The name of the penalty type
+          example: Slashing
+        duration:
+          type: int
+          description: The duration the player is benched in seconds
+          example: 1
+        severity:
+          type: string
+          description: The severity of a penalty type
+          example: Minor
+    DeletePenaltyTypeResponse:
+      type: object
+      properties:
+        status_code:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusCode200"
+        status_string:
+          $ref: "../../common/schemas.yml#/components/schemas/StatusString200"
+        request_id:
+          $ref: "../../common/schemas.yml#/components/schemas/RequestId"
+        message:
+          type: string
+

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+
 	"github.com/jak103/powerplay/internal/db/seeders/fake_data"
 	"github.com/jak103/powerplay/internal/models"
 
@@ -39,6 +41,15 @@ func runFakeDataSeeds() {
 	leagueSeeder := fake_data.LeagueSeeder{}
 	teamSeeder := fake_data.TeamSeeder{}
 	venueSeeder := fake_data.VenueSeeder{}
+	userSeeder := fake_data.UserSeeder{}
+
+	// Seed Users
+	_, err := userSeeder.Seed(db.GetDB())
+	if err != nil {
+		log.WithErr(err).Alert("Failed to seed Users: %v", err)
+		return
+	}
+	log.Info("Successfully seeded Users")
 
 	// Seed Season
 	season, err := seasonSeeder.Seed(db.GetDB())
@@ -76,9 +87,9 @@ func runFakeDataSeeds() {
 }
 
 func main() {
-	// migrateFlag := flag.Bool("migrate", false, "Run database migrations and exit")
-	// seedTestData := flag.Bool("seed-test", false, "Seed test data and exit")
-	// flag.Parse()
+	migrateFlag := flag.Bool("migrate", false, "Run database migrations and exit")
+	seedTestData := flag.Bool("seed-test", false, "Seed test data and exit")
+	flag.Parse()
 
 	err := log.Init("DEBUG", false)
 	if err != nil {
@@ -107,15 +118,15 @@ func main() {
 		return
 	}
 
-	// if *migrateFlag {
-	// 	runMigrations()
-	// 	return
-	// }
+	if *migrateFlag {
+		runMigrations()
+		return
+	}
 
-	// if *seedTestData {
-	// 	runFakeDataSeeds()
-	// 	return
-	// }
+	if *seedTestData {
+		runFakeDataSeeds()
+		return
+	}
 
 	runMigrations()
 	runSeeds()

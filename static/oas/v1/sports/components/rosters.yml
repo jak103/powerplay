@@ -56,7 +56,7 @@ components:
             properties: 
               captainId: 
                 type: integer
-                example: 1
+                example: 5
               captain: 
                 $ref: "../../users/users.yml#/schemas/User"
               players: 
@@ -75,15 +75,15 @@ components:
     PostRosterRequest:
       type: object
       properties:
-        captain_email:
-          type: string
-          description: Email associated to the captain
-          example: test1@test.com
-        player_emails: 
+        captain_ID:
+          type: uint
+          description: ID associated to the captain
+          example: 5
+        player_IDs: 
           type: array
           items: 
-            type: string
-          description: User emails associated with the players
+            type: uint
+          description: User IDs associated with the players
           example: 
-            - test2@test.com
-            - test3@test.com
+            - 7
+            - 12

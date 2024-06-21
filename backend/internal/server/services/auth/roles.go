@@ -3,6 +3,7 @@ package auth
 import (
 	"database/sql/driver"
 	"errors"
+	"strings"
 )
 
 type Role string
@@ -33,14 +34,7 @@ func (r *Role) Scan(value interface{}) error {
 	return nil
 }
 
-var (
-	Public        []Role = []Role{None}
-	Authenticated []Role = []Role{Manager, Referee, ScoreKeeper, Captain, Player}
-	Staff         []Role = []Role{Manager, Referee, ScoreKeeper}
-	ManagerOnly   []Role = []Role{Manager}
-)
-
-func HasCorrectRole(usersRoles []Role, roles []Role) bool {
+func HasCorrectRole(usersRoles Roles, roles Roles) bool {
 	for _, usersRole := range usersRoles {
 		for _, neededRole := range roles {
 			if neededRole == None || usersRole == neededRole {
@@ -50,4 +44,48 @@ func HasCorrectRole(usersRoles []Role, roles []Role) bool {
 	}
 
 	return false
+}
+
+type Roles []Role
+
+var (
+	Public        Roles = []Role{None}
+	Authenticated Roles = []Role{Manager, Referee, ScoreKeeper, Captain, Player}
+	Staff         Roles = []Role{Manager, Referee, ScoreKeeper}
+	ManagerOnly   Roles = []Role{Manager}
+)
+
+func (rs *Roles) Scan(value interface{}) error {
+	if value == nil {
+		*rs = nil
+		return nil
+	}
+
+	var rolesStr []string
+	switch v := value.(type) {
+	case []byte:
+		rolesStr = strings.Split(string(v), ",")
+	case string:
+		rolesStr = strings.Split(v, ",")
+	default:
+		return errors.New("unsupported type for Roles")
+	}
+
+	roles := make(Roles, len(rolesStr))
+	for i, roleStr := range rolesStr {
+		roles[i] = Role(roleStr)
+	}
+
+	*rs = roles
+	return nil
+}
+
+func (rs Roles) Value() (driver.Value, error) {
+	roles := make([]string, len(rs))
+
+	for i, role := range rs {
+		roles[i] = string(role)
+	}
+
+	return roles, nil
 }

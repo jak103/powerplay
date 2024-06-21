@@ -40,6 +40,11 @@ schemas:
       phone:
         type: string
         example: '123-456-7890'
+      roles: 
+        type: array
+        items:   
+          type: string
+          example: player
       skill_level: # will this match skill level? 
         type: integer
         example: 5
@@ -52,11 +57,11 @@ schemas:
     type: object
     properties:
       status_code:
-        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        $ref: "../common/schemas.yml#/components/schemas/StatusCode200"
       status_string:
-        $ref: "../common/schemas.yml#/schemas/StatusString200"
+        $ref: "../common/schemas.yml#/components/schemas/StatusString200"
       request_id:
-        $ref: "../common/schemas.yml#/schemas/RequestId"
+        $ref: "../common/schemas.yml#/components/schemas/RequestId"
       response_data:
         type: object
         properties:
@@ -66,6 +71,7 @@ schemas:
           user_id:
             type: integer
             example:
+
 
 
 

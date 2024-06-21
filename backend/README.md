@@ -6,6 +6,7 @@
 
 ## Table of Contents
 - [Adding and Updating API Endpoints](#adding-and-updating-api-endpoints)
+- [Adding and Updating Authentication](#adding-and-updating-authentication)
 - [Adding and Updating Unit Testing for Database Model](#adding-and-updating-unit-testing-for-database-model)
 - [Adding and Updating Unit Testing for API Endpoint](#adding-and-updating-unit-testing-for-api-endpoint)
 ## Adding and Updating API Endpoints
@@ -60,6 +61,65 @@ The following link is to an example .go file containing methods to be used as an
 
 3. Use the following linked .yml file to keep the documentation consistent throughout the backend.
 - [Example .yml file](/static/oas/v1/sports/stats/penalties.yml)
+
+## Adding and Updating Authentication
+
+### Generating Key
+
+1. Install openssl
+2. Generate secret key
+   - `openssl rand -base64 32`
+3. Add key to [local.env](../config/local.env) config
+
+### Adding Auth to API Endpoints
+There are several different roles that a user can be associated to:
+
+Roles:
+- None 
+- Player
+- Captain
+- Referee
+- ScoreKeeper
+- Manager
+
+There are roles that contain a set or group of roles:
+| Role Group | Role |
+| --- | --- | 
+| Public | [None] |
+| Authenticated | [Manager, Referee, ScoreKeeper, Captain, Player] | 
+| Staff | [Manager, Referee, ScoreKeeper] | 
+| ManagerOnly | [Manager] |
+
+Each API endpoint will have a set of roles that will be allowed to hit that endpoint. Here are the endpoints with the allowed roles:
+
+| Endpoint | HTTP Method | Roles |
+| --- | --- | --- |
+| /auth | POST | Public |
+| /games | GET | Public |
+| /games | POST | ManagerOnly | 
+| /goals | GET | Public | 
+| /goals | POST | Staff | 
+| /leagues | GET | Authenticated | 
+| /leagues | POST | ManagerOnly | 
+| /logo | GET | Public | 
+| /logo | POST | ManagerOnly | 
+| /penalties | GET | Public | 
+| /penalties | POST | Staff | 
+| /penaltyTypes | GET | Public | 
+| /rosters | GET | Authenticated | 
+| /rosters | POST | ManagerOnly | 
+| /seasons | GET | Authenticated | 
+| /seasons | POST | ManagerOnly | 
+| /shotsongoal | POST | Staff | 
+| /teams | GET | Authenticated | 
+| /teams | POST | ManagerOnly | 
+| /user | GET  | Authenticated | 
+| /user | POST | ManagerOnly |
+| /venues | GET | Public |
+| /venues | POST | ManagerOnly |
+
+
+
 
 ## Adding and Updating Unit Testing for Database Model
 Adding a unit test for a database model. These tests will be using a docker spin up of the actual database for testing the database interfacing functions.
