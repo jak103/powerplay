@@ -1,13 +1,9 @@
 <template>
   <GameInfo
+    v-if="game"
+    :game="game"
     :showRsvpButton="false"
-    :homeTeam="homeTeam"
-    :awayTeam="awayTeam"
-    :date="date"
-    :time="time"
-    :hasRsvped="hasRsvped"
-    :homeScore="homeScore"
-    :awayScore="awayScore"
+    :has-rsvped="false"
   />
   <q-card class="q-mb-md">
     <q-card-section>
@@ -18,7 +14,7 @@
   </q-card>
   <q-card class="q-mb-md">
     <q-card-section>
-      <strong>My RSVP</strong>
+       RSVP
     </q-card-section>
     <div class="q-pa-lg">
       <q-option-group v-model="selectedItems" :options="options" color="red" />
@@ -145,32 +141,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { useScheduleStore } from 'src/stores/scheduleStore';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import GameInfo from 'components/GameInfo.vue';
+import { Game } from 'src/models/Game';
 
-const props = defineProps<{
-  homeTeam: string;
-  awayTeam: string;
-  date: string;
-  time: string;
-  hasRsvped: boolean;
-  homeScore: number;
-  awayScore: number;
-  homeTeamLogo: string;
-  awayTeamLogo: string;
-}>();
+// import the store and route
+const store = useScheduleStore();
+const route = useRoute();
+const games = ref<Game[]>([]);
+const game = ref<Game | null>(null);
 
-const {
-  homeTeam = 'The Homeys',
-  awayTeam = 'A Way Good Team',
-  date = 'Wed, Jan 25, 2024',
-  time = '9:00 - 10:15 PM',
-  hasRsvped = false,
-  homeScore = 0,
-  awayScore = 0,
-} = props;
+// Load the example data on component mount
+onMounted(() => {
+  store.loadExampleData();
+  games.value = store.games;
+  const gameId = route.params.gameId as string;
+  game.value = games.value.find(g => g.id === Number(gameId)) || null;
+});
 
 const selectedItems = ref('four');
+
+// TODO: get rsvp data from the store once there is an rsvp model and API endpoint
 const options = ref([
   { label: 'I am going', value: 'one' },
   { label: 'I am not going', value: 'two' },
