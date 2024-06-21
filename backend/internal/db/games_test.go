@@ -11,12 +11,14 @@ func (s *dbTestingSuite) TestSaveGame() {
 
 	g, err := s.session.SaveGame(game)
 	s.Nil(err)
+	s.NotNil(g)
 	s.Equal(uint(1), g.SeasonID)
 	s.Equal(uint(1), g.HomeTeamID)
 	s.Equal(uint(1), g.AwayTeamID)
 
 	games, err := s.session.GetGames(1)
 	s.Nil(err)
+	s.NotNil(games)
 	s.Len(games, 1)
 }
 
@@ -41,10 +43,12 @@ func (s *dbTestingSuite) TestSaveGames() {
 
 	g, err := s.session.SaveGames(games)
 	s.Nil(err)
+	s.NotNil(g)
 	s.Len(g, 3)
 
 	other, err := s.session.GetGames(1)
 	s.Nil(err)
+	s.NotNil(other)
 	s.Len(other, 3)
 }
 
@@ -61,6 +65,7 @@ func (s *dbTestingSuite) TestGetGame() {
 
 	other, err := s.session.GetGame(1)
 	s.Nil(err)
+	s.NotNil(other)
 	s.Equal(uint(1), other.SeasonID)
 	s.Equal(uint(1), other.HomeTeamID)
 	s.Equal(uint(1), other.AwayTeamID)
@@ -87,16 +92,19 @@ func (s *dbTestingSuite) TestGetGames() {
 
 	g, err := s.session.SaveGames(games)
 	s.Nil(err)
+	s.NotNil(g)
 	s.Len(g, 3)
 
 	other, err := s.session.GetGames(1)
 	s.Nil(err)
+	s.NotNil(other)
 	s.Len(other, 3)
 }
 
 func (s *dbTestingSuite) TestGetGameById() {
 	game, err := s.session.GetGameById(1)
 	s.Nil(err)
+	s.NotNil(game)
 	s.Len(game, 3)
 }
 
@@ -109,12 +117,14 @@ func (s *dbTestingSuite) TestUpdateGame() {
 
 	g, err := s.session.SaveGame(game)
 	s.Nil(err)
+	s.NotNil(g)
 
 	g.HomeTeamID = 2
 	g.AwayTeamID = 2
 
 	other, err := s.session.UpdateGame(1, *g)
 	s.Nil(err)
+	s.NotNil(other)
 	s.Equal(uint(1), other.SeasonID)
 	s.Equal(uint(2), other.HomeTeamID)
 	s.Equal(uint(2), other.AwayTeamID)
@@ -141,6 +151,7 @@ func (s *dbTestingSuite) TestUpdateGames() {
 
 	g, err := s.session.SaveGames(games)
 	s.Nil(err)
+	s.NotNil(g)
 
 	for i := range g {
 		g[i].HomeTeamID = 4
@@ -149,6 +160,7 @@ func (s *dbTestingSuite) TestUpdateGames() {
 
 	other, err := s.session.UpdateGames(g)
 	s.Nil(err)
+	s.NotNil(other)
 	s.Len(other, 3)
 	for i := range other {
 		s.Equal(uint(4), other[i].HomeTeamID)
@@ -196,6 +208,7 @@ func (s *dbTestingSuite) TestDeleteGames() {
 
 	g, err := s.session.SaveGames(games)
 	s.Nil(err)
+	s.NotNil(g)
 	s.Len(g, 3)
 
 	err = s.session.DeleteGames(1)
@@ -203,5 +216,6 @@ func (s *dbTestingSuite) TestDeleteGames() {
 
 	other, err := s.session.GetGames(1)
 	s.Nil(err)
+	s.NotNil(other)
 	s.Len(other, 0)
 }
