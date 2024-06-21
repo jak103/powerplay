@@ -1,4 +1,4 @@
-import type { DbModel, TeamRecord } from './index'
+import type { DbModel, Team } from './index'
 import type { Role } from './KeyRecord'
 import type { TimeString } from './types/timeString'
 
@@ -9,7 +9,7 @@ export interface User extends DbModel {
   phone: string
   roles: Array<Role>
   skill_level: number
-  current_teams: Array<TeamRecord>
+  current_teams: Array<Team>
   /** dob === Date of Birth */
   dob: TimeString
 }
