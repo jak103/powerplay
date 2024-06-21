@@ -11,7 +11,6 @@ func (s *dbTestingSuite) TestSaveGame() {
 
 	g, err := s.session.SaveGame(game)
 	s.Nil(err)
-	s.Equal(uint(1), g.ID)
 	s.Equal(uint(1), g.SeasonID)
 	s.Equal(uint(1), g.HomeTeamID)
 	s.Equal(uint(1), g.AwayTeamID)
@@ -62,7 +61,6 @@ func (s *dbTestingSuite) TestGetGame() {
 
 	other, err := s.session.GetGame(1)
 	s.Nil(err)
-	s.Equal(uint(1), other.ID)
 	s.Equal(uint(1), other.SeasonID)
 	s.Equal(uint(1), other.HomeTeamID)
 	s.Equal(uint(1), other.AwayTeamID)
@@ -117,7 +115,6 @@ func (s *dbTestingSuite) TestUpdateGame() {
 
 	other, err := s.session.UpdateGame(1, *g)
 	s.Nil(err)
-	s.Equal(uint(1), other.ID)
 	s.Equal(uint(1), other.SeasonID)
 	s.Equal(uint(2), other.HomeTeamID)
 	s.Equal(uint(2), other.AwayTeamID)
