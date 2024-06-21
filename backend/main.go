@@ -41,6 +41,15 @@ func runFakeDataSeeds() {
 	leagueSeeder := fake_data.LeagueSeeder{}
 	teamSeeder := fake_data.TeamSeeder{}
 	venueSeeder := fake_data.VenueSeeder{}
+	userSeeder := fake_data.UserSeeder{}
+
+	// Seed Users
+	_, err := userSeeder.Seed(db.GetDB())
+	if err != nil {
+		log.WithErr(err).Alert("Failed to seed Users: %v", err)
+		return
+	}
+	log.Info("Successfully seeded Users")
 
 	// Seed Season
 	season, err := seasonSeeder.Seed(db.GetDB())

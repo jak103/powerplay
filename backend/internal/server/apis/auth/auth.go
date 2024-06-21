@@ -54,8 +54,6 @@ func postAuthHandler(c *fiber.Ctx) error {
 		return responder.Unauthorized(c, "Incorrect email or password")
 	}
 
-	log.Debug("User.password %q", user.Password)
-
 	if !validatePassword(creds.Password, user.Password, config.Vars.PasswordKey) {
 		log.Debug("Password did not match")
 		return responder.Unauthorized(c, "Incorrect email or password")

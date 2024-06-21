@@ -1,5 +1,10 @@
 .PHONY: migrate production_image, production_debug run_local_image test
 
+down: 
+	docker compose down
+
+stop: 
+	docker compose stop
 
 migrate:
 	@echo "🚀 Running app in detached mode and applying migrations"
@@ -20,11 +25,14 @@ production_debug:
 run_local_image:
 	docker run -p 127.0.0.1:9001:9001/tcp powerplay:latest
 
+run_backend:
+	@echo "Running backend services in detached mode and seeding test data"
+	@docker compose up database backend
+
 seed_test_data:
 	@echo "🌱 Running backend in detached mode and seeding test data"
-	@docker compose -f docker-compose.yml up -d
+	@docker compose -f docker-compose.yml up database backend -d
 	@docker compose -f docker-compose.yml exec backend bash -c "cd /powerplay/backend && go run . -seed-test" || (echo "Seeding failed, halting" && exit 1)
-
 
 test:
 	@echo "🚀 Testing code: Running go test inside the backend container"

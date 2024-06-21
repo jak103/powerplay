@@ -67,6 +67,10 @@ func Setup(app *fiber.App) {
 		}))
 	}
 
+	// Setup auth - is this correct?
+	// app.Use(auth.NewKeyRecord())
+	// app.Use(auth.NewAuthorizer())
+
 	// TODO rate limiter https://github.com/gofiber/fiber/tree/v2/middleware/limiter
 	// TODO otel traces https://github.com/gofiber/contrib/tree/main/otelfiber
 }

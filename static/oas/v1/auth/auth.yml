@@ -28,24 +28,24 @@ schemas:
   AuthenticationRequest:
     type: object
     properties:
-      username:
+      email:
         type: string
-        description: The user's username
-        example: awesome_skater
+        description: The user's email
+        example: john@email.com
       password:
         type: string
         description: The user's password
-        example: midnight9
+        example: 123!@dsQ
 
   AuthenticationResponse:
     type: object
     properties:
       status_code:
-        $ref: "../common/schemas.yml#/schemas/StatusCode200"
+        $ref: "../common/schemas.yml#/components/schemas/StatusCode200"
       status_string:
-        $ref: "../common/schemas.yml#/schemas/StatusString200"
+        $ref: "../common/schemas.yml#/components/schemas/StatusString200"
       request_id:
-        $ref: "../common/schemas.yml#/schemas/RequestId"
+        $ref: "../common/schemas.yml#/components/schemas/RequestId"
       response_data:
         type: object
         properties:

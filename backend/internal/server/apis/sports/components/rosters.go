@@ -12,11 +12,16 @@ import (
 )
 
 func init() {
-	apis.RegisterHandler(fiber.MethodPost, "/rosters", auth.Public, postRoster)
+	apis.RegisterHandler(fiber.MethodPost, "/rosters", auth.Authenticated, postRoster)
 	apis.RegisterHandler(fiber.MethodGet, "/rosters", auth.Public, getRosters)
 }
 
 func postRoster(c *fiber.Ctx) error {
+	// need to setup middleware for auth...
+
+	// Get user that is hitting api
+	// Validate that they are authenticated to hit this endpoint
+
 	type RosterRequest struct {
 		CaptainID uint   `json:"captain_id"`
 		PlayerIDs []uint `json:"player_ids"`

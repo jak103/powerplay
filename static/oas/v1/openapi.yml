@@ -72,10 +72,3 @@ paths:
     $ref: "./sports/stats/penalties.yml#/paths/~1users~1{playerID}~1penalties" # Path mismatch with above
   /venues:
     $ref: "./sports/stats/venues.yml#/paths/venues"
-  
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: jwt
