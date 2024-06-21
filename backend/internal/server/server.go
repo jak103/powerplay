@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/jak103/powerplay/internal/utils/log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/config"
@@ -13,6 +14,7 @@ import (
 	_ "github.com/jak103/powerplay/internal/server/apis/auth"
 	_ "github.com/jak103/powerplay/internal/server/apis/chat"
 	_ "github.com/jak103/powerplay/internal/server/apis/notifications"
+	_ "github.com/jak103/powerplay/internal/server/apis/schedule"
 	_ "github.com/jak103/powerplay/internal/server/apis/sports/components"
 	_ "github.com/jak103/powerplay/internal/server/apis/sports/stats"
 	_ "github.com/jak103/powerplay/internal/server/apis/user"
@@ -30,7 +32,10 @@ func Run() {
 
 	app.Static("/", "/powerplay/static")
 
-	app.Listen(fmt.Sprintf(":%s", config.Vars.Port))
+	err := app.Listen(fmt.Sprintf(":%s", config.Vars.Port))
+	if err != nil {
+		log.WithErr(err).Error("Server error: %v", err.Error())
+	}
 }
 
 func globalErrorHandler(c *fiber.Ctx, err error) error {
