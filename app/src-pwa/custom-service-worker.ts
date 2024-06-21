@@ -14,6 +14,9 @@ import {
   createHandlerBoundToURL,
 } from 'workbox-precaching';
 import { registerRoute, NavigationRoute } from 'workbox-routing';
+import { NetworkFirst } from 'workbox-strategies';
+
+
 
 self.skipWaiting();
 clientsClaim();
