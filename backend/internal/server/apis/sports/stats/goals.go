@@ -7,6 +7,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
+	"github.com/go-playground/validator/v10"
 	"github.com/jak103/powerplay/internal/utils/responder"
 )
 
@@ -26,6 +27,13 @@ func postGoalsHandler(c *fiber.Ctx) error {
 		log.WithErr(err).Error("Failed to parse Goal POST request.")
 		return responder.BadRequest(c)
 	}
+	// Validate the request
+	validate := validator.New()
+	err = validate.Struct(goalPostRequest)
+	if err != nil {
+		return responder.BadRequest(c, "Failed to validate request")
+	}
+
 
 	// Connect to database and insert goal
 	db := database.newSession(c)

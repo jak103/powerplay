@@ -8,6 +8,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"github.com/go-playground/validator/v10"
 )
 
 func init() {
@@ -35,6 +36,12 @@ func postSeasonsHandler(c *fiber.Ctx) error {
 	if err != nil {
 		log.WithErr(err).Error("Failed to parse Season POST request.")
 		return err
+	}
+	// Validate request
+	validate := validator.New()
+	err = validate.Struct(seasonPostRequest)
+	if err != nil {
+		return responder.BadRequest(c, "Failed to validate request")
 	}
 
 	db := db.GetSession(c)

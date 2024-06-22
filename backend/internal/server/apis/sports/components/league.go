@@ -11,6 +11,7 @@ import (
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/query_params"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"github.com/go-playground/validator/v10"
 )
 
 func init() {
@@ -59,6 +60,13 @@ func postLeagueHandler(c *fiber.Ctx) error {
 	if err != nil {
 		log.WithErr(err).Alert("Failed to parse leagues request payload")
 		return responder.BadRequest(c, "Failed to parse leagues request payload")
+	}
+
+	// Validate request
+	validate := validator.New()
+	err = validate.Struct(leagueRequest)
+	if err != nil {
+		return responder.BadRequest(c, "Failed to validate request")
 	}
 
 	db := db.GetSession(c)

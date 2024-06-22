@@ -1,6 +1,7 @@
 package stats
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
@@ -97,6 +98,13 @@ func postPenaltyHandler(c *fiber.Ctx) error {
 		return responder.BadRequest(c, "Failed to parse penalty request payload")
 	}
 
+	// Validate request
+	validate := validator.New()
+	err = validate.Struct(penaltyRequest)
+	if err != nil {
+		return responder.BadRequest(c, "Failed to validate request")
+	}
+
 	// Create penalty
 	db := db.GetSession(c)
 	penalty, err := db.CreatePenalty(penaltyRequest)
@@ -122,6 +130,13 @@ func putPenaltyHandler(c *fiber.Ctx) error {
 	if formatters.UintToString(penaltyRequest.ID) != id {
 		log.WithErr(err).Error("Penalty ID in URL does not match ID in payload")
 		return responder.BadRequest(c, "Penalty ID in URL does not match ID in payload")
+	}
+
+	// Validate request
+	validate := validator.New()
+	err = validate.Struct(penaltyRequest)
+	if err != nil {
+		return responder.BadRequest(c, "Failed to validate request")
 	}
 
 	// Update penalty

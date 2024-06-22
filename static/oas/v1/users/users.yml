@@ -19,6 +19,31 @@ paths:
                 $ref: '#/schemas/UserCreationResponse'
         400:
           $ref: "../common/errors.yml#/components/responses/BadRequest"
+    get:
+      tags:
+        - Users
+      summary: User by credentials
+      description: Get User details by email and password
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The response body should contain the user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/User'
+        400:
+          $ref: "../common/errors.yml#/components/responses/BadRequest"
 
 # made the input schema follow the same format as the database table for users. I also removed fields that would be populated by the server. 
 schemas:

@@ -8,6 +8,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/log"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"github.com/go-playground/validator/v10"
 )
 
 func init() {
@@ -64,6 +65,14 @@ func createGame(c *fiber.Ctx) error {
 		log.WithErr(err).Alert("Failed to parse game data")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
+
+	// Validate request
+	validate := validator.New()
+	err := validate.Struct(game)
+	if err != nil {
+		return responder.BadRequest(c, "Failed to validate request")
+	}
+
 	if err := db.CreateGame(&game); err != nil {
 		log.WithErr(err).Alert("Failed to create Game in the database")
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})

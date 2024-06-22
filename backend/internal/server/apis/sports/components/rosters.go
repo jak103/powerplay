@@ -1,6 +1,7 @@
 package components
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
@@ -37,6 +38,12 @@ func postRoster(c *fiber.Ctx) error {
 		return responder.BadRequest(c, msg)
 	}
 
+	validate := validator.New()
+	err = validate.Struct(body)
+	if err != nil {
+		return responder.BadRequest(c, "Failed to validate request")
+	}
+
 	db := db.GetSession(c)
 
 	log.Debug("Captain : %d", body.CaptainID)
@@ -53,7 +60,7 @@ func postRoster(c *fiber.Ctx) error {
 
 	log.Debug("Players : %v", body.PlayerIDs)
 	players, err := db.GetUsersByIDs(body.PlayerIDs)
-	if err != nil {
+	if err != nil || (len(players) == 0 && len(body.PlayerIDs) > 0) {
 		log.WithErr(err).Alert("Failed to get players")
 		return responder.InternalServerError(c)
 	}

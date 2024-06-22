@@ -1,6 +1,7 @@
 package components
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
@@ -8,6 +9,7 @@ import (
 	"github.com/jak103/powerplay/internal/server/services/auth"
 	"github.com/jak103/powerplay/internal/utils/locals"
 	"github.com/jak103/powerplay/internal/utils/responder"
+	"github.com/go-playground/validator/v10"
 )
 
 func init() {
@@ -67,6 +69,13 @@ func createTeam(c *fiber.Ctx) error {
 	if err := c.BodyParser(&team); err != nil {
 		log.WithErr(err).Alert("Failed to parse team data")
 		return responder.BadRequest(c, "Failed to parse team data")
+	}
+	// Validate request
+	validate := validator.New()
+	err := validate.Struct(team)
+	if err != nil {
+		fmt.Println(err)
+		return responder.BadRequest(c, "Failed to validate request")
 	}
 
 	newTeam, err := db.CreateTeam(&team)
