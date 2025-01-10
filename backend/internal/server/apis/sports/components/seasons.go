@@ -2,7 +2,6 @@ package components
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jak103/powerplay/internal/db"
 	"github.com/jak103/powerplay/internal/models"
 	"github.com/jak103/powerplay/internal/server/apis"
 	"github.com/jak103/powerplay/internal/server/services/auth"
@@ -18,7 +17,7 @@ func init() {
 
 func getSeasonsHandler(c *fiber.Ctx) error {
 	log := locals.Logger(c)
-	db := db.GetSession(c)
+	db := database.newSession(c)
 	seasons, err := db.GetSeasons()
 	if err != nil {
 		log.WithErr(err).Alert("Failed to get all seasons from the database")
@@ -35,7 +34,7 @@ func postSeasonsHandler(c *fiber.Ctx) error {
 
 	if err != nil {
 		log.WithErr(err).Error("Failed to parse Season POST request.")
-		return err
+		return responder.BadRequest(c)
 	}
 	// Validate request
 	validate := validator.New()
@@ -44,7 +43,7 @@ func postSeasonsHandler(c *fiber.Ctx) error {
 		return responder.BadRequest(c, "Failed to validate request")
 	}
 
-	db := db.GetSession(c)
+	db := database.newSession(c)
 	record, err := db.CreateSeason(seasonPostRequest)
 
 	if err != nil {
