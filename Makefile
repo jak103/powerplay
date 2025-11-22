@@ -29,3 +29,6 @@ seed_test_data:
 test:
 	@echo "🚀 Testing code: Running go test inside the backend container"
 	@docker compose -f docker-compose.yml exec -T backend bash -c "cd /powerplay/backend && go test -v ./..."
+
+build:
+	cd backend && go build main.go
