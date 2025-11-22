@@ -5,9 +5,23 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/IndexPage.vue') } // Home page
-      ,{ 
+      ,{
         path: '/create-user',
         component: () => import('pages/createUser.vue')} // Create user
+    ],
+  },
+  {
+    path: '/league',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('pages/league/LeagueHome.vue')
+      },
+      {
+        path: ':team',
+        component: () => import('pages/league/TeamPage.vue')
+      }
     ],
   },
   {

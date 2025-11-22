@@ -8,7 +8,7 @@
 
         <q-btn stretch flat label="Home" to="/" />
         <q-separator dark vertical inset />
-        <q-btn stretch flat label="*League" to="/" />
+        <q-btn stretch flat label="League" to="/league" />
         <q-separator dark vertical inset />
         <q-btn stretch flat label="*Calendar" to="/" />
         <q-separator dark vertical inset />

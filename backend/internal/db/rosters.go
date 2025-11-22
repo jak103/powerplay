@@ -26,6 +26,14 @@ func (s session) GetUserByUsername(email string) (*models.User, error) {
 	return resultOrError(user, err)
 }
 
+func (s session) GetUserById(id uint) (*models.User, error) {
+        user := &models.User{}
+
+        err := s.Find(&user, "id = ?", id)
+
+        return resultOrError(user, err)
+}
+
 func (s session) GetUserByEmails(emails []string) ([]*models.User, error) {
 	users := make([]*models.User, 0)
 
