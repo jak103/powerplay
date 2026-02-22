@@ -2,8 +2,6 @@ name: Backend CI
 
 on:
   push:
-    paths:
-      - ./**/*.go
     branches: [ "main" ]
   pull_request:
     paths:
