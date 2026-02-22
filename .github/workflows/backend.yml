@@ -1,0 +1,32 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - ./**/*.go
+    branches: [ "main" ]
+  pull_request:
+    paths:
+      - ./**/*.go
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.26.0'
+        cache-dependency-path: go.sum
+
+    - run: go install github.com/mfridman/tparse@latest
+
+    - name: Build
+      run: go build cmd/powerplay/main.go
+
+    - name: Test
+      run: go test -json -v ./... | tparse -all

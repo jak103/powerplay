@@ -12,8 +12,6 @@ import (
 
 type Config struct {
 	Env             string   `env:"ENV" envDefault:"local"`
-	Dir             string   `env:"CONFIG_DIR" envDefault:"/powerplay/configs/envs"`
-	DebugVars       bool     `env:"DEBUG_VARS" envDefault:"false"`
 	LogLevel        string   `env:"LOG_LEVEL" envDefault:"DEBUG"`
 	LogColor        bool     `env:"LOG_COLOR" envDefault:"true"`
 	JwtSecret       string   `env:"JWT_SECRET"`
@@ -40,8 +38,9 @@ func Init() error {
 	}
 
 	envConfig := struct {
-		Env string `env:"ENV" envDefault:"local"`
-		Dir string `env:"CONFIG_DIR" envDefault:"/powerplay/configs/envs"`
+		Env       string `env:"ENV" envDefault:"local"`
+		Dir       string `env:"CONFIG_DIR" envDefault:"/powerplay/configs/envs"`
+		DebugVars bool   `env:"DEBUG_VARS" envDefault:"false"`
 	}{}
 
 	if err := env.ParseWithOptions(&envConfig, opts); err != nil {
@@ -64,7 +63,7 @@ func Init() error {
 		return err
 	}
 
-	if Vars.DebugVars {
+	if envConfig.DebugVars {
 		log.Debug("Env vars: %v", Vars)
 	}
 
