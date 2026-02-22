@@ -1,55 +1,39 @@
 services:
-  site:
-    image: site:latest
-    build: ./site
-    container_name: site
-    working_dir: /powerplay/site
+  frontend:
+    image: frontend:latest
+    build: ./web
+    container_name: frontend
+    working_dir: /powerplay
     volumes:
-      - /powerplay/site/node_modules
-      - ./site:/powerplay/site
+      - /powerplay/node_modules
+      - ./web:/powerplay
     ports:
       - 9000:9000
     environment:
       NODE_ENV: development
-    command: npm run dev
-
-  app:
-    image: app:latest
-    build: ./app
-    container_name: app
-    working_dir: /powerplay/app
-    volumes:
-      - /powerplay/app/node_modules
-      - ./app:/powerplay/app
-    ports:
-      - 9001:9000
-    environment:
-      NODE_ENV: development
-    command: npm run dev
+    command: bun run dev
 
   backend:
     image: backend:latest
-    build: ./backend
+    build: .
     container_name: backend
-    working_dir: /powerplay/backend
+    working_dir: /powerplay
     volumes:
       - /powerplay/tmp # Anonymous mount for air temp directory
-      - ./backend:/powerplay/backend
-      - ./static:/powerplay/static
-      - ./config:/powerplay/config
+      - .:/powerplay
     ports:
       - 9002:9002
     depends_on:
       database:
         condition: service_healthy
-    command: air -c air/backend.toml
+    command: air -c configs/air/backend.toml
 
   database:
     image: postgres:16
     container_name: db
     restart: always
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      - ./init/db:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
     environment:
@@ -62,27 +46,3 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-#   api-redis:
-#     image: redis:7-alpine
-#     container_name: api-redis
-#     ports:
-#       - 7379:6379 # this allows us to view the cache in a gui
-  # cypress:
-  #   image: cypress/included:cypress-12.5.1-node-16.18.1-chrome-109.0.5414.74-1-ff-109.0-edge-109.0.1518.52-1
-  #   container_name: devsite-cypress
-  #   restart: always
-  #   working_dir: /frontend
-  #   network_mode: host # This will resolve localhost:5173 in the container
-  #   depends_on:
-  #     - devsite-db
-  #   volumes:
-  #     - ./frontend:/frontend
-  #     - ./e2e:/e2e
-  #     - ./build:/build
-  #   entrypoint: tail -f /dev/null
-  #   # Above entrypoint keep the container running, so we can hop in the container and
-  #   # run cypress within the container by using `npm run test:e2e:ci:BROWSER`, where
-  #   # BROWSER options are chrome, firefox and edge. We can also replace the entrypoint
-  #   # above with the npm command, but it all logs will make the output really noisy.
-
